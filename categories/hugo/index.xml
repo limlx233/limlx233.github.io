@@ -16,13 +16,13 @@
         <description>&lt;h2 id=&#34;前言&#34;&gt;前言
 &lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。
-&lt;img src=&#34;https://cdn.jsdelivr.net/gh/limlx233/images@main/202507130040211.png&#34;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507132058631.png&#34;
 	
 	
 	
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;hugo&#34;
+		alt=&#34;image-20250713205851564&#34;
 	
 	
 &gt;&lt;/li&gt;
@@ -37,13 +37,13 @@
 &lt;li&gt;注意：经常打不开Github、可以用修改 &lt;code&gt;host&lt;/code&gt;文件方法
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;Win+R&lt;/code&gt;输入 &lt;code&gt;cmd&lt;/code&gt;  回车，在命令行中输入 &lt;code&gt;ping github.com&lt;/code&gt;,记住这个IP地址
-&lt;img src=&#34;https://cdn.jsdelivr.net/gh/limlx233/images@main/202507131858206.png&#34;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507132058821.png&#34;
 	
 	
 	
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;image-20250713185822159&#34;
+		alt=&#34;image-20250713205834748&#34;
 	
 	
 &gt;&lt;/li&gt;
@@ -130,13 +130,13 @@
 &lt;/h2&gt;&lt;p&gt;既然都选择自己折腾搭建博客，顺便搞个自己域名吧，&lt;code&gt;Vercel&lt;/code&gt;上部署之后在设置中可以配置域名，阿里云上一般的域名不到10块钱一年。&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/weixin_43288858/article/details/118437535?ops_request_misc=%257B%2522request%255Fid%2522%253A%25220050460ff385ef145c06ab5fa7cd6d45%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;amp;request_id=0050460ff385ef145c06ab5fa7cd6d45&amp;amp;biz_id=0&amp;amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-118437535-null-null.142%5ev102%5epc_search_result_base1&amp;amp;utm_term=%E9%98%BF%E9%87%8C%E4%BA%91%E5%9F%9F%E5%90%8D%E7%94%B3%E8%AF%B7&amp;amp;spm=1018.2226.3001.4187&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;域名申请&lt;/a&gt;这篇文章看到申请即可，申请之后要 &lt;a class=&#34;link&#34; href=&#34;https://help.aliyun.com/zh/dns/configure-a-subdomain&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;创建子域名&lt;/a&gt;，在 &lt;code&gt;Vercel&lt;/code&gt;中设置域名注意要把相应的值填到阿里云控制台子域名 &lt;code&gt;CNAME&lt;/code&gt;的值的位置。
-&lt;img src=&#34;https://cdn.jsdelivr.net/gh/limlx233/images@main/202507131948769.png&#34;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507132059488.png&#34;
 	
 	
 	
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;image-20250713194855671&#34;
+		alt=&#34;image-20250713205931360&#34;
 	
 	
 &gt;&lt;/p&gt;
