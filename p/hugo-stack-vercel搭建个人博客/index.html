@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content=" title: Hugo+Stack+Netlify搭建个人博客 description: 基于Hugo搭建个人博客 date: 2025-07-14 slug: Hugo+Stack+Netlify搭建个人博客 draft: false categories: - Hugo - Stack - Netlify Hugo+Stack+Netlify搭建个人博客 建站思路 思路大纲，软件下载及准备，域名购买\n">
-<title>Test Post</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言 闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。 搭建前准备： 安装 Git 并 注册 Github 参考：基本使用、详细教程 注意：经常打不开Github、可以用修改 host文件方法 Win+R输入 cmd 回车，在命令行中输入 ping github.com,记住这个IP地址 C:\\Windows\\System32\\drivers\\etc这个路径下打开 host 文件，添加行 20.205.243.166 github.com 保存 host 文件后，在打开的命令行输入 ipconfig /flushdns即可 博客搭建 Hugo安装及配置 建站框架：Hugo官网 基于go语言的静态网页生成器\n">
+<title>Hugo&#43;Stack&#43;Vercel搭建个人博客</title>
 
-<link rel='canonical' href='http://localhost:1313/p/test-post/'>
+<link rel='canonical' href='http://localhost:1313/p/hugo-stack-vercel%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/'>
 
-<link rel="stylesheet" href="/scss/style.min.e47845efdf201e9ad59b2ca9789760c9ef5c7593900565acc1765aea3f3b2641.css"><meta property='og:title' content="Test Post">
-<meta property='og:description' content=" title: Hugo+Stack+Netlify搭建个人博客 description: 基于Hugo搭建个人博客 date: 2025-07-14 slug: Hugo+Stack+Netlify搭建个人博客 draft: false categories: - Hugo - Stack - Netlify Hugo+Stack+Netlify搭建个人博客 建站思路 思路大纲，软件下载及准备，域名购买\n">
-<meta property='og:url' content='http://localhost:1313/p/test-post/'>
+<link rel="stylesheet" href="/scss/style.min.e47845efdf201e9ad59b2ca9789760c9ef5c7593900565acc1765aea3f3b2641.css"><meta property='og:title' content="Hugo+Stack+Vercel搭建个人博客">
+<meta property='og:description' content="前言 闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。 搭建前准备： 安装 Git 并 注册 Github 参考：基本使用、详细教程 注意：经常打不开Github、可以用修改 host文件方法 Win+R输入 cmd 回车，在命令行中输入 ping github.com,记住这个IP地址 C:\\Windows\\System32\\drivers\\etc这个路径下打开 host 文件，添加行 20.205.243.166 github.com 保存 host 文件后，在打开的命令行输入 ipconfig /flushdns即可 博客搭建 Hugo安装及配置 建站框架：Hugo官网 基于go语言的静态网页生成器\n">
+<meta property='og:url' content='http://localhost:1313/p/hugo-stack-vercel%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/'>
 <meta property='og:site_name' content='Penna_a'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-07-13T00:35:01&#43;08:00'/><meta property='article:modified_time' content='2025-07-13T00:35:01&#43;08:00'/>
-<meta name="twitter:title" content="Test Post">
-<meta name="twitter:description" content=" title: Hugo+Stack+Netlify搭建个人博客 description: 基于Hugo搭建个人博客 date: 2025-07-14 slug: Hugo+Stack+Netlify搭建个人博客 draft: false categories: - Hugo - Stack - Netlify Hugo+Stack+Netlify搭建个人博客 建站思路 思路大纲，软件下载及准备，域名购买\n">
+<meta name="twitter:title" content="Hugo+Stack+Vercel搭建个人博客">
+<meta name="twitter:description" content="前言 闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。 搭建前准备： 安装 Git 并 注册 Github 参考：基本使用、详细教程 注意：经常打不开Github、可以用修改 host文件方法 Win+R输入 cmd 回车，在命令行中输入 ping github.com,记住这个IP地址 C:\\Windows\\System32\\drivers\\etc这个路径下打开 host 文件，添加行 20.205.243.166 github.com 保存 host 文件后，在打开的命令行输入 ipconfig /flushdns即可 博客搭建 Hugo安装及配置 建站框架：Hugo官网 基于go语言的静态网页生成器\n">
     <link rel="shortcut icon" href="/pen.svg" />
 
     </head>
@@ -275,22 +275,21 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#--netlify">title: Hugo+Stack+Netlify搭建个人博客
-description: 基于Hugo搭建个人博客
-date: 2025-07-14
-slug: Hugo+Stack+Netlify搭建个人博客
-draft: false
-categories:
-- Hugo
-- Stack
-- Netlify</a></li>
-    <li><a href="#hugostacknetlify搭建个人博客">Hugo+Stack+Netlify搭建个人博客</a>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#博客搭建">博客搭建</a>
       <ol>
-        <li><a href="#建站思路">建站思路</a></li>
-        <li><a href="#git--github">Git + Github</a></li>
-        <li><a href="#vercel部署-hugo-项目">Vercel部署 Hugo 项目</a></li>
+        <li><a href="#hugo安装及配置">Hugo安装及配置</a></li>
+        <li><a href="#hugo部署">Hugo部署</a></li>
       </ol>
     </li>
+    <li><a href="#博客编写">博客编写</a>
+      <ol>
+        <li><a href="#编辑器及图床">编辑器及图床</a></li>
+      </ol>
+    </li>
+    <li><a href="#博客上传">博客上传</a></li>
+    <li><a href="#博客评论区">博客评论区</a></li>
+    <li><a href="#域名配置">域名配置</a></li>
   </ol>
 </nav>
         </div>
@@ -307,10 +306,26 @@ categories:
 
     <div class="article-details">
     
+    <header class="article-category">
+        
+            <a href="/categories/hugo/" >
+                Hugo
+            </a>
+        
+            <a href="/categories/stack/" >
+                Stack
+            </a>
+        
+            <a href="/categories/vercel/" >
+                Vercel
+            </a>
+        
+    </header>
+    
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/test-post/">Test Post</a>
+            <a href="/p/hugo-stack-vercel%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">Hugo&#43;Stack&#43;Vercel搭建个人博客</a>
         </h2>
     
         
@@ -348,23 +363,133 @@ categories:
     <section class="article-content">
     
     
-    <hr>
-<h2 id="--netlify">title: Hugo+Stack+Netlify搭建个人博客
-description: 基于Hugo搭建个人博客
-date: 2025-07-14
-slug: Hugo+Stack+Netlify搭建个人博客
-draft: false
-categories:
-- Hugo
-- Stack
-- Netlify
-</h2><h2 id="hugostacknetlify搭建个人博客">Hugo+Stack+Netlify搭建个人博客
-</h2><h3 id="建站思路">建站思路
-</h3><p>思路大纲，软件下载及准备，域名购买</p>
-<h3 id="git--github">Git + Github
-</h3><p>使用git提交代码至 github仓库，进行代码的管理</p>
-<h3 id="vercel部署-hugo-项目">Vercel部署 Hugo 项目
-</h3><p>也有直接使用githubpages的方法但是不推荐</p>
+    <h2 id="前言">前言
+</h2><ul>
+<li>闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。
+<img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507130040211.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="hugo"
+	
+	
+></li>
+<li>搭建前准备：
+<ul>
+<li>安装 <a class="link" href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git"  target="_blank" rel="noopener"
+    >Git</a> 并 注册 <a class="link" href="https://github.com/"  target="_blank" rel="noopener"
+    >Github</a></li>
+<li>参考：<a class="link" href="https://www.freecodecamp.org/chinese/news/git-and-github-the-basics/"  target="_blank" rel="noopener"
+    >基本使用</a>、<a class="link" href="https://blog.csdn.net/a2360051431/article/details/130836633?ops_request_misc=%257B%2522request%255Fid%2522%253A%25225eda2bf3c575eacc775e07b3227b3748%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=5eda2bf3c575eacc775e07b3227b3748&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-1-130836633-null-null.142%5ev102%5epc_search_result_base1&amp;utm_term=git%20github&amp;spm=1018.2226.3001.4187"  target="_blank" rel="noopener"
+    >详细教程</a></li>
+<li>注意：经常打不开Github、可以用修改 <code>host</code>文件方法
+<ol>
+<li><code>Win+R</code>输入 <code>cmd</code>  回车，在命令行中输入 <code>ping github.com</code>,记住这个IP地址
+<img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507131858206.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250713185822159"
+	
+	
+></li>
+<li><code>C:\Windows\System32\drivers\etc</code>这个路径下打开 <code>host</code> 文件，添加行 <code>20.205.243.166 github.com</code></li>
+<li>保存 <code>host</code> 文件后，在打开的命令行输入 <code>ipconfig /flushdns</code>即可</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="博客搭建">博客搭建
+</h2><h3 id="hugo安装及配置">Hugo安装及配置
+</h3><ul>
+<li>
+<p>建站框架：<a class="link" href="https://gohugo.io/"  target="_blank" rel="noopener"
+    >Hugo官网</a> 基于go语言的静态网页生成器</p>
+<ul>
+<li>注意要安装<strong>拓展版</strong>，文件名称含 <code>extended</code> ，<a class="link" href="https://github.com/gohugoio/hugo/tags"  target="_blank" rel="noopener"
+    >Github下载地址</a></li>
+</ul>
+</li>
+<li>
+<p>主题下载：<a class="link" href="https://themes.gohugo.io/"  target="_blank" rel="noopener"
+    >Hugo官方主题</a>中
+当时一眼相中了 <a class="link" href="https://themes.gohugo.io/themes/hugo-theme-stack/"  target="_blank" rel="noopener"
+    >Hugo Stack主题</a>，注意选不同主题后续美化和配置会有差异，相关主题也会有对应文档 <a class="link" href="https://stack.jimmycai.com/"  target="_blank" rel="noopener"
+    >Stack主题官网</a>。</p>
+</li>
+<li>
+<p>最开始参考 了<a class="link" href="https://www.bilibili.com/video/BV1bovfeaEtQ/?spm_id_from=333.337.search-card.all.click&amp;vd_source=159511cf2bc7cb24f132125b07aae132"  target="_blank" rel="noopener"
+    >B站教学视频</a>，博客搭建和Stack的主题配置，但是部署个人并不太推荐使用GithubPages，国内访问不太稳定，有时看其他人用这个方法搭建的博客网站会无法访问，属于是能用但不好用的水平。本站是使用 <a class="link" href="https://vercel.com/"  target="_blank" rel="noopener"
+    >Vercel</a> 进行托管部署(注册的时候使用Github账号授权后续导入仓库更方便)，与视频中一样可以用 <code>public</code>文件夹所在的 Reposity  进行静态页面的部署，而且如果希望在博客中增加评论功能也可以用 <a class="link" href="https://waline.js.org/"  target="_blank" rel="noopener"
+    >Waline</a>+<u>Vercel</u>实现，所以推荐使用 <code>Vercel</code></p>
+</li>
+<li>
+<p>几个Hugo的常用命令（<code>[]</code>及其包含部分可自行替换）：</p>
+<ul>
+<li>查看安装版本： <code>hugo version</code></li>
+<li>生成项目基础结构 ：<code>hugo new site [项目名称]</code></li>
+<li>启动服务器：<code>hugo server</code> 常用的是 <code>hugo server -D # -D：包含草稿状态的内容</code></li>
+<li>创建新的内容界面：<code>hugo new posts/[文件名]</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="hugo部署">Hugo部署
+</h3><ul>
+<li>参考上方<a class="link" href="https://www.bilibili.com/video/BV1bovfeaEtQ/?spm_id_from=333.337.search-card.all.click&amp;vd_source=159511cf2bc7cb24f132125b07aae132"  target="_blank" rel="noopener"
+    >B站教学视频</a><code>中将Public</code>文件夹提交至仓库后，进入 <code>Vercel</code>创建新项目，导入这个仓库，点击 Deploy 即可，这种方法简洁，另外需要将全部项目工程进行部署的参考 <a class="link" href="https://www.bilibili.com/video/BV1c84y1W7ac?spm_id_from=333.788.videopod.sections&amp;vd_source=159511cf2bc7cb24f132125b07aae132"  target="_blank" rel="noopener"
+    >这个视频</a>，包含了仅上传<code>Public</code>文件夹和上传全部项目的两种方法。
+<ul>
+<li>需要在不同设备编写博客可以将全部项目放入 Github 仓库，进行版本控制和内容同步，注意添加 <code>.gitignored</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="博客编写">博客编写
+</h2><h3 id="编辑器及图床">编辑器及图床
+</h3><ul>
+<li>当然是用 <a class="link" href="https://typoraio.cn/"  target="_blank" rel="noopener"
+    >Typora</a> 写文章了，简洁好用。如果有白嫖党可以看看万能的某宝，或者各种论坛找个方案。觉得好用且工作有收入的可以支持下，毕竟好用不贵。</li>
+<li>图床用的是 PicGo+Github ，<a class="link" href="https://zhuanlan.zhihu.com/p/489236769"  target="_blank" rel="noopener"
+    >详细教程</a></li>
+<li><a class="link" href="https://blog.csdn.net/weixin_46025371/article/details/111105266?ops_request_misc=&amp;request_id=&amp;biz_id=102&amp;utm_term=typora%20picgo&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-5-111105266.142%5ev102%5epc_search_result_base1&amp;spm=1018.2226.3001.4187"  target="_blank" rel="noopener"
+    >Typora配置PicGO及常见问题</a></li>
+</ul>
+<h2 id="博客上传">博客上传
+</h2><ul>
+<li>可以参考<a class="link" href="http://comments.penna.homes/"  target="_blank" rel="noopener"
+    >这篇文章</a>，这位博主用的是 <code>MarkText</code>编辑器，都是大同小异，
+<ul>
+<li>另外这篇文章中还提供了<code>.bat</code>脚本 一键push代码</li>
+<li>或者也可以使用 <a class="link" href="https://blog.csdn.net/Shids_/article/details/112250700?ops_request_misc=&amp;request_id=&amp;biz_id=102&amp;utm_term=vscode%20%E8%BF%9B%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8F%90%E4%BA%A4&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-0-112250700.142%5ev102%5epc_search_result_base1&amp;spm=1018.2226.3001.4187"  target="_blank" rel="noopener"
+    >Vscode进行代码的提交</a></li>
+</ul>
+</li>
+</ul>
+<p>以上其实博客基本功能可以实现了，下面还有评论系统和主题美化相关内容</p>
+<h2 id="博客评论区">博客评论区
+</h2><ul>
+<li>文章开头提到的  <a class="link" href="https://waline.js.org/"  target="_blank" rel="noopener"
+    >Waline</a>+<u>Vercel</u>实现，参考 <a class="link" href="https://imayx.top/waline/"  target="_blank" rel="noopener"
+    >文章</a></li>
+</ul>
+<h2 id="域名配置">域名配置
+</h2><p>既然都选择自己折腾搭建博客，顺便搞个自己域名吧，<code>Vercel</code>上部署之后在设置中可以配置域名，阿里云上一般的域名不到10块钱一年。<a class="link" href="https://blog.csdn.net/weixin_43288858/article/details/118437535?ops_request_misc=%257B%2522request%255Fid%2522%253A%25220050460ff385ef145c06ab5fa7cd6d45%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=0050460ff385ef145c06ab5fa7cd6d45&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-118437535-null-null.142%5ev102%5epc_search_result_base1&amp;utm_term=%E9%98%BF%E9%87%8C%E4%BA%91%E5%9F%9F%E5%90%8D%E7%94%B3%E8%AF%B7&amp;spm=1018.2226.3001.4187"  target="_blank" rel="noopener"
+    >域名申请</a>这篇文章看到申请即可，申请之后要 <a class="link" href="https://help.aliyun.com/zh/dns/configure-a-subdomain"  target="_blank" rel="noopener"
+    >创建子域名</a>，在 <code>Vercel</code>中设置域名注意要把相应的值填到阿里云控制台子域名<code>CNAME</code>的值的位置。
+<img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507131948769.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250713194855671"
+	
+	
+></p>
 
 </section>
 

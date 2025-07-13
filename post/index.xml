@@ -8,30 +8,138 @@
         <language>zh-cn</language>
         <copyright>Penna_a</copyright>
         <lastBuildDate>Sun, 13 Jul 2025 00:35:01 +0800</lastBuildDate><atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Hugo&#43;Stack&#43;Netlify搭建个人博客</title>
-        <link>http://localhost:1313/p/hugo-stack-netlify%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</link>
+        <title>Hugo&#43;Stack&#43;Vercel搭建个人博客</title>
+        <link>http://localhost:1313/p/hugo-stack-vercel%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</link>
         <pubDate>Sun, 13 Jul 2025 00:35:01 +0800</pubDate>
         
-        <guid>http://localhost:1313/p/hugo-stack-netlify%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</guid>
-        <description>&lt;p&gt;&lt;img src=&#34;https://cdn.jsdelivr.net/gh/limlx233/images@main/202507130040211.png&#34;
+        <guid>http://localhost:1313/p/hugo-stack-vercel%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。
+&lt;img src=&#34;https://cdn.jsdelivr.net/gh/limlx233/images@main/202507130040211.png&#34;
 	
 	
 	
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;image-20250713004050168&#34;
+		alt=&#34;hugo&#34;
+	
+	
+&gt;&lt;/li&gt;
+&lt;li&gt;搭建前准备：
+&lt;ul&gt;
+&lt;li&gt;安装 &lt;a class=&#34;link&#34; href=&#34;https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Git&lt;/a&gt; 并 注册 &lt;a class=&#34;link&#34; href=&#34;https://github.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Github&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;参考：&lt;a class=&#34;link&#34; href=&#34;https://www.freecodecamp.org/chinese/news/git-and-github-the-basics/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;基本使用&lt;/a&gt;、&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/a2360051431/article/details/130836633?ops_request_misc=%257B%2522request%255Fid%2522%253A%25225eda2bf3c575eacc775e07b3227b3748%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;amp;request_id=5eda2bf3c575eacc775e07b3227b3748&amp;amp;biz_id=0&amp;amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-1-130836633-null-null.142%5ev102%5epc_search_result_base1&amp;amp;utm_term=git%20github&amp;amp;spm=1018.2226.3001.4187&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;详细教程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;注意：经常打不开Github、可以用修改 &lt;code&gt;host&lt;/code&gt;文件方法
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;Win+R&lt;/code&gt;输入 &lt;code&gt;cmd&lt;/code&gt;  回车，在命令行中输入 &lt;code&gt;ping github.com&lt;/code&gt;,记住这个IP地址
+&lt;img src=&#34;https://cdn.jsdelivr.net/gh/limlx233/images@main/202507131858206.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20250713185822159&#34;
+	
+	
+&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;C:\Windows\System32\drivers\etc&lt;/code&gt;这个路径下打开 &lt;code&gt;host&lt;/code&gt; 文件，添加行 &lt;code&gt;20.205.243.166 github.com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;保存 &lt;code&gt;host&lt;/code&gt; 文件后，在打开的命令行输入 &lt;code&gt;ipconfig /flushdns&lt;/code&gt;即可&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;博客搭建&#34;&gt;博客搭建
+&lt;/h2&gt;&lt;h3 id=&#34;hugo安装及配置&#34;&gt;Hugo安装及配置
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;建站框架：&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Hugo官网&lt;/a&gt; 基于go语言的静态网页生成器&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;注意要安装&lt;strong&gt;拓展版&lt;/strong&gt;，文件名称含 &lt;code&gt;extended&lt;/code&gt; ，&lt;a class=&#34;link&#34; href=&#34;https://github.com/gohugoio/hugo/tags&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Github下载地址&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;主题下载：&lt;a class=&#34;link&#34; href=&#34;https://themes.gohugo.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Hugo官方主题&lt;/a&gt;中
+当时一眼相中了 &lt;a class=&#34;link&#34; href=&#34;https://themes.gohugo.io/themes/hugo-theme-stack/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Hugo Stack主题&lt;/a&gt;，注意选不同主题后续美化和配置会有差异，相关主题也会有对应文档 &lt;a class=&#34;link&#34; href=&#34;https://stack.jimmycai.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Stack主题官网&lt;/a&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;最开始参考 了&lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV1bovfeaEtQ/?spm_id_from=333.337.search-card.all.click&amp;amp;vd_source=159511cf2bc7cb24f132125b07aae132&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;B站教学视频&lt;/a&gt;，博客搭建和Stack的主题配置，但是部署个人并不太推荐使用GithubPages，国内访问不太稳定，有时看其他人用这个方法搭建的博客网站会无法访问，属于是能用但不好用的水平。本站是使用 &lt;a class=&#34;link&#34; href=&#34;https://vercel.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Vercel&lt;/a&gt; 进行托管部署(注册的时候使用Github账号授权后续导入仓库更方便)，与视频中一样可以用 &lt;code&gt;public&lt;/code&gt;文件夹所在的 Reposity  进行静态页面的部署，而且如果希望在博客中增加评论功能也可以用 &lt;a class=&#34;link&#34; href=&#34;https://waline.js.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Waline&lt;/a&gt;+&lt;u&gt;Vercel&lt;/u&gt;实现，所以推荐使用 &lt;code&gt;Vercel&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;几个Hugo的常用命令（&lt;code&gt;[]&lt;/code&gt;及其包含部分可自行替换）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;查看安装版本： &lt;code&gt;hugo version&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;生成项目基础结构 ：&lt;code&gt;hugo new site [项目名称]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;启动服务器：&lt;code&gt;hugo server&lt;/code&gt; 常用的是 &lt;code&gt;hugo server -D # -D：包含草稿状态的内容&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;创建新的内容界面：&lt;code&gt;hugo new posts/[文件名]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;hugo部署&#34;&gt;Hugo部署
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;参考上方&lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV1bovfeaEtQ/?spm_id_from=333.337.search-card.all.click&amp;amp;vd_source=159511cf2bc7cb24f132125b07aae132&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;B站教学视频&lt;/a&gt;&lt;code&gt;中将Public&lt;/code&gt;文件夹提交至仓库后，进入 &lt;code&gt;Vercel&lt;/code&gt;创建新项目，导入这个仓库，点击 Deploy 即可，这种方法简洁，另外需要将全部项目工程进行部署的参考 &lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV1c84y1W7ac?spm_id_from=333.788.videopod.sections&amp;amp;vd_source=159511cf2bc7cb24f132125b07aae132&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;这个视频&lt;/a&gt;，包含了仅上传&lt;code&gt;Public&lt;/code&gt;文件夹和上传全部项目的两种方法。
+&lt;ul&gt;
+&lt;li&gt;需要在不同设备编写博客可以将全部项目放入 Github 仓库，进行版本控制和内容同步，注意添加 &lt;code&gt;.gitignored&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;博客编写&#34;&gt;博客编写
+&lt;/h2&gt;&lt;h3 id=&#34;编辑器及图床&#34;&gt;编辑器及图床
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;当然是用 &lt;a class=&#34;link&#34; href=&#34;https://typoraio.cn/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Typora&lt;/a&gt; 写文章了，简洁好用。如果有白嫖党可以看看万能的某宝，或者各种论坛找个方案。觉得好用且工作有收入的可以支持下，毕竟好用不贵。&lt;/li&gt;
+&lt;li&gt;图床用的是 PicGo+Github ，&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/489236769&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;详细教程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/weixin_46025371/article/details/111105266?ops_request_misc=&amp;amp;request_id=&amp;amp;biz_id=102&amp;amp;utm_term=typora%20picgo&amp;amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-5-111105266.142%5ev102%5epc_search_result_base1&amp;amp;spm=1018.2226.3001.4187&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Typora配置PicGO及常见问题&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;博客上传&#34;&gt;博客上传
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;可以参考&lt;a class=&#34;link&#34; href=&#34;http://comments.penna.homes/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;这篇文章&lt;/a&gt;，这位博主用的是 &lt;code&gt;MarkText&lt;/code&gt;编辑器，都是大同小异，
+&lt;ul&gt;
+&lt;li&gt;另外这篇文章中还提供了&lt;code&gt;.bat&lt;/code&gt;脚本 一键push代码&lt;/li&gt;
+&lt;li&gt;或者也可以使用 &lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/Shids_/article/details/112250700?ops_request_misc=&amp;amp;request_id=&amp;amp;biz_id=102&amp;amp;utm_term=vscode%20%E8%BF%9B%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8F%90%E4%BA%A4&amp;amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-0-112250700.142%5ev102%5epc_search_result_base1&amp;amp;spm=1018.2226.3001.4187&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Vscode进行代码的提交&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以上其实博客基本功能可以实现了，下面还有评论系统和主题美化相关内容&lt;/p&gt;
+&lt;h2 id=&#34;博客评论区&#34;&gt;博客评论区
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;文章开头提到的  &lt;a class=&#34;link&#34; href=&#34;https://waline.js.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Waline&lt;/a&gt;+&lt;u&gt;Vercel&lt;/u&gt;实现，参考 &lt;a class=&#34;link&#34; href=&#34;https://imayx.top/waline/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;文章&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;域名配置&#34;&gt;域名配置
+&lt;/h2&gt;&lt;p&gt;既然都选择自己折腾搭建博客，顺便搞个自己域名吧，&lt;code&gt;Vercel&lt;/code&gt;上部署之后在设置中可以配置域名，阿里云上一般的域名不到10块钱一年。&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/weixin_43288858/article/details/118437535?ops_request_misc=%257B%2522request%255Fid%2522%253A%25220050460ff385ef145c06ab5fa7cd6d45%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;amp;request_id=0050460ff385ef145c06ab5fa7cd6d45&amp;amp;biz_id=0&amp;amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-118437535-null-null.142%5ev102%5epc_search_result_base1&amp;amp;utm_term=%E9%98%BF%E9%87%8C%E4%BA%91%E5%9F%9F%E5%90%8D%E7%94%B3%E8%AF%B7&amp;amp;spm=1018.2226.3001.4187&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;域名申请&lt;/a&gt;这篇文章看到申请即可，申请之后要 &lt;a class=&#34;link&#34; href=&#34;https://help.aliyun.com/zh/dns/configure-a-subdomain&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;创建子域名&lt;/a&gt;，在 &lt;code&gt;Vercel&lt;/code&gt;中设置域名注意要把相应的值填到阿里云控制台子域名&lt;code&gt;CNAME&lt;/code&gt;的值的位置。
+&lt;img src=&#34;https://cdn.jsdelivr.net/gh/limlx233/images@main/202507131948769.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20250713194855671&#34;
 	
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;建站思路&#34;&gt;建站思路
-&lt;/h2&gt;&lt;p&gt;思路大纲，软件下载及准备，域名购买&lt;/p&gt;
-&lt;h3 id=&#34;git--github&#34;&gt;Git + Github
-&lt;/h3&gt;&lt;h3 id=&#34;git&#34;&gt;git
-&lt;/h3&gt;&lt;p&gt;使用git提交代码至 github仓库，进行代码的管理&lt;/p&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://localhost:1313/p/test-post/&#34; &gt;Git的安装与下载&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&#34;github&#34;&gt;github
-&lt;/h3&gt;&lt;h2 id=&#34;vercel部署-hugo-项目&#34;&gt;Vercel部署 Hugo 项目
-&lt;/h2&gt;&lt;p&gt;也有直接使用githubpages的方法但是不推荐&lt;/p&gt;
 </description>
         </item>
         <item>

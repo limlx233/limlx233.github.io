@@ -13,7 +13,7 @@
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
         <guid>http://localhost:1313/categories/python/</guid>
-        <description>&lt;img src="http://localhost:1313/categories/python/python.png" alt="Featured image of post Python" /&gt;</description>
+        <description></description>
         </item>
         <item>
         <title>MySQL</title>
@@ -21,7 +21,7 @@
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
         <guid>http://localhost:1313/categories/mysql/</guid>
-        <description>&lt;img src="http://localhost:1313/categories/mysql/MySQL.png" alt="Featured image of post MySQL" /&gt;</description>
+        <description></description>
         </item>
         <item>
         <title>Excel</title>
@@ -29,7 +29,7 @@
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
         <guid>http://localhost:1313/categories/excel/</guid>
-        <description>&lt;img src="http://localhost:1313/categories/excel/Excel.png" alt="Featured image of post Excel" /&gt;</description>
+        <description></description>
         </item>
         <item>
         <title>Hugo</title>
@@ -40,19 +40,19 @@
         <description></description>
         </item>
         <item>
-        <title>Netlify</title>
-        <link>http://localhost:1313/categories/netlify/</link>
-        <pubDate>Sun, 13 Jul 2025 00:35:01 +0800</pubDate>
-        
-        <guid>http://localhost:1313/categories/netlify/</guid>
-        <description></description>
-        </item>
-        <item>
         <title>Stack</title>
         <link>http://localhost:1313/categories/stack/</link>
         <pubDate>Sun, 13 Jul 2025 00:35:01 +0800</pubDate>
         
         <guid>http://localhost:1313/categories/stack/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Vercel</title>
+        <link>http://localhost:1313/categories/vercel/</link>
+        <pubDate>Sun, 13 Jul 2025 00:35:01 +0800</pubDate>
+        
+        <guid>http://localhost:1313/categories/vercel/</guid>
         <description></description>
         </item>
         
