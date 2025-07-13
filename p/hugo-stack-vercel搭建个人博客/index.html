@@ -320,6 +320,10 @@
                 Vercel
             </a>
         
+            <a href="/categories/waline/" >
+                Waline
+            </a>
+        
     </header>
     
 
@@ -426,7 +430,7 @@
 <p>最开始参考 了<a class="link" href="https://www.bilibili.com/video/BV1bovfeaEtQ/?spm_id_from=333.337.search-card.all.click&amp;vd_source=159511cf2bc7cb24f132125b07aae132"  target="_blank" rel="noopener"
     >B站教学视频</a>，博客搭建和Stack的主题配置，但是部署个人并不太推荐使用GithubPages，国内访问不太稳定，有时看其他人用这个方法搭建的博客网站会无法访问，属于是能用但不好用的水平。本站是使用 <a class="link" href="https://vercel.com/"  target="_blank" rel="noopener"
     >Vercel</a> 进行托管部署(注册的时候使用Github账号授权后续导入仓库更方便)，与视频中一样可以用 <code>public</code>文件夹所在的 Reposity  进行静态页面的部署，而且如果希望在博客中增加评论功能也可以用 <a class="link" href="https://waline.js.org/"  target="_blank" rel="noopener"
-    >Waline</a>+<u>Vercel</u>实现，所以推荐使用 <code>Vercel</code></p>
+    >Waline</a>+<code>&lt;u&gt;</code>Vercel<code>&lt;/u&gt;</code>实现，所以推荐使用 <code>Vercel</code></p>
 </li>
 <li>
 <p>几个Hugo的常用命令（<code>[]</code>及其包含部分可自行替换）：</p>
@@ -441,8 +445,8 @@
 <h3 id="hugo部署">Hugo部署
 </h3><ul>
 <li>参考上方<a class="link" href="https://www.bilibili.com/video/BV1bovfeaEtQ/?spm_id_from=333.337.search-card.all.click&amp;vd_source=159511cf2bc7cb24f132125b07aae132"  target="_blank" rel="noopener"
-    >B站教学视频</a><code>中将Public</code>文件夹提交至仓库后，进入 <code>Vercel</code>创建新项目，导入这个仓库，点击 Deploy 即可，这种方法简洁，另外需要将全部项目工程进行部署的参考 <a class="link" href="https://www.bilibili.com/video/BV1c84y1W7ac?spm_id_from=333.788.videopod.sections&amp;vd_source=159511cf2bc7cb24f132125b07aae132"  target="_blank" rel="noopener"
-    >这个视频</a>，包含了仅上传<code>Public</code>文件夹和上传全部项目的两种方法。
+    >B站教学视频</a> <code>中将Public</code>文件夹提交至仓库后，进入 <code>Vercel</code>创建新项目，导入这个仓库，点击 Deploy 即可，这种方法简洁，另外需要将全部项目工程进行部署的参考 <a class="link" href="https://www.bilibili.com/video/BV1c84y1W7ac?spm_id_from=333.788.videopod.sections&amp;vd_source=159511cf2bc7cb24f132125b07aae132"  target="_blank" rel="noopener"
+    >这个视频</a>，包含了仅上传 <code>Public</code>文件夹和上传全部项目的两种方法。
 <ul>
 <li>需要在不同设备编写博客可以将全部项目放入 Github 仓库，进行版本控制和内容同步，注意添加 <code>.gitignored</code></li>
 </ul>
@@ -463,7 +467,7 @@
 <li>可以参考<a class="link" href="http://comments.penna.homes/"  target="_blank" rel="noopener"
     >这篇文章</a>，这位博主用的是 <code>MarkText</code>编辑器，都是大同小异，
 <ul>
-<li>另外这篇文章中还提供了<code>.bat</code>脚本 一键push代码</li>
+<li>另外这篇文章中还提供了 <code>.bat</code>脚本 一键push代码</li>
 <li>或者也可以使用 <a class="link" href="https://blog.csdn.net/Shids_/article/details/112250700?ops_request_misc=&amp;request_id=&amp;biz_id=102&amp;utm_term=vscode%20%E8%BF%9B%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8F%90%E4%BA%A4&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-0-112250700.142%5ev102%5epc_search_result_base1&amp;spm=1018.2226.3001.4187"  target="_blank" rel="noopener"
     >Vscode进行代码的提交</a></li>
 </ul>
@@ -473,13 +477,13 @@
 <h2 id="博客评论区">博客评论区
 </h2><ul>
 <li>文章开头提到的  <a class="link" href="https://waline.js.org/"  target="_blank" rel="noopener"
-    >Waline</a>+<u>Vercel</u>实现，参考 <a class="link" href="https://imayx.top/waline/"  target="_blank" rel="noopener"
+    >Waline</a>+<code>&lt;u&gt;</code>Vercel<code>&lt;/u&gt;</code>实现，参考 <a class="link" href="https://imayx.top/waline/"  target="_blank" rel="noopener"
     >文章</a></li>
 </ul>
 <h2 id="域名配置">域名配置
 </h2><p>既然都选择自己折腾搭建博客，顺便搞个自己域名吧，<code>Vercel</code>上部署之后在设置中可以配置域名，阿里云上一般的域名不到10块钱一年。<a class="link" href="https://blog.csdn.net/weixin_43288858/article/details/118437535?ops_request_misc=%257B%2522request%255Fid%2522%253A%25220050460ff385ef145c06ab5fa7cd6d45%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=0050460ff385ef145c06ab5fa7cd6d45&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-118437535-null-null.142%5ev102%5epc_search_result_base1&amp;utm_term=%E9%98%BF%E9%87%8C%E4%BA%91%E5%9F%9F%E5%90%8D%E7%94%B3%E8%AF%B7&amp;spm=1018.2226.3001.4187"  target="_blank" rel="noopener"
     >域名申请</a>这篇文章看到申请即可，申请之后要 <a class="link" href="https://help.aliyun.com/zh/dns/configure-a-subdomain"  target="_blank" rel="noopener"
-    >创建子域名</a>，在 <code>Vercel</code>中设置域名注意要把相应的值填到阿里云控制台子域名<code>CNAME</code>的值的位置。
+    >创建子域名</a>，在 <code>Vercel</code>中设置域名注意要把相应的值填到阿里云控制台子域名 <code>CNAME</code>的值的位置。
 <img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507131948769.png"
 	
 	

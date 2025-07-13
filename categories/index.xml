@@ -55,6 +55,14 @@
         <guid>http://localhost:1313/categories/vercel/</guid>
         <description></description>
         </item>
+        <item>
+        <title>Waline</title>
+        <link>http://localhost:1313/categories/waline/</link>
+        <pubDate>Sun, 13 Jul 2025 00:35:01 +0800</pubDate>
+        
+        <guid>http://localhost:1313/categories/waline/</guid>
+        <description></description>
+        </item>
         
     </channel>
 </rss>
