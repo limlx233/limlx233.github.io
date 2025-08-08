@@ -70,7 +70,7 @@
         
         <div class="site-meta">
             <h1 class="site-name"><a href="/">Penna_a</a></h1>
-            <h2 class="site-description">记录--所学所见所想</h2>
+            <h2 class="site-description">一份数字存档</h2>
         </div>
     </header><ol class="menu-social">
             
@@ -384,8 +384,20 @@
         
         2025 Penna_a
     </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
     
-    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
 </footer>
 
 

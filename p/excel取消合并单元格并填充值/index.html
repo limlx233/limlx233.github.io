@@ -72,7 +72,7 @@
         
         <div class="site-meta">
             <h1 class="site-name"><a href="/">Penna_a</a></h1>
-            <h2 class="site-description">记录--所学所见所想</h2>
+            <h2 class="site-description">一份数字存档</h2>
         </div>
     </header><ol class="menu-social">
             
@@ -332,7 +332,22 @@
         
 
         
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/excel%E5%8F%96%E6%B6%88%E5%90%88%E5%B9%B6%E5%8D%95%E5%85%83%E6%A0%BC%E5%B9%B6%E5%A1%AB%E5%85%85%E5%80%BC/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/excel%E5%8F%96%E6%B6%88%E5%90%88%E5%B9%B6%E5%8D%95%E5%85%83%E6%A0%BC%E5%B9%B6%E5%A1%AB%E5%85%85%E5%80%BC/">0</span> 条评论
+            </time>
+        </div>
     </footer>
+
     
 
     
@@ -399,7 +414,7 @@
     }
 </style><script>
     
-    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Admin","placeholder":"欢迎交流，在这儿可以留下评论~"},"requiredMeta":["name","email","url"],"serverURL":"https://comments.penna.homes"});
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
 </script>
 
     
@@ -410,8 +425,20 @@
         
         2025 Penna_a
     </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
     
-    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
 </footer>
 
 
