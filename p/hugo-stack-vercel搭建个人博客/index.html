@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言 闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。 搭建前准备： 安装 Git 并 注册 Github 参考：基本使用、详细教程 注意：经常打不开Github、可以用修改 host文件方法 Win+R输入 cmd 回车，在命令行中输入 ping github.com,记住这个IP地址 C:\\Windows\\System32\\drivers\\etc这个路径下打开 host 文件，添加行 20.205.243.166 github.com 保存 host 文件后，在打开的命令行输入 ipconfig /flushdns即可 博客搭建 Hugo安装及配置 建站框架：Hugo官网 基于go语言的静态网页生成器\n">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言\r闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。 搭建前准备： 安装 Git 并 注册 Github 参考：基本使用、详细教程 注意：经常打不开Github、可以用修改 host文件方法 Win+R输入 cmd 回车，在命令行中输入 ping github.com,记住这个IP地址 C:\\Windows\\System32\\drivers\\etc这个路径下打开 host 文件，添加行 20.205.243.166 github.com 保存 host 文件后，在打开的命令行输入 ipconfig /flushdns即可 博客搭建\rHugo安装及配置\r建站框架：Hugo官网 基于go语言的静态网页生成器\n">
 <title>Hugo&#43;Stack&#43;Vercel搭建个人博客</title>
 
 <link rel='canonical' href='http://localhost:1313/p/hugo-stack-vercel%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/'>
 
-<link rel="stylesheet" href="/scss/style.min.e47845efdf201e9ad59b2ca9789760c9ef5c7593900565acc1765aea3f3b2641.css"><meta property='og:title' content="Hugo+Stack+Vercel搭建个人博客">
-<meta property='og:description' content="前言 闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。 搭建前准备： 安装 Git 并 注册 Github 参考：基本使用、详细教程 注意：经常打不开Github、可以用修改 host文件方法 Win+R输入 cmd 回车，在命令行中输入 ping github.com,记住这个IP地址 C:\\Windows\\System32\\drivers\\etc这个路径下打开 host 文件，添加行 20.205.243.166 github.com 保存 host 文件后，在打开的命令行输入 ipconfig /flushdns即可 博客搭建 Hugo安装及配置 建站框架：Hugo官网 基于go语言的静态网页生成器\n">
+<link rel="stylesheet" href="/scss/style.min.7820e876dbc7ea10736c6daf3c722162116c2fc460243b852e139a76c7158b85.css"><meta property='og:title' content="Hugo+Stack+Vercel搭建个人博客">
+<meta property='og:description' content="前言\r闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。 搭建前准备： 安装 Git 并 注册 Github 参考：基本使用、详细教程 注意：经常打不开Github、可以用修改 host文件方法 Win+R输入 cmd 回车，在命令行中输入 ping github.com,记住这个IP地址 C:\\Windows\\System32\\drivers\\etc这个路径下打开 host 文件，添加行 20.205.243.166 github.com 保存 host 文件后，在打开的命令行输入 ipconfig /flushdns即可 博客搭建\rHugo安装及配置\r建站框架：Hugo官网 基于go语言的静态网页生成器\n">
 <meta property='og:url' content='http://localhost:1313/p/hugo-stack-vercel%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/'>
 <meta property='og:site_name' content='Penna_a'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-07-13T00:35:01&#43;08:00'/><meta property='article:modified_time' content='2025-07-13T00:35:01&#43;08:00'/>
 <meta name="twitter:title" content="Hugo+Stack+Vercel搭建个人博客">
-<meta name="twitter:description" content="前言 闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。 搭建前准备： 安装 Git 并 注册 Github 参考：基本使用、详细教程 注意：经常打不开Github、可以用修改 host文件方法 Win+R输入 cmd 回车，在命令行中输入 ping github.com,记住这个IP地址 C:\\Windows\\System32\\drivers\\etc这个路径下打开 host 文件，添加行 20.205.243.166 github.com 保存 host 文件后，在打开的命令行输入 ipconfig /flushdns即可 博客搭建 Hugo安装及配置 建站框架：Hugo官网 基于go语言的静态网页生成器\n">
+<meta name="twitter:description" content="前言\r闲言碎语：首先很早之前就想拥有一个自己的博客，加上近期感觉很多日常在用的、在学的容易遗忘，还是得抽时间梳理归档下。于是就时间倒腾了个自己的博客，然后再慢慢研究美化并更新。从0开始搭建，这期间也在网上查了很多资料，受益良多，相关链接也会放到这篇博客中，点击即可跳转学习，很多大佬已经写过的详非常细的教程，所以在此篇中就不多做赘述。 搭建前准备： 安装 Git 并 注册 Github 参考：基本使用、详细教程 注意：经常打不开Github、可以用修改 host文件方法 Win+R输入 cmd 回车，在命令行中输入 ping github.com,记住这个IP地址 C:\\Windows\\System32\\drivers\\etc这个路径下打开 host 文件，添加行 20.205.243.166 github.com 保存 host 文件后，在打开的命令行输入 ipconfig /flushdns即可 博客搭建\rHugo安装及配置\r建站框架：Hugo官网 基于go语言的静态网页生成器\n">
     <link rel="shortcut icon" href="/pen.svg" />
 
     </head>
@@ -657,7 +657,7 @@
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
                 
                 >
-            </script><script type="text/javascript" src="/ts/main.fed6c5aa91159d8b8d425f1ca63e93896172c110e1dcbb6e99146c23118c4b40.js" defer></script>
+            </script><script type="text/javascript" src="/ts/main.c6fe88e6ec6026d8555f6ae0f3f14c4769ccc9c31a17574a367ae3f8babf08c9.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');
