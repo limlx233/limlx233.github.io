@@ -7,7 +7,1702 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Penna_a</copyright>
-        <lastBuildDate>Thu, 31 Jul 2025 00:35:01 +1730</lastBuildDate><atom:link href="http://localhost:1313/categories/mysql/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 15 Aug 2025 00:35:01 +1730</lastBuildDate><atom:link href="http://localhost:1313/categories/mysql/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>MySQL|01-安装</title>
+        <link>http://localhost:1313/p/mysql01-%E5%AE%89%E8%A3%85/</link>
+        <pubDate>Fri, 15 Aug 2025 00:35:01 +1730</pubDate>
+        
+        <guid>http://localhost:1313/p/mysql01-%E5%AE%89%E8%A3%85/</guid>
+        <description>&lt;p&gt;目标&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安装MySQL服务器和客户端程序&lt;/li&gt;
+&lt;li&gt;认识安装过程中的文件和文件夹&lt;/li&gt;
+&lt;li&gt;执行 MySQLserver 的初始化操作&lt;/li&gt;
+&lt;li&gt;启动和停止MySQL&lt;/li&gt;
+&lt;li&gt;升级到MySQL 8.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;安装mysql&#34;&gt;安装MySQL
+&lt;/h2&gt;&lt;h3 id=&#34;安装步骤&#34;&gt;安装步骤
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;确定你的平台是否受支持。
+&lt;ul&gt;
+&lt;li&gt;查看：https://www.mysql.com/support/supportedplatforms/database.html&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;选择一种发布版本。
+&lt;ul&gt;
+&lt;li&gt;预打包的二进制文件
+&lt;ul&gt;
+&lt;li&gt;原生格式，例如，适用于 Linux 的 RPM 包、适用于 OS X 的 PKG 包、适用于 Windows 的 MySQL 安装程序&lt;/li&gt;
+&lt;li&gt;通用格式，例如，ZIP 归档文件或压缩的 tar 文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;源代码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;下载该发布版本。&lt;/li&gt;
+&lt;li&gt;安装该发布版本。&lt;/li&gt;
+&lt;li&gt;执行任何所需的安装后配置。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;一般来说，应选择二进制发布版本。只有你想查看非常新的功能并测试新代码时，才选择源代码发布版本。&lt;/p&gt;
+&lt;h4 id=&#34;从下载的软件包安装-mysqlinstalling-mysql-from-downloaded-packages&#34;&gt;从下载的软件包安装 MySQL（Installing MySQL from Downloaded Packages）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;下载 MySQL Linux 软件包后，使用以下命令进行安装：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在 RPM 系统上：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;rpm -ivh packagename.rpm
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 APT 系统上：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;dpkg -i packagename.deb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装软件包时，必须识别并解决依赖关系。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安装 MySQL 软件包前，先安装所有依赖项。
+&lt;ul&gt;
+&lt;li&gt;例如，MySQL 依赖于 &lt;code&gt;libaio&lt;/code&gt; 库。若未安装该库，数据目录初始化及后续服务器启动步骤会失败。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;按正确顺序安装 MySQL 软件包。
+&lt;ul&gt;
+&lt;li&gt;例如，安装 &lt;code&gt;client&lt;/code&gt; 或 &lt;code&gt;server&lt;/code&gt; 软件包前，先安装 &lt;code&gt;libs&lt;/code&gt; 软件包。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;安装依赖项installing-dependencies&#34;&gt;安装依赖项（Installing Dependencies）
+&lt;/h5&gt;&lt;p&gt;在可通过网络访问软件仓库或连接了文件系统的 RPM 机器上，你可以使用包管理器解决依赖问题。&lt;/p&gt;
+&lt;p&gt;如果你在无法访问软件仓库的机器上安装，必须手动解决安装 MySQL 软件包时发现的所有未满足的依赖项。为此，你需要搜索与你所安装的 Linux 系统适配的软件仓库，找到包含相关软件包的 RPM 或 DEB 文件。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：如需了解关于使用包管理器的信息，请参阅本课程后续的 “使用包管理器安装 MySQL（Installing MySQL by Using a Package Manager）” 部分。&lt;/p&gt;
+&lt;h3 id=&#34;linux-的-mysql-rpm-安装文件&#34;&gt;Linux 的 MySQL RPM 安装文件
+&lt;/h3&gt;&lt;h4 id=&#34;可用的-rpm-包available-rpms&#34;&gt;可用的 RPM 包（Available RPMs）
+&lt;/h4&gt;&lt;p&gt;Oracle 提供两种类型的 MySQL RPM 包：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;独立于发行版（Distribution-independent）&lt;/strong&gt;：应能在所有支持 RPM 包且使用 glibc 2.12 的 Linux 版本上运行。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特定于发行版（Distribution-specific）&lt;/strong&gt;：针对特定的 Linux 平台，例如 Oracle Linux 7。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;MySQL 的 RPM 安装通常会拆分为不同的软件包。你可以单独下载这些软件包，也可以将它们打包成一个归档文件下载。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Server&lt;/strong&gt;：数据库服务器及相关工具&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Common&lt;/strong&gt;：服务器和客户端库的通用文件&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Client&lt;/strong&gt;：MySQL 客户端应用程序和工具&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Devel&lt;/strong&gt;：用于 MySQL 数据库客户端应用程序的开发头文件和库&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Embedded-compat&lt;/strong&gt;：作为嵌入式库的 MySQL 服务器，与使用版本 18 库的应用程序兼容&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Libs&lt;/strong&gt;：MySQL 数据库客户端应用程序的共享库&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Libs-compat&lt;/strong&gt;：用于早期 MySQL 安装的共享兼容库&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Test&lt;/strong&gt;：MySQL 服务器的测试套件&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Router&lt;/strong&gt;：在 InnoDB 集群中提供透明路由的轻量级中间件&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Backup&lt;/strong&gt;：MySQL 企业级备份（仅商业版本）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;对于标准安装，必须至少安装 &lt;code&gt;common&lt;/code&gt;、&lt;code&gt;server&lt;/code&gt; 和 &lt;code&gt;client&lt;/code&gt; 软件包&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;mysql-rpm-安装流程mysql-rpm-installation-process&#34;&gt;MySQL RPM 安装流程（MySQL RPM Installation Process）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;RPM 安装会执行以下任务：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将 RPM 文件提取到其默认位置。&lt;/li&gt;
+&lt;li&gt;注册 SysV 初始化脚本或 systemd 启动脚本。&lt;/li&gt;
+&lt;li&gt;在操作系统中创建&lt;code&gt;mysql&lt;/code&gt;用户和用户组。
+&lt;ul&gt;
+&lt;li&gt;MySQL 服务器进程以 &lt;code&gt;mysql&lt;/code&gt; 用户身份运行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;首次使用&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;service start mysqld
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;或&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;systemctl start mysqld
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;启动服务时，MySQL 会：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;创建数据目录和默认的&lt;code&gt;my.cnf&lt;/code&gt;文件。
+&lt;ul&gt;
+&lt;li&gt;这些文件归 &lt;code&gt;mysql&lt;/code&gt; 用户和用户组所有。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;创建默认的 &lt;code&gt;root@localhost&lt;/code&gt; 账户。&lt;/li&gt;
+&lt;li&gt;为&lt;code&gt;root&lt;/code&gt;账户设置随机临时密码，并将该密码写入错误日志文件（&lt;code&gt;/var/log/mysqld.log&lt;/code&gt;）。
+&lt;ul&gt;
+&lt;li&gt;使用 MySQL 前，必须修改该密码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;mysql-文件位置mysql-file-locations&#34;&gt;MySQL 文件位置（MySQL File Locations）
+&lt;/h5&gt;&lt;p&gt;RPM 安装程序会将 &lt;code&gt;basedir&lt;/code&gt;（基础目录 ）设置为 &lt;code&gt;/usr&lt;/code&gt;，且未提供将 MySQL 安装到文件系统其他位置的选项。如果你想在同一系统上安装多个版本的 MySQL，这可能会引发问题。&lt;/p&gt;
+&lt;p&gt;若要安装到其他位置，请使用通用二进制包。注意，RPM 安装程序还会设置 &lt;code&gt;mysql&lt;/code&gt; 用户和用户组、Linux 服务及其他配置，而这些在通过通用二进制包安装时必须手动完成。&lt;/p&gt;
+&lt;h5 id=&#34;oracle-rpm-与非-oracle-rpmoracle-rpms-and-non-oracle-rpms&#34;&gt;Oracle RPM 与非 Oracle RPM（Oracle RPMs and Non-Oracle RPMs）
+&lt;/h5&gt;&lt;p&gt;一些 Linux 发行版会提供它们自己构建的 MySQL RPM 包。本幻灯片中的步骤反映的是 Oracle RPM 包的安装流程。由于这种行为是内置于 RPM 包的，其他发行版的安装流程可能会有所不同。&lt;/p&gt;
+&lt;h5 id=&#34;启动-mysql-服务starting-the-mysql-service&#34;&gt;启动 MySQL 服务（Starting the MySQL Service）
+&lt;/h5&gt;&lt;p&gt;MySQL 服务不会自动启动。在使用 MySQL 前，你必须自行启动服务：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;service mysqld start&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;在运行 systemd 的 Linux 发行版上，使用 &lt;code&gt;systemctl start mysqld&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在运行 systemd 的 Linux 版本中，&lt;code&gt;service&lt;/code&gt; 命令会映射到等效的 &lt;code&gt;systemctl&lt;/code&gt; 命令&lt;/p&gt;
+&lt;h4 id=&#34;mysql-deb-安装mysql-deb-installation&#34;&gt;MySQL DEB 安装（MySQL DEB Installation）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;DEB 软件包适用于 APT Linux 系统，可单独下载或打包下载。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;若要进行标准安装，请按指定顺序安装以下软件包。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;数据库通用文件包&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;客户端包&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;客户端元包&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;服务器包&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;服务器元包&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo dpkg -i mysql-&lt;span class=&#34;o&#34;&gt;({&lt;/span&gt;common,community-client,client,community-server,server&lt;span class=&#34;o&#34;&gt;})&lt;/span&gt;_*.deb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装服务器包时，&lt;code&gt;dpkg&lt;/code&gt;会提供一个配置界面：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;为 &lt;code&gt;root&lt;/code&gt; 账户选择密码。&lt;/li&gt;
+&lt;li&gt;指明是否要安装测试数据库。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;deb-安装前步骤deb-pre-installation-step&#34;&gt;DEB 安装前步骤（DEB Pre-installation Step）
+&lt;/h5&gt;&lt;p&gt;MySQL 8.0 不允许在服务器初始化后修改 &lt;code&gt;lower_case_table_names&lt;/code&gt; 变量。DEB 安装会在安装过程中自动初始化 MySQL 服务器。如果你想启用 &lt;code&gt;lower_case_table_names&lt;/code&gt; 设置，需要在开始安装前使用 &lt;code&gt;debconf-set-selection&lt;/code&gt; 工具配置该选项。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;shell&amp;gt; sudo debconf-set-selections &lt;span class=&#34;o&#34;&gt;&amp;lt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;mysql-server mysql-server/lowercase-table-names select Enabled&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h5 id=&#34;deb-与-rpm-软件包差异deb-and-rpm-package-differences&#34;&gt;DEB 与 RPM 软件包：差异（DEB and RPM Package: Differences）
+&lt;/h5&gt;&lt;p&gt;DEB 软件包的组件组织方式与 RPM 软件包类似。差异包括以下几点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;没有 DEB 源码包。你可以直接通过 &lt;code&gt;.tar.gz&lt;/code&gt; 文件获取源代码。&lt;/li&gt;
+&lt;li&gt;没有等效的 &lt;code&gt;libs-compat&lt;/code&gt; 包。该包的用途特定于基于 RPM 的发行版。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dpkg&lt;/code&gt; 安装过程默认是交互式的。安装软件包时，它会显示一个基于 Curses 的界面，用于设置幻灯片中所示的选项。使用 &lt;code&gt;dpkg-preconfigure&lt;/code&gt; 命令在安装前设置这些配置选项时，也会看到该界面，此时安装界面不会显示。如果你将 &lt;code&gt;DEBIAN_FRONTEND&lt;/code&gt; 环境变量设置为 &lt;code&gt;noninteractive&lt;/code&gt;，则不会显示 Curses 界面，且 &lt;code&gt;root&lt;/code&gt; 密码会保持为空。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;特定于-linux-发行版的软件仓库linux-distributionspecific-repositories&#34;&gt;特定于 Linux 发行版的软件仓库（Linux Distribution–Specific Repositories）
+&lt;/h4&gt;&lt;p&gt;许多 Linux 发行版会维护它们自己的软件包仓库。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;托管在网络上或本地文件系统中。&lt;/li&gt;
+&lt;li&gt;可通过包管理器进行访问：
+&lt;ul&gt;
+&lt;li&gt;仓库网址在每台主机的包管理器配置中指定。&lt;/li&gt;
+&lt;li&gt;你也可以手动下载单个软件包。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;包含软件包及其依赖项。&lt;/li&gt;
+&lt;li&gt;可通过额外的软件仓库补充，这些额外仓库包含标准软件包仓库中没有的软件：
+&lt;ul&gt;
+&lt;li&gt;你可以将这些额外的软件仓库添加到每台主机的包管理器配置中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;示例：&lt;code&gt;http://public-yum.oracle.com/&lt;/code&gt; 包含 Oracle Linux 软件包。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;本地软件仓库local-repositories&#34;&gt;本地软件仓库（Local Repositories）
+&lt;/h5&gt;&lt;p&gt;当你从 CD 或 DVD 安装 Linux 时，安装介质可能包含一个精选软件包的仓库，安装程序会在安装过程中使用该仓库。你可以从这样的仓库安装软件包，而无需连接到互联网。&lt;/p&gt;
+&lt;h4 id=&#34;使用包管理器安装-mysqlinstalling-mysql-by-using-a-package-manager&#34;&gt;使用包管理器安装 MySQL（Installing MySQL by Using a Package Manager）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在基于 RPM 的系统（包括 Oracle Linux、Red Hat、Fedora 和 CentOS ）上，使用 &lt;code&gt;yum install&lt;/code&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;示例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;yum install mysql-community-server
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;yum install mysql-workbench
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在基于 APT 的系统（包括 Ubuntu 和 Debian ）上，使用 &lt;code&gt;apt-get install&lt;/code&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;示例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;apt-get install mysql-community-server
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;apt-get install mysql-workbench
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装 &lt;code&gt;mysql-community-server&lt;/code&gt; 软件包时，也会安装服务器所需组件的软件包。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;依赖项dependencies&#34;&gt;依赖项（Dependencies）
+&lt;/h5&gt;&lt;p&gt;如果包管理器能够通过网络或从文件系统访问其软件仓库，它们会自动检测并安装依赖项。例如，&lt;code&gt;mysql-community-server&lt;/code&gt; 软件包依赖于多个其他软件包，包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;mysql-community-client&lt;/code&gt;：客户端软件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mysql-community-common&lt;/code&gt;：供客户端和服务器使用的通用错误消息和字符集&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mysql-community-libs&lt;/code&gt;：共享客户端库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;当你安装 &lt;code&gt;mysql-community-server&lt;/code&gt; 时，如果系统上不存在这些依赖项，包管理器会找到并安装这些软件包及其可能有的依赖项。&lt;/p&gt;
+&lt;h5 id=&#34;软件仓库维护者repository-maintainers&#34;&gt;软件仓库维护者（Repository Maintainers）
+&lt;/h5&gt;&lt;p&gt;在某些发行版中，&lt;code&gt;mysql-server&lt;/code&gt; 是一个虚拟软件包，其本身不包含任何软件，而是将特定版本的 &lt;code&gt;mysql-community-server&lt;/code&gt; 或其他软件作为依赖项。当你安装这样的虚拟软件包时，包管理器会安装其所有依赖项，包括定义版本的 MySQL 软件包。&lt;/p&gt;
+&lt;p&gt;由于此软件包通常由发行版维护者而非 Oracle 维护，它无法反映 MySQL 软件的最新变化。&lt;/p&gt;
+&lt;h5 id=&#34;添加-yum-软件仓库adding-a-yum-repository&#34;&gt;添加 Yum 软件仓库（Adding a Yum Repository）
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;从 &lt;code&gt;http://dev.mysql.com/downloads/repo/yum/&lt;/code&gt; 下载 Yum 软件仓库的 RPM 文件。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;为你的发行版选择正确的 RPM 文件。&lt;/li&gt;
+&lt;li&gt;示例：适用于 Red Hat Enterprise Linux 7 / Oracle Linux 7（架构独立）的 RPM 包名为 &lt;code&gt;mysql80-community-release-el7-3.noarch.rpm&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用 &lt;code&gt;yum localinstall&lt;/code&gt; 命令安装该文件，例如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;yum localinstall mysql80-community-release-el7-3.noarch.rpm
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;上述命令会将 MySQL Yum 软件仓库添加到主机的 Yum 配置中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;启用或禁用特定版本。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MySQL 8.0 默认启用。其他版本默认禁用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;运行 &lt;code&gt;yum install packagename&lt;/code&gt; 从新仓库安装软件包。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;软件仓库配置repository-configuration&#34;&gt;软件仓库配置（Repository Configuration）
+&lt;/h5&gt;&lt;p&gt;安装仓库 RPM 文件时，它会在 &lt;code&gt;/etc/yum.repos.d/&lt;/code&gt; 中创建两个文件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;mysql-community.repo&lt;/code&gt;：包含 MySQL 社区版的仓库元数据。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mysql-community-source.repo&lt;/code&gt;：包含 MySQL 源代码的仓库元数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;默认配置启用 MySQL 最新的通用可用（GA）版本以及 MySQL 工具。之前的 GA 版本会被禁用，尚未通用可用的开发版本也会被禁用。&lt;/p&gt;
+&lt;h5 id=&#34;配置-yum-仓库版本&#34;&gt;配置 Yum 仓库版本
+&lt;/h5&gt;&lt;p&gt;通过编辑 &lt;code&gt;/etc/yum.repos.d/mysql-community-repo&lt;/code&gt; 文件，启用或禁用特定版本：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;默认情况下，最新的正式发布（GA）版本是启用的。&lt;/li&gt;
+&lt;li&gt;以下摘录显示 MySQL 5.7 仓库处于禁用状态：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# 启用以使用 MySQL 5.7
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;[mysql57-community]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;name=MySQL 5.7 Community Server
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;baseurl=http://repo.mysql.com/yum/mysql-5.7-community/el/7/\$basearch/
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;enabled=0
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpgcheck=1
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;将 &lt;code&gt;enabled&lt;/code&gt; 的值改为 &lt;code&gt;enabled=1&lt;/code&gt;，以启用 mysql57-community 仓库。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;要启用 MySQL 5.7 仓库，修改 &lt;code&gt;enabled&lt;/code&gt; 设置的值，使其为 &lt;code&gt;enabled=1&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;使用相同的方法启用开发版本。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;从仓库安装-mysql&#34;&gt;从仓库安装 MySQL
+&lt;/h5&gt;&lt;p&gt;当你安装仓库 RPM 文件时，&lt;code&gt;yum install&lt;/code&gt; 命令会自动从最合适的仓库获取软件包。官方 MySQL 仓库通常比发行版自带仓库有更新的版本，因此 &lt;code&gt;yum&lt;/code&gt; 会优先安装官方软件包，因为它们的仓库中有最新版本。&lt;/p&gt;
+&lt;p&gt;类似地，如果你在安装新仓库后执行 &lt;code&gt;yum upgrade&lt;/code&gt; 命令来升级机器上的所有软件包，软件包管理器会自动升级之前从其自带仓库安装的任何旧版本的 MySQL，并将其替换为新的官方版本。&lt;/p&gt;
+&lt;h4 id=&#34;添加-apt-仓库&#34;&gt;添加 APT 仓库
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;从http://dev.mysql.com/downloads/repo/apt/ 下载 APT 仓库的 DEB 文件。
+&lt;ul&gt;
+&lt;li&gt;支持的发行版：
+&lt;ul&gt;
+&lt;li&gt;Debian 版本 9&lt;/li&gt;
+&lt;li&gt;Ubuntu LTS 版本 16.04、18.04 和 18.10&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;dpkg&lt;/code&gt; 命令安装该文件：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;dpkg -i mysql-apt-config_0.8.12-1_all.deb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;上述命令会将 MySQL APT 仓库添加到主机的 APT 配置中。&lt;/p&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;配置仓库版本。&lt;/li&gt;
+&lt;li&gt;运行 &lt;code&gt;apt-get update&lt;/code&gt; 来刷新仓库元数据。&lt;/li&gt;
+&lt;li&gt;运行 &lt;code&gt;apt-get install packagename&lt;/code&gt; 从新仓库安装软件包。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&#34;仓库配置&#34;&gt;仓库配置
+&lt;/h5&gt;&lt;p&gt;当你安装 &lt;code&gt;mysql-apt-config&lt;/code&gt; 软件包时，&lt;code&gt;dpkg&lt;/code&gt; 会打开一个交互式窗口，你可以从中选择仓库版本。将在后续展示展示。&lt;/p&gt;
+&lt;p&gt;要使用此界面重新配置仓库，你可以重新安装 &lt;code&gt;mysql-apt-config&lt;/code&gt; 软件包，或者使用以下命令重新配置：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;dpkg-reconfigure mysql-apt-config
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211709555.png&#34; alt=&#34;image-20250721170936342&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;h5 id=&#34;dpkg-配置界面&#34;&gt;dpkg 配置界面
+&lt;/h5&gt;&lt;p&gt;该界面的第一页显示了仓库配置中可用的产品：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MySQL 服务器和集群&lt;/li&gt;
+&lt;li&gt;MySQL 工具和连接器&lt;/li&gt;
+&lt;li&gt;MySQL 预览包&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;它还提供了一个 “确定（OK）” 选项，用于保存更改并退出该界面。&lt;/p&gt;
+&lt;h4 id=&#34;手动配置-apt-仓库&#34;&gt;手动配置 APT 仓库
+&lt;/h4&gt;&lt;p&gt;通过编辑 &lt;code&gt;/etc/apt/sources.list.d/mysql.list&lt;/code&gt; 文件，启用或禁用特定仓库：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;执行上一张幻灯片中的步骤后，会得到以下配置：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;### 此文件由以下条目自动配置 ###
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# 你可以修改下面的条目，但其他修改可能会丢失。
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# 以 root 身份使用命令 &amp;#39;dpkg-reconfigure mysql-apt-config&amp;#39; 进行修改。
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-apt-config
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-8.0
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;#deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-tools-preview
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;deb-src http://repo.mysql.com/apt/ubuntu/ bionic mysql-8.0
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;以 &lt;code&gt;#&lt;/code&gt; 符号开头注释的行，表示对应的仓库已禁用 。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;要启用或禁用特定产品仓库，分别取消注释或添加注释其对应的行即可。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如注释所示，如果重新安装或重新配置 &lt;code&gt;mysql-apt-config&lt;/code&gt; 软件包，对 &lt;code&gt;mysql.list&lt;/code&gt; 文件的手动修改不会保留；软件包配置界面会提示你进行想要的配置更改，然后重新写入该文件 。&lt;/p&gt;
+&lt;h3 id=&#34;windows中安装mysql&#34;&gt;Windows中安装MySQL
+&lt;/h3&gt;&lt;h4 id=&#34;在-windows-上安装-mysql&#34;&gt;在 Windows 上安装 MySQL
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MySQL 安装程序&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;以 &lt;code&gt;.msi&lt;/code&gt; 可执行文件形式发布&lt;/li&gt;
+&lt;li&gt;引导你通过配置向导创建运行 MySQL 所需的文件夹和配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;免安装归档包&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;以 &lt;code&gt;.zip&lt;/code&gt; 文件形式发布&lt;/li&gt;
+&lt;li&gt;必须解包并移动到所需的安装位置&lt;/li&gt;
+&lt;li&gt;必须手动配置以创建运行 MySQL 所需的文件夹和配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;包含的产品&#34;&gt;包含的产品
+&lt;/h5&gt;&lt;p&gt;Windows 发行版包含 MySQL 数据库服务器，以及以下产品：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MySQL Workbench（数据库设计建模工具 ）&lt;/li&gt;
+&lt;li&gt;MySQL Notifier（状态通知工具 ）&lt;/li&gt;
+&lt;li&gt;MySQL for Excel（Excel 集成插件 ）&lt;/li&gt;
+&lt;li&gt;MySQL Enterprise Backup（仅商业版，企业级备份工具 ）&lt;/li&gt;
+&lt;li&gt;MySQL for Visual Studio（Visual Studio 集成插件 ）&lt;/li&gt;
+&lt;li&gt;MySQL Shell（交互式操作终端 ）&lt;/li&gt;
+&lt;li&gt;MySQL Router（路由代理工具 ）&lt;/li&gt;
+&lt;li&gt;MySQL Connectors（.Net/ Python / ODBC / Java / C++ 等语言连接器 ）&lt;/li&gt;
+&lt;li&gt;示例、用例和文档&lt;/li&gt;
+&lt;/ul&gt;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211721443.png&#34; alt=&#34;image-20250721172150734&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211722122.png&#34; alt=&#34;image-20250721172228987&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211722055.png&#34; alt=&#34;image-20250721172247924&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;h4 id=&#34;在-windows-系统中安装-mysql-服务&#34;&gt;在 Windows 系统中安装 MySQL 服务
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用 MySQL 安装程序：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用提供的服务名称，或选择其他名称。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装后通过命令行操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;手动安装服务：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysqld.exe --install servicename --defaults-file=&amp;#34;C:\my.ini&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;移除已安装的服务：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysqld.exe --remove servicename
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;通过 “服务” 控制面板应用查看已安装的服务：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;从命令行启动（服务面板）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;services.msc
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;设置服务为自动或手动启动，并指定用于启动服务的 Windows 账户&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;windows-服务相关说明&#34;&gt;Windows 服务相关说明
+&lt;/h5&gt;&lt;p&gt;每个 Windows 服务用于控制一个程序，实现程序的启动和停止。创建服务时，必须确保服务管理器能访问程序路径。你可能需要提供 &lt;code&gt;mysqld.exe&lt;/code&gt; 可执行文件的完整路径。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;C:\mysql80\bin\mysqld.exe --install servicename ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;除了使用 &lt;code&gt;--install&lt;/code&gt; 选项，你也可以用 Windows 的 &lt;code&gt;sc&lt;/code&gt; 命令行程序将 MySQL 安装为 Windows 服务。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sc create servicename start=auto DisplayName=MySQL binPath=C:\mysql80\bin\mysqld.exe
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果因 MySQL 安装路径包含空格（比如使用默认安装程序路径，包含 “MySQL Server 8.0” 这类文本 ），导致服务启动出现问题，可使用短路径名称，或在 &lt;code&gt;binPath&lt;/code&gt; 参数两侧添加双引号来安装服务。&lt;/p&gt;
+&lt;h4 id=&#34;从源代码安装-mysql&#34;&gt;从源代码安装 MySQL
+&lt;/h4&gt;&lt;p&gt;在以下情况时，从源代码构建 MySQL：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;配置内置选项
+&lt;ul&gt;
+&lt;li&gt;示例：
+&lt;ul&gt;
+&lt;li&gt;在生产服务器上，针对清晰明确的使用场景，禁用未使用的功能以优化性能&lt;/li&gt;
+&lt;li&gt;启用额外的调试功能&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;在没有预编译二进制文件的平台上运行 MySQL&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;向 MySQL 添加你自己的修改（或社区补丁 ）&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;编译-mysql&#34;&gt;编译 MySQL
+&lt;/h5&gt;&lt;p&gt;如果预编译发行版中缺少你需要的功能（比如完整的调试支持 ），可从源代码编译 MySQL。要打造运行时占用更少内存的服务器，你可能需要禁用不必要的特性。例如，你可能需要禁用可选的存储引擎，或者仅编译应用所需的字符集。&lt;/p&gt;
+&lt;p&gt;编译 MySQL 的要求与编译一般 C++ 程序类似：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CMake&lt;/li&gt;
+&lt;li&gt;make&lt;/li&gt;
+&lt;li&gt;GCC 5.3（Linux 系统 ）或其他符合 ANSI 标准的 C++ 编译器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在 Oracle Linux 7 上，需启用软件集合（Software Collections ）来安装编译 MySQL 软件所需的工具。&lt;/p&gt;
+&lt;p&gt;根据编译类型以及获取源代码的方式，还存在其他要求。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：如需详细了解从源代码安装 MySQL 的内容，请参阅 &lt;a class=&#34;link&#34; href=&#34;https://dev.mysql.com/doc/mysql/en/source-installation.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://dev.mysql.com/doc/mysql/en/source-installation.html&lt;/a&gt; 。&lt;/p&gt;
+&lt;h4 id=&#34;从二进制归档文件安装-mysql&#34;&gt;从二进制归档文件安装 MySQL
+&lt;/h4&gt;&lt;p&gt;若不通过包管理器安装，必须手动执行一些配置步骤。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;创建 &lt;code&gt;mysql&lt;/code&gt; 用户和用户组。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# groupadd mysql
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# useradd -r -g mysql -s /bin/false mysql
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;以 &lt;code&gt;mysql&lt;/code&gt; 用户身份登录时，将归档文件解压到合适的目录。或者，在解压后，更改已解压归档文件的所属权为 &lt;code&gt;mysql&lt;/code&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# mkdir /usr/local/mysql-8.0.x/
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# chown mysql:mysql /usr/local/mysql-8.0.x/
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# cd /usr/local/mysql-8.0.x/
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# tar xf ~/mysql-8.0.x-linux-glibc2.12-x86_64.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h5 id=&#34;mysql-用户&#34;&gt;mysql 用户
+&lt;/h5&gt;&lt;p&gt;你可以使用不同于 &lt;code&gt;mysql&lt;/code&gt; 的操作系统用户名和用户组名。为简单起见，这些说明遵循与安装包中相同的约定，安装包在安装过程中会创建 &lt;code&gt;mysql&lt;/code&gt; 用户和用户组。&lt;/p&gt;
+&lt;p&gt;如果你使用不同的用户名和用户组名，要确保 MySQL 服务器进程以该用户名运行，且该用户对 MySQL 数据文件、日志文件和 PID 文件拥有所属权。&lt;/p&gt;
+&lt;p&gt;尽管可以以 &lt;code&gt;root&lt;/code&gt; 用户身份运行 &lt;code&gt;mysqld&lt;/code&gt; 进程，但不建议这样做。与其他操作系统服务一样，MySQL 可执行用户授权的操作。如果此类服务（或与之通信的应用程序 ）遭到破坏，攻击者会受到该用户所受限制的约束。&lt;/p&gt;
+&lt;h5 id=&#34;安装目录&#34;&gt;安装目录
+&lt;/h5&gt;&lt;p&gt;可以将归档文件解压到任何你具有写入权限的目录。MySQL 服务器使用 &lt;code&gt;basedir&lt;/code&gt; 选项来确定安装目录的位置。&lt;/p&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;创建初始配置文件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;将 &lt;code&gt;my-default.cnf&lt;/code&gt; 复制到 &lt;code&gt;/etc/my.cnf&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;编辑 &lt;code&gt;datadir&lt;/code&gt; 配置项，使其指向数据目录。&lt;/li&gt;
+&lt;li&gt;编辑 &lt;code&gt;basedir&lt;/code&gt; 配置项，使其指向安装目录。&lt;/li&gt;
+&lt;li&gt;编辑其他所需配置：
+&lt;ul&gt;
+&lt;li&gt;日志文件设置&lt;/li&gt;
+&lt;li&gt;TCP 端口&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;初始化数据目录并记录生成的临时密码&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# bin/mysqld --initialize --user=mysql  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;启动 MySQL 服务器&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# bin/mysqld_safe --user=mysql &amp;amp;  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;6&#34;&gt;
+&lt;li&gt;使用临时密码连接到 MySQL 服务器&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# mysql -u root -p  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enter password: （输入随机生成的密码 ）  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;...  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysql&amp;gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;7&#34;&gt;
+&lt;li&gt;修改 root 用户密码&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysql&amp;gt; ALTER USER USER() IDENTIFIED BY &amp;#39;new password&amp;#39;;  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;8&#34;&gt;
+&lt;li&gt;（可选 ）填充时区表&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;示例：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql -p  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h5 id=&#34;时区表说明&#34;&gt;时区表说明
+&lt;/h5&gt;&lt;p&gt;当你创建新的数据库目录时，MySQL 会创建时区表，但不会填充数据。你可通过以下任一方式填充：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;执行 &lt;code&gt;mysql_tzinfo_to_sql&lt;/code&gt; 工具，基于系统时区数据库文件生成 &lt;code&gt;INSERT&lt;/code&gt; 语句。若系统有 &lt;code&gt;zoneinfo&lt;/code&gt; 文件（让 MySQL 与时区相关系统工具保持一致 ），选此方式。&lt;/li&gt;
+&lt;li&gt;从 &lt;a class=&#34;link&#34; href=&#34;http://dev.mysql.com/downloads/timezones.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://dev.mysql.com/downloads/timezones.html&lt;/a&gt; 下载包含 &lt;code&gt;INSERT&lt;/code&gt; 语句的脚本。若系统本身没有时区信息，选此方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;MySQL 利用时区信息处理时区敏感函数和数据类型（如 &lt;code&gt;NOW()&lt;/code&gt;、&lt;code&gt;TIMESTAMP&lt;/code&gt; ），以及计算特殊时间（如夏令时转换时出现的非法日期和时间 ）。&lt;/p&gt;
+&lt;h3 id=&#34;使用-docker-部署-mysql-服务器&#34;&gt;使用 Docker 部署 MySQL 服务器
+&lt;/h3&gt;&lt;p&gt;你需要先在主机上安装 Docker 引擎和客户端。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;下载 MySQL 服务器 Docker 镜像&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;使用 MySQL 社区版镜像&lt;/strong&gt;：登录到 Docker Hub，使用 &lt;code&gt;docker&lt;/code&gt; 命令拉取镜像：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# docker pull mysql/mysql-server
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;使用 MySQL 企业版镜像&lt;/strong&gt;：登录到 My Oracle Support，下载 MySQL 商业服务器 Docker 镜像；使用 &lt;code&gt;docker&lt;/code&gt; 命令加载镜像：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# docker load -i mysql-enterprise-server-version.tar
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;列出所有已下载的镜像&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# docker images
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;创建 MySQL 服务器 Docker 容器&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# docker run --name=mysql1 -d mysql/mysql-server  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;查看 MySQL 服务器日志&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# docker logs mysql1  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;提取生成的临时密码&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# docker logs mysql1 2&amp;gt;&amp;amp;1 | grep GENERATED  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;从容器内部连接到 MySQL 服务器&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# docker exec -it mysql1 mysql -uroot -p  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;输入临时密码&lt;/li&gt;
+&lt;li&gt;修改 root 用户密码：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysql&amp;gt; ALTER USER USER() IDENTIFIED BY &amp;#39;new password&amp;#39;;  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;运行命令&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docker run --name&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;container_name -d image_name:tag
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;安装文件及路径&#34;&gt;安装文件及路径
+&lt;/h2&gt;&lt;h3 id=&#34;linux-mysql-server-安装目录&#34;&gt;linux MySQL Server 安装目录
+&lt;/h3&gt;&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507231656155.png&#34; alt=&#34;image-20250723165628953&#34; style=&#34;zoom:80%;&#34; /&gt;
+&lt;h4 id=&#34;数据目录data-directory&#34;&gt;数据目录（Data Directory）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/var/lib/mysql&lt;/code&gt; 是服务器存储数据库的位置。当你（或安装过程）运行 &lt;code&gt;mysqld --initialize&lt;/code&gt; 时，会配置该目录。InnoDB 日志文件、回滚表空间和系统表空间都位于此目录中。它还包含每个数据库对应的子目录，其中包括 &lt;code&gt;mysql&lt;/code&gt; 目录（该目录包含系统表，包括授权表 ）。MySQL 8.0 使用 InnoDB 存储引擎，将数据字典存储在 &lt;code&gt;mysql.ibd&lt;/code&gt; 表空间中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;基础目录base-directory&#34;&gt;基础目录（Base Directory）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/usr/sbin&lt;/code&gt; 包含主要的服务器可执行文件 &lt;code&gt;mysqld&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/usr/bin&lt;/code&gt; 包含客户端程序和脚本，如 &lt;code&gt;mysql&lt;/code&gt;、&lt;code&gt;my_print_defaults&lt;/code&gt;、&lt;code&gt;mysqladmin&lt;/code&gt;、&lt;code&gt;mysqlcheck&lt;/code&gt; 和 &lt;code&gt;mysqlimport&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;其他目录other-directories&#34;&gt;其他目录（Other Directories）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/var/lib/mysql-files&lt;/code&gt; 在 &lt;code&gt;secure_file_priv&lt;/code&gt; 变量中配置，用于存储导入和导出的数据文件。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/var/lib/mysql-keyring&lt;/code&gt; 分配用于存储密钥环文件。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/etc&lt;/code&gt; 和 &lt;code&gt;/var/log&lt;/code&gt; 是 Linux 系统存放配置文件和日志文件的标准目录。MySQL 服务器进程（&lt;code&gt;mysqld&lt;/code&gt; ）会读取 &lt;code&gt;/etc/my.cnf&lt;/code&gt; 文件。&lt;/li&gt;
+&lt;li&gt;systemd 启动脚本存储在 systemd 的默认目录中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;windows-mysql-server-安装路径&#34;&gt;Windows MySQL Server 安装路径
+&lt;/h3&gt;&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507231659475.png&#34; alt=&#34;image-20250723165943329&#34; style=&#34;zoom:80%;&#34; /&gt;
+&lt;p&gt;默认情况下，MySQL 安装在 &lt;code&gt;C:\Program Files\MySQL\MySQL Server [版本号]&lt;/code&gt; 目录中。例如，安装程序会将 MySQL 8.0 放置在 &lt;code&gt;C:\Program Files\MySQL\MySQL Server 8.0&lt;/code&gt; 目录。&lt;/p&gt;
+&lt;h4 id=&#34;program-files-目录&#34;&gt;“Program Files” 目录
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;bin\&lt;/code&gt; 目录包含 MySQL 服务器和客户端程序。Windows 版 MySQL 发行包包含多个程序，可在 &lt;code&gt;bin&lt;/code&gt; 目录中找到：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;mysqld.exe&lt;/code&gt;：服务器可执行文件&lt;/li&gt;
+&lt;li&gt;客户端程序，如 &lt;code&gt;mysql.exe&lt;/code&gt; 和 &lt;code&gt;mysqladmin.exe&lt;/code&gt;（列于标题为 “命令行客户端程序” 的幻灯片中 ）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其他目录用于存放头文件、库文件和支持文件。&lt;/p&gt;
+&lt;h4 id=&#34;programdata-目录&#34;&gt;“ProgramData” 目录
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;Data\&lt;/code&gt; 是服务器存储数据库和日志文件的位置。该目录已预先配置好，可直接使用。例如，此目录包含一个 &lt;code&gt;mysql&lt;/code&gt; 子目录（包含授权表 ）。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Uploads\&lt;/code&gt; 在 &lt;code&gt;secure_file_priv&lt;/code&gt; 变量中配置，用于存储导入和导出的数据文件。&lt;/p&gt;
+&lt;h4 id=&#34;配置文件&#34;&gt;配置文件
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;my.ini&lt;/code&gt; 配置选项文件指定了安装目录的位置，以及其他可选设置。&lt;/p&gt;
+&lt;h3 id=&#34;mysql-programs&#34;&gt;MySQL Programs
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;服务器程序（Server programs）&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;mysqld&lt;/code&gt; 服务器进程&lt;/li&gt;
+&lt;li&gt;服务工具、启动程序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安装程序（Installation programs）&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;执行初始安装配置过程部分步骤的程序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实用程序（Utility programs）&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;无需连接到服务器即可执行某些功能的 MySQL 程序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;客户端程序（Client programs）&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;连接到服务器的程序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;mysqldmysql-服务器进程mysqld-mysql-server-process&#34;&gt;mysqld：MySQL 服务器进程（mysqld: MySQL Server Process）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;由某一个服务器辅助程序自动启动&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;包括操作系统的启动脚本&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可手动启动以调试 MySQL 服务器配置&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;默认情况下，错误消息会输出到终端，而非错误日志。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;示例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;$ mysqld --user&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;mysql --datadir&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/var/lib/mysql --socket&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/tmp/mysql.sock
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;安装程序installation-programs&#34;&gt;安装程序（Installation Programs）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysql_secure_installation&lt;/code&gt;&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;用于启用初始安全配置的安全程序。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysql_tzinfo_to_sql&lt;/code&gt;&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;用于创建包含主机时区信息的 SQL 脚本的实用程序。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysql_upgrade&lt;/code&gt;&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;用于验证数据库内容并确保其与当前 MySQL 版本兼容的程序。&lt;/li&gt;
+&lt;li&gt;自 MySQL Server 8.0.16 起已弃用，因为这些任务现在会在服务器启动时自动执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;mysql_secure_installation&lt;/code&gt; 可通过以下方式提升 MySQL 安装的安全性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;你可以为 root 账户设置密码。&lt;/li&gt;
+&lt;li&gt;你可以移除可从本地主机外部访问的 root 账户。&lt;/li&gt;
+&lt;li&gt;你可以移除匿名用户账户。&lt;/li&gt;
+&lt;li&gt;你可以移除 &lt;code&gt;test&lt;/code&gt; 数据库（默认情况下，所有用户，甚至匿名用户都可访问该数据库 ），以及移除允许任何人访问名称以 &lt;code&gt;test_&lt;/code&gt; 开头的数据库的权限。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;MySQL 8.0 安装默认已处理大部分此类问题。因此，可能无需运行 &lt;code&gt;mysql_secure_installation&lt;/code&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;实用程序utility-programs&#34;&gt;实用程序（Utility Programs）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysql_config_editor&lt;/code&gt;&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;管理登录路径，简化命令行客户端与 MySQL 服务器的连接方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysqlbinlog&lt;/code&gt;&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;读取并回放二进制日志的内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysqldumpslow&lt;/code&gt;&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;读取并汇总慢查询日志的内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysql_ssl_rsa_setup&lt;/code&gt;&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;创建 TLS 密钥和证书。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;ibd2sdi&lt;/code&gt;&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;从 InnoDB 表空间文件中提取序列化字典信息（SDI）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;mysql_config_editor&#34;&gt;mysql_config_editor
+&lt;/h5&gt;&lt;p&gt;使用 &lt;code&gt;mysql_config_editor&lt;/code&gt; 创建加密的选项文件。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;将用户、密码和主机选项存储在专用的选项文件中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;当前用户主目录下的 &lt;code&gt;.mylogin.cnf&lt;/code&gt; 文件&lt;/li&gt;
+&lt;li&gt;要指定其他文件名，设置 &lt;code&gt;MYSQL_TEST_LOGIN_FILE&lt;/code&gt; 环境变量。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;.mylogin.cnf&lt;/code&gt; 文件包含登录路径。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;它们类似于选项组。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个登录路径包含单个身份的认证信息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;客户端使用&lt;code&gt;--login-path&lt;/code&gt;（或&lt;code&gt;-l&lt;/code&gt;）命令行选项引用登录路径：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# mysql --login-path=admin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;保护该文件不被其他用户读取。任何能够读取该文件的人都可以使用这些凭据，并能够获取明文密码。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h6 id=&#34;隐藏已保存的密码obscuring-saved-passwords&#34;&gt;隐藏已保存的密码（Obscuring Saved Passwords）
+&lt;/h6&gt;&lt;p&gt;不建议以 &lt;code&gt;mysql -uroot -ppassword&lt;/code&gt; 的形式在命令行指定密码。为方便起见，你可以将密码放在 &lt;code&gt;[client]&lt;/code&gt; 选项组中，但密码是以明文形式存储的，任何对选项文件有读取权限的人都可以轻松看到。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;mysql_config_editor&lt;/code&gt; 实用程序使你能够将认证凭据存储在名为 &lt;code&gt;.mylogin.cnf&lt;/code&gt; 的加密登录文件中。在 Linux 和 UNIX 上，该文件位置是当前用户的主目录；在 Windows 上，是 &lt;code&gt;%APPDATA%\MySQL&lt;/code&gt; 目录。之后，MySQL 客户端程序可以读取该文件以获取连接 MySQL 服务器的方法。加密方法是可逆的，因此你不能假定凭据对任何拥有该文件读取权限的人都是安全的。相反，此功能让你更易于避免在命令行或 MySQL 配置文件中使用明文凭据。&lt;/p&gt;
+&lt;h5 id=&#34;mylogincnf-格式mylogincnf-format&#34;&gt;.mylogin.cnf 格式（.mylogin.cnf Format）
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;解密后的 &lt;code&gt;.mylogin.cnf&lt;/code&gt; 文件由选项组构成。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;与其他选项文件类似&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;.mylogin.cnf&lt;/code&gt; 中的每个选项组都是一个登录路径。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一组值，指示服务器主机以及用于向该服务器进行认证的凭据&lt;/li&gt;
+&lt;li&gt;仅允许有限的一组选项（&lt;code&gt;user&lt;/code&gt;、&lt;code&gt;password&lt;/code&gt; 和 &lt;code&gt;host&lt;/code&gt; ）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;示例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-ini&#34; data-lang=&#34;ini&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;[admin]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;na&#34;&gt;user&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;root&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;na&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;oracle&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;na&#34;&gt;host&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;127.0.0.1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果你尝试在文本编辑器中读取 &lt;code&gt;.mylogin.cnf&lt;/code&gt; 文件，它会以加密形式显示。你可以使用 &lt;code&gt;print&lt;/code&gt; 命令查看登录路径，具体将在下一张幻灯片中展示。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：使用带 &lt;code&gt;-s&lt;/code&gt; 选项的 &lt;code&gt;my_print_defaults&lt;/code&gt; 实用程序可以明文显示密码。&lt;/p&gt;
+&lt;h5 id=&#34;登录路径login-paths&#34;&gt;登录路径（Login Paths）
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;创建登录路径&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysql_config_editor &lt;span class=&#34;nb&#34;&gt;set&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  --login-path&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;login-path 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  --user&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;username 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  --password --host&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;hostname
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;明文查看单个登录路径&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysql_config_editor print 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  --login-path&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;login-path
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;明文查看所有登录路径&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysql_config_editor print --all
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;移除登录路径&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysql_config_editor remove 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  --login-path&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;login-path
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;默认登录路径名称是 &lt;code&gt;[client]&lt;/code&gt;。所有标准客户端都会读取它。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果调用 &lt;code&gt;mysql_config_editor&lt;/code&gt; 时未使用 &lt;code&gt;--login-path&lt;/code&gt; 选项，它会使用 &lt;code&gt;[client]&lt;/code&gt; 登录路径。所有标准客户端默认使用此登录路径。&lt;/p&gt;
+&lt;p&gt;例如，以下命令创建一个供所有标准客户端使用的 &lt;code&gt;[client]&lt;/code&gt; 登录路径：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# mysql_config_editor set --user=root --password&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enter password: oracle
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在未指定更多命令行参数或选项文件的情况下调用标准客户端，会导致其读取 &lt;code&gt;.mylogin.cnf&lt;/code&gt; 文件中的 &lt;code&gt;[client]&lt;/code&gt; 登录路径，以及任何选项文件中的 &lt;code&gt;[client]&lt;/code&gt; 选项组。例如，执行上述命令后，调用 &lt;code&gt;mysql&lt;/code&gt; 客户端的输出如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# mysql&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Welcome to the MySQL monitor.  Commands end with &lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; or &lt;span class=&#34;se&#34;&gt;\g&lt;/span&gt;.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;命令行客户端程序command-line-client-programs&#34;&gt;命令行客户端程序（Command-Line Client Programs）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysql&lt;/code&gt;&lt;/strong&gt;：MySQL 命令行客户端&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysqladmin&lt;/code&gt;&lt;/strong&gt;：用于监控、管理和关闭 MySQL 的实用程序&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysqldump&lt;/code&gt;/&lt;code&gt;mysqlpump&lt;/code&gt;&lt;/strong&gt;：备份实用程序，可创建用于恢复数据库结构和内容的 SQL 脚本&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysqlimport&lt;/code&gt;&lt;/strong&gt;：用于导入分隔数据文件内容的实用程序&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysqlslap&lt;/code&gt;&lt;/strong&gt;：负载模拟客户端&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysqlshow&lt;/code&gt;&lt;/strong&gt;：用于显示数据库对象元数据的实用程序&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysqlcheck&lt;/code&gt;&lt;/strong&gt;：用于检查和优化表的实用程序&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;mysqlsh&lt;/code&gt;&lt;/strong&gt;：MySQL Shell 是适用于 MySQL 服务器的高级命令行客户端和代码编辑器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;MySQL Shell 必须单独安装。&lt;/p&gt;
+&lt;p&gt;MySQL Workbench 是一个图形化客户端程序，需单独安装。&lt;/p&gt;
+&lt;h5 id=&#34;启动命令行客户端程序launching-command-line-client-programs&#34;&gt;启动命令行客户端程序（Launching Command-Line Client Programs）
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;客户端支持许多通用选项：
+&lt;ul&gt;
+&lt;li&gt;认证和连接选项
+&lt;ul&gt;
+&lt;li&gt;示例：&lt;code&gt;--user&lt;/code&gt;、&lt;code&gt;--password&lt;/code&gt;、&lt;code&gt;--host&lt;/code&gt;、&lt;code&gt;--socket&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;部分选项是特定客户端独有的：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;mysqladmin&lt;/code&gt;的示例选项：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--relative&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--sleep&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mysqlcheck&lt;/code&gt;的示例选项：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--analyze&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--check&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--check-upgrade&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;初始化配置&#34;&gt;初始化配置
+&lt;/h2&gt;&lt;h4 id=&#34;配置强制访问控制configuring-mandatory-access-control&#34;&gt;配置强制访问控制（Configuring Mandatory Access Control）
+&lt;/h4&gt;&lt;p&gt;一些平台会实施强制访问控制（MAC）系统，其具备以下特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;阻止服务访问未授权的资源（如文件或端口 ）
+&lt;ul&gt;
+&lt;li&gt;默认配置包含对常见服务（包括 MySQL ）的默认文件和端口访问权限。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;可配置为启用特定的非默认访问权限&lt;/li&gt;
+&lt;li&gt;可完全禁用&lt;/li&gt;
+&lt;li&gt;包含以下系统：
+&lt;ul&gt;
+&lt;li&gt;Linux MAC 系统：
+&lt;ul&gt;
+&lt;li&gt;SELinux：适用于 Oracle Linux、Red Hat Enterprise Linux、Fedora、CentOS&lt;/li&gt;
+&lt;li&gt;AppArmor：适用于 SUSE、Ubuntu&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Oracle Solaris 扩展策略&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;默认 MAC 配置（Default MAC Configuration）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;由于 MySQL 在许多平台上是常用服务，常见的 MAC 系统默认会允许 &lt;code&gt;mysqld&lt;/code&gt; 服务器进程访问默认的 MySQL TCP 端口、默认数据目录和日志位置。一般来说，除非你想启用非默认配置（例如，如果你更改了数据目录或 TCP 端口号 ），否则无需修改 MAC 配置。&lt;/p&gt;
+&lt;h5 id=&#34;selinux-示例selinux-example&#34;&gt;SELinux 示例（SELinux Example）
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;添加新的端口映射&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;将一系列 TCP 端口（33060（X 协议）、33061（组复制）和 33062（管理端口） ）设置为&lt;code&gt;mysqld_port_t&lt;/code&gt;类型，以便 MySQL 可以使用它们：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# semanage port -a -t mysqld_port_t -p tcp 33060-33062&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;添加新的文件上下文类型映射&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;将&lt;code&gt;/datadir&lt;/code&gt;目录及其内容设置为&lt;code&gt;mysqld_db_t&lt;/code&gt;类型，以便 MySQL 可以访问它们：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# semanage fcontext -a -t mysqld_db_t &amp;#34;/datadir(/.*)?&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# restorecon -Rv /datadir&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;restorecon reset /datadir context
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;unconfined_u:object_r:default_t:s0-
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&amp;gt;unconfined_u:object_r:mysqld_db_t:s0
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h6 id=&#34;禁用-selinuxdisabling-selinux&#34;&gt;禁用 SELinux（Disabling SELinux）
+&lt;/h6&gt;&lt;p&gt;你可以通过将 SELinux 设置为宽容模式（permissive mode），临时禁用其阻止效果。要执行此操作，运行以下命令：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;setenforce &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在宽容模式下，SELinux 会将未授权访问记录到其日志文件中（默认在 &lt;code&gt;/var/log/audit/audit.log&lt;/code&gt; ），但不会阻止此类访问。使用宽容模式排查你怀疑可能由 SELinux 配置导致的访问问题。当你重启系统或执行 &lt;code&gt;setenforce 1&lt;/code&gt; 命令时，SELinux 会恢复执行其策略。&lt;/p&gt;
+&lt;p&gt;要完全禁用 SELinux，需在 &lt;code&gt;/etc/selinux/config&lt;/code&gt; 文件中将 SELinux 设置从 &lt;code&gt;enforcing&lt;/code&gt; 改为 &lt;code&gt;disabled&lt;/code&gt;，如下例所示：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-ini&#34; data-lang=&#34;ini&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;na&#34;&gt;SELINUX&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;disabled&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h5 id=&#34;apparmor示例apparmor-example&#34;&gt;AppArmor：示例（AppArmor: Example）
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;编辑 &lt;code&gt;/etc/apparmor.d/local/usr.sbin.mysqld&lt;/code&gt; 文件，修改本机的 MySQL 策略。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;将&lt;code&gt;/datadir&lt;/code&gt;目录及其内容设置为可访问。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# /datadir/** rwk,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重新加载 AppArmor 配置文件。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# service apparmor reload&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;* Reloading AppArmor profiles
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;将 MySQL 策略设置为投诉模式（complain mode）。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# aa-complain /usr/sbin/mysqld&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Setting /usr/sbin/mysqld to complain mode.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;将 MySQL 策略设置为强制模式（enforce mode）。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# aa-enforce /usr/sbin/mysqld&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Setting /usr/sbin/mysqld to enforce mode.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;投诉模式与强制模式complain-and-enforce-modes&#34;&gt;投诉模式与强制模式（Complain and Enforce Modes）
+&lt;/h5&gt;&lt;p&gt;AppArmor 与其他 MAC 系统类似，默认阻止未授权访问，这称为强制模式（enforce mode）。当你希望策略记录未授权访问但不阻止时，执行 &lt;code&gt;aa-complain&lt;/code&gt; 命令，将特定可执行文件的策略改为投诉模式（complain mode）。&lt;/p&gt;
+&lt;h5 id=&#34;禁用-apparmordisabling-apparmor&#34;&gt;禁用 AppArmor（Disabling AppArmor）
+&lt;/h5&gt;&lt;p&gt;AppArmor 作为服务运行。要禁用它，使用操作系统的服务管理功能禁用 &lt;code&gt;apparmor&lt;/code&gt; 服务或启动脚本。例如，在使用 &lt;code&gt;systemd&lt;/code&gt; 的系统上，执行以下命令：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;systemctl disable apparmor.service
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;更改-root-密码&#34;&gt;更改 &lt;code&gt;root&lt;/code&gt; 密码
+&lt;/h3&gt;&lt;h4 id=&#34;修改-root-密码changing-the-root-password&#34;&gt;修改 root 密码（Changing the root Password）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;安装后修改 root 密码：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RPM 安装会创建一个 root 账户，其初始密码是随机生成且已过期的，你必须在使用前修改它。
+&lt;ul&gt;
+&lt;li&gt;初始密码会写入服务器日志（通常在 &lt;code&gt;/var/log/mysql/mysqld.log&lt;/code&gt; 中 ）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;交互式 DEB 安装会提示设置初始 root 密码，后续无需再修改。&lt;/li&gt;
+&lt;li&gt;其他维护者提供的安装包可能会通过其他方式创建初始 root 密码。&lt;/li&gt;
+&lt;li&gt;当使用 &lt;code&gt;mysqld --initialize&lt;/code&gt; 初始化 MySQL 时，会生成一个初始的随机过期密码。源码安装和归档包安装通常使用这种方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用初始密码登录到 MySQL，然后使用 &lt;code&gt;ALTER USER&lt;/code&gt; 语句修改密码：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# mysql --user=root --password&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enter password: drVXqk9&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;nn?t
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysql&amp;gt; ALTER USER USER&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt; IDENTIFIED BY &lt;span class=&#34;s1&#34;&gt;&amp;#39;neW%P4ss&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h5 id=&#34;使用-mysqladmin-修改-root-密码using-mysqladmin-to-change-the-root-password&#34;&gt;使用 mysqladmin 修改 root 密码（Using mysqladmin to Change the root Password）
+&lt;/h5&gt;&lt;p&gt;使用 &lt;code&gt;mysqladmin&lt;/code&gt; 客户端实用程序配合 &lt;code&gt;password&lt;/code&gt; 命令来修改密码。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;如果你未向 &lt;code&gt;password&lt;/code&gt; 命令提供参数，&lt;code&gt;mysqladmin&lt;/code&gt; 会提示你输入新密码：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# mysqladmin --user=root --password password&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enter password: drVXqk9&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;nn?t
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;New password: neW%P4ss
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Confirm new password: neW%P4ss
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果你在命令行中提供旧密码或新密码，&lt;code&gt;mysqladmin&lt;/code&gt; 会显示警告：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# mysqladmin --user=root --password password &amp;#39;neW%P4ss&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enter password: drVXqk9&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;nn?t
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysqladmin: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;Warning&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; Using a password on the &lt;span class=&#34;nb&#34;&gt;command&lt;/span&gt; line interface can be insecure.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;使用登录路径using-login-paths&#34;&gt;使用登录路径（Using Login Paths）
+&lt;/h5&gt;&lt;p&gt;你可以在包括 &lt;code&gt;mysqladmin&lt;/code&gt; 在内的许多 MySQL 客户端中使用登录路径。以下示例展示如何使用默认的 &lt;code&gt;[client]&lt;/code&gt; 登录路径设置新密码：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;前提&lt;/strong&gt;：已用 &lt;code&gt;mysql_config_editor&lt;/code&gt; 设置 &lt;code&gt;[client]&lt;/code&gt; 登录路径（含旧密码 ）&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# mysqladmin password&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;New password: neW%P4ss
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Confirm new password: neW%P4ss
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;请注意，使用此命令修改用户密码后，客户端登录路径不再包含正确的用户密码，因此你必须执行 &lt;code&gt;mysql_config_editor&lt;/code&gt; 来设置新的用户密码。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;启动和关闭mysql&#34;&gt;启动和关闭MySQL
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;启动 MySQL 的方法&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;直接运行 &lt;code&gt;mysqld&lt;/code&gt; 二进制文件。&lt;/li&gt;
+&lt;li&gt;运行 &lt;code&gt;mysqld_safe&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;使用 Linux 服务管理器：
+&lt;ul&gt;
+&lt;li&gt;在 SysVinit 系统上，运行 &lt;code&gt;service mysqld start&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;在 systemd 系统上，运行 &lt;code&gt;systemctl start mysqld&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;停止 MySQL 的方法&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;使用 &lt;code&gt;SIGTERM&lt;/code&gt; 信号（&lt;code&gt;-15&lt;/code&gt; ）终止 &lt;code&gt;mysqld&lt;/code&gt; 二进制文件。如果 &lt;code&gt;mysqld_safe&lt;/code&gt; 在运行，先终止它。&lt;/li&gt;
+&lt;li&gt;使用 Linux 服务管理器：
+&lt;ul&gt;
+&lt;li&gt;在 SysVinit 系统上，运行 &lt;code&gt;service mysqld stop&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;在 systemd 系统上，运行 &lt;code&gt;systemctl stop mysqld&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mysqladmin shutdown&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;SQL 的 &lt;code&gt;SHUTDOWN&lt;/code&gt; 语句&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;使用 kill 命令（Using kill）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;service mysqld stop&lt;/code&gt; 命令（或在 systemd 发行版上的 &lt;code&gt;systemctl stop mysqld&lt;/code&gt; ）会向 &lt;code&gt;mysqld&lt;/code&gt; 进程发送 UNIX &lt;code&gt;SIGTERM&lt;/code&gt; 信号（&lt;code&gt;kill -15&lt;/code&gt; ），进程将其解读为关闭服务器的指令。当你使用 &lt;code&gt;mysqladmin shutdown&lt;/code&gt; 时，它会使用服务器协议命令向服务器发送 “关闭” 消息。在这两种情况下，服务器进程都会接收消息并执行相同的有序关闭流程。&lt;/p&gt;
+&lt;p&gt;如果你发送 &lt;code&gt;SIGKILL&lt;/code&gt; 信号（&lt;code&gt;kill -9&lt;/code&gt; ），&lt;code&gt;mysqld&lt;/code&gt; 会立即停止，不会执行有序关闭，就像拔掉机器电源线一样。这可能会导致数据损坏。如果 &lt;code&gt;mysqld_safe&lt;/code&gt; 辅助程序在运行，它会将这种突然关闭检测为崩溃，并重新启动 &lt;code&gt;mysqld&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SQL RESTART 语句（SQL RESTART statement）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;MySQL 8.0 引入了 &lt;code&gt;RESTART&lt;/code&gt; SQL 语句，用于停止并重启 MySQL 服务器。&lt;code&gt;RESTART&lt;/code&gt; 需要一个监控进程（如 systemd、&lt;code&gt;mysqld_safe&lt;/code&gt; 或 Windows 服务 ）在服务器以退出代码 16 关闭后启动 MySQL 服务器。&lt;/p&gt;
+&lt;h4 id=&#34;使用-mysqladmin-停止-mysqlstopping-mysql-with-mysqladmin&#34;&gt;使用 mysqladmin 停止 MySQL（Stopping MySQL with mysqladmin）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;使用 &lt;code&gt;[client]&lt;/code&gt; 登录路径&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysqladmin shutdown
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;使用 &lt;code&gt;[admin]&lt;/code&gt; 登录路径&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysqladmin --login-path&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;admin shutdown
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;在命令行提供凭据和服务器连接信息&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysqladmin -u root -p -h dbhost -P &lt;span class=&#34;m&#34;&gt;3306&lt;/span&gt; shutdown
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enter password: password
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;shutdown-权限shutdown-privilege&#34;&gt;SHUTDOWN 权限（SHUTDOWN Privilege）
+&lt;/h5&gt;&lt;p&gt;一些 &lt;code&gt;mysqladmin&lt;/code&gt; 命令仅对拥有所需权限的 MySQL 账户可用。例如，要关闭服务器，你必须使用具有 &lt;code&gt;SHUTDOWN&lt;/code&gt; 权限的管理账户（如 &lt;code&gt;root&lt;/code&gt; ）进行连接。&lt;/p&gt;
+&lt;h4 id=&#34;mysql-服务文件mysql-service-files&#34;&gt;MySQL 服务文件（MySQL Service Files）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在 SysVinit 系统上，将 &lt;code&gt;mysql.server&lt;/code&gt; 脚本复制到 &lt;code&gt;/etc/init.d/mysqld&lt;/code&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;部分软件包安装程序会自动创建此文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用 &lt;code&gt;start&lt;/code&gt;、&lt;code&gt;stop&lt;/code&gt; 或 &lt;code&gt;restart&lt;/code&gt; 选项调用它。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;示例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;service mysqld start
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/etc/init.d/mysqld restart
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;support-files/mysql.server stop
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果你从为 systemd 发行版构建的 RPM 软件包安装 MySQL，或者手动配置了 systemd，使用 &lt;code&gt;systemctl&lt;/code&gt; 命令：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;systemctl start mysqld
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;systemctl stop mysqld
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;这会使用 &lt;code&gt;mysqld.service&lt;/code&gt; 文件，它是一个 systemd 服务单元配置文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;sysvinitupstart-和-systemd-发行版sysvinit-upstart-and-systemd-distributions&#34;&gt;SysVinit、Upstart 和 systemd 发行版（SysVInit, Upstart, and systemd Distributions）
+&lt;/h5&gt;&lt;p&gt;SysVinit 是初始化 UNIX 服务的标准方法。许多 Linux 系统曾使用这种方法。近年来，Upstart 进程在许多发行版中取代了 SysVinit，模拟其功能。&lt;code&gt;mysql.server&lt;/code&gt; 脚本在 SysVinit 和 Upstart 系统上的运行方式相同。&lt;/p&gt;
+&lt;p&gt;一些 Linux 发行版的最新版本（包括 MySQL 支持的发行版 ）使用 systemd 作为替代的初始化进程。如果你从 RPM 或 APT 二进制包安装 MySQL，服务会自动配置。如果你使用通用 Linux 二进制包安装 MySQL，则必须自行配置 systemd 服务。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：你需在标题为 “配置 MySQL 服务（Configuring the MySQL Service）” 的实践内容中，配置 systemd 中的 &lt;code&gt;mysqld&lt;/code&gt; 服务。&lt;/p&gt;
+&lt;h4 id=&#34;在-windows-上启动和停止-mysqlmysql-notifier&#34;&gt;在 Windows 上启动和停止 MySQL：MySQL Notifier
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;由 MySQL 安装程序安装&lt;/li&gt;
+&lt;li&gt;自动注册本地计算机上的 MySQL 服务&lt;/li&gt;
+&lt;li&gt;支持注册远程 MySQL 服务&lt;/li&gt;
+&lt;li&gt;显示已注册服务器的运行状态
+&lt;ul&gt;
+&lt;li&gt;在系统托盘显示&lt;/li&gt;
+&lt;li&gt;可选：当已注册服务器状态变化，或 MySQL Notifier 检测到新的本地 MySQL 服务时发出通知&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;支持启动、重启和停止已注册的服务器&lt;/li&gt;
+&lt;li&gt;启动已安装的 MySQL 应用程序：
+&lt;ul&gt;
+&lt;li&gt;MySQL Workbench&lt;/li&gt;
+&lt;li&gt;MySQL Utilities&lt;/li&gt;
+&lt;li&gt;MySQL Installer&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;升级mysql&#34;&gt;升级MySQL
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;最简易的升级是在同一版本系列内的小版本之间进行。
+&lt;ul&gt;
+&lt;li&gt;示例：从 8.0.xx 升级到 8.0.yy&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;你可以从 MySQL 5.7 升级到 8.0
+&lt;ul&gt;
+&lt;li&gt;仅支持在通用可用（GA）版本之间进行，且 MySQL 5.7.9 或更高版本&lt;/li&gt;
+&lt;li&gt;Oracle 建议在升级到 MySQL 8.0 之前，先升级到最新的 5.7 GA 版本&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;留意版本之间的差异，这样你就能选择正确的升级方法（原地升级或逻辑升级 ），并避免兼容性问题。&lt;/li&gt;
+&lt;li&gt;即便你要执行原地升级，也应事先备份数据。
+&lt;ul&gt;
+&lt;li&gt;这样一来，若遇到问题，你就能回滚升级操作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;降级（Downgrading）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;从 MySQL 8.0 降级到 MySQL 5.7，或者从某一 MySQL 8.0 版本降级到之前的 MySQL 8.0 版本，是不被支持的。唯一受支持的替代方案是恢复升级前创建的备份。因此，在开始升级流程前备份数据至关重要。&lt;/p&gt;
+&lt;h3 id=&#34;阅读发行说明reading-release-notes&#34;&gt;阅读发行说明（Reading Release Notes）
+&lt;/h3&gt;&lt;p&gt;在升级之前，查看当前版本与目标版本之间的变更内容：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于 MySQL 8.0，使用以下 URL：
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;对于之前的版本，替换 URL 中的 8.0 。例如，MySQL 5.7：
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://dev.mysql.com/doc/refman/5.7/en/upgrading-from-previous-series.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://dev.mysql.com/doc/refman/5.7/en/upgrading-from-previous-series.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;你可能需要查看小版本之间变更的发行说明。
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://dev.mysql.com/doc/relnotes/mysql/8.0/en/index.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://dev.mysql.com/doc/relnotes/mysql/8.0/en/index.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;查找以下标题，这些标题表示你可能需要在升级前处理的变更：
+&lt;ul&gt;
+&lt;li&gt;已知问题（Known Issue）&lt;/li&gt;
+&lt;li&gt;不兼容变更（Incompatible Change）&lt;/li&gt;
+&lt;li&gt;新增或变更的功能（Functionality Added or Changed）&lt;/li&gt;
+&lt;li&gt;重要变更（Important Change）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;搜索特定变更searching-for-specific-changes&#34;&gt;搜索特定变更（Searching for Specific Changes）
+&lt;/h4&gt;&lt;p&gt;如果你知道某个选项或其他功能发生了变更，但不知道变更发生在哪个版本，你可以使用文档页面上的搜索功能。&lt;/p&gt;
+&lt;p&gt;或者，你可以在常用搜索引擎上搜索特定的发行说明，方法是包含 &lt;code&gt;site:&lt;/code&gt; 修饰符，将搜索范围限定在 MySQL 发行说明网页。例如，要搜索 &lt;code&gt;authentication_string&lt;/code&gt; 列的发行说明，在 Google 或 Bing 等常用搜索引擎中输入以下搜索条件：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-plaintext&#34; data-lang=&#34;plaintext&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;site:dev.mysql.com/doc/relnotes authentication_string
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;mysql-shell-升级检查工具mysql-shell-upgrade-checker-utility&#34;&gt;MySQL Shell 升级检查工具（MySQL Shell Upgrade Checker Utility）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;util.checkForServerUpgrade()&lt;/code&gt; 函数&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 MySQL Shell 中可用&lt;/li&gt;
+&lt;li&gt;让你能够验证 MySQL 服务器实例是否已准备好进行升级&lt;/li&gt;
+&lt;li&gt;检查升级到 MySQL 8.0 时的兼容性错误和问题&lt;/li&gt;
+&lt;li&gt;仅支持 MySQL Server 5.7 和 8.0 的通用可用（GA）版本&lt;/li&gt;
+&lt;li&gt;如果你提供文件路径，会检查配置文件（&lt;code&gt;my.cnf&lt;/code&gt; 或 &lt;code&gt;my.ini&lt;/code&gt; ）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MySQL Shell 的版本必须与你要升级到的 MySQL Server 版本相同或更高。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;以下示例检查一个 MySQL 服务器，以升级到 8.0.18 版本：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysqlsh --util checkForServerUpgrade user@localhost:3306 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  --target-version&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;8.0.18 --config-path&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/etc/mysql/my.cnf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;使用原地升级方法using-in-place-upgrade-method&#34;&gt;使用原地升级方法（Using In-Place Upgrade Method）
+&lt;/h4&gt;&lt;p&gt;当你在同一版本系列内升级或从一个主要版本升级到下一个主要版本时，使用原地（物理）升级方法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;停止 MySQL 服务器进程。&lt;/li&gt;
+&lt;li&gt;使用文件复制备份当前数据库。（可选，但建议执行 ）&lt;/li&gt;
+&lt;li&gt;用新版本替换 &lt;code&gt;mysqld&lt;/code&gt; 二进制文件。&lt;/li&gt;
+&lt;li&gt;使用新的二进制文件启动 MySQL 服务器进程。&lt;/li&gt;
+&lt;li&gt;在 MySQL 8.0.16 之前，你必须运行 &lt;code&gt;mysql_upgrade&lt;/code&gt;。在 MySQL 8.0.16 及更高版本中，服务器重启会自动执行所有升级任务。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这是从 MySQL 5.7 升级到 8.0 的推荐方法。&lt;/p&gt;
+&lt;h4 id=&#34;使用逻辑升级方法using-logical-upgrade-method&#34;&gt;使用逻辑升级方法（Using Logical Upgrade Method）
+&lt;/h4&gt;&lt;p&gt;当你要升级到一个或多个更高的主要版本时，使用逻辑（备份 / 恢复）升级方法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 &lt;code&gt;mysqldump&lt;/code&gt; 备份当前数据库。&lt;/li&gt;
+&lt;li&gt;安装并初始化一个新的 MySQL 服务器。&lt;/li&gt;
+&lt;li&gt;启动新的 MySQL 服务器。&lt;/li&gt;
+&lt;li&gt;从转储文件恢复备份的数据库。
+&lt;ul&gt;
+&lt;li&gt;由于新特性、变更特性、弃用特性或移除特性和功能带来的不兼容性，可能会导致错误。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;在 MySQL 8.0.16 之前，你必须运行 &lt;code&gt;mysql_upgrade&lt;/code&gt;。在 MySQL 8.0.16 及更高版本中，你必须关闭服务器并使用 &lt;code&gt;--upgrade=FORCE&lt;/code&gt; 选项重启它，以执行剩余的升级任务。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;使用-mysqldump-执行逻辑备份using-mysqldump-to-perform-a-logical-backup&#34;&gt;使用 mysqldump 执行逻辑备份（Using mysqldump to Perform a Logical Backup）
+&lt;/h5&gt;&lt;p&gt;以下命令是升级过程中执行逻辑备份的推荐方式：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mysqldump --all-databases --routines --events --add-drop-table &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  --lock-all-tables --flush-privileges&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; &amp;gt; data-for-upgrade.sql
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：使用 &lt;code&gt;mysqldump&lt;/code&gt; 备份数据的流程在标题为 “执行备份（Performing Backups）” 的课程中有介绍。&lt;/p&gt;
+&lt;h5 id=&#34;其他方法other-methods&#34;&gt;其他方法（Other Methods）
+&lt;/h5&gt;&lt;p&gt;如果你使用复制，可能需要执行滚动升级，即依次升级主机，而不同时关闭复制拓扑。&lt;/p&gt;
+&lt;p&gt;你也可以通过在升级期间使用临时主机运行应用程序来减少停机时间，该临时主机在升级期间投入使用。&lt;/p&gt;
+&lt;h4 id=&#34;mysql_upgrade&#34;&gt;mysql_upgrade
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;检查数据库中的所有表，查看其与当前 MySQL 服务器版本是否存在不兼容性&lt;/li&gt;
+&lt;li&gt;修复在存在潜在不兼容性的表中发现的任何问题&lt;/li&gt;
+&lt;li&gt;升级系统表，以添加新版本中可用的任何新权限或功能&lt;/li&gt;
+&lt;li&gt;用当前 MySQL 版本号标记所有已检查和修复的表&lt;/li&gt;
+&lt;li&gt;MySQL 服务器 8.0.16 及更高版本不需要此工具。服务器会在启动期间执行所有升级流程。8.0.16 中引入了一个新选项 &lt;code&gt;--upgrade&lt;/code&gt; 来控制升级过程。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;版本versions&#34;&gt;版本（Versions）
+&lt;/h5&gt;&lt;p&gt;在升级过程中，同一主机上可能同时存在多个版本的 &lt;code&gt;mysql_upgrade&lt;/code&gt;。确保你执行正确版本的 &lt;code&gt;mysql_upgrade&lt;/code&gt;，以便它能适配正确的 MySQL 目标版本。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--upgrade&lt;/code&gt; 选项有以下取值：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;AUTO（默认）&lt;/strong&gt;：服务器会对发现的所有过时内容执行自动升级。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NONE&lt;/strong&gt;：服务器在启动期间不执行任何自动升级步骤。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MINIMAL&lt;/strong&gt;：如有必要，服务器会升级数据字典，但不会升级其他任何内容。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;FORCE&lt;/strong&gt;：如有必要，服务器会升级数据字典，并强制升级其他所有内容。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>MySQL|OCP考试认证</title>
         <link>http://localhost:1313/p/mysqlocp%E8%80%83%E8%AF%95%E8%AE%A4%E8%AF%81/</link>
         <pubDate>Thu, 31 Jul 2025 00:35:01 +1730</pubDate>
