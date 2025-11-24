@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="优化查询性能\r目标：\n识别适用于优化的查询 检验查询索引耗用 创建查询以提高服务性能 维护索引统计信息 使用MySQL查询分析器 识别慢查询\r识别服务端执行的查询 通过通用查询日志和慢查询日志 识别耗时长的查询 使用慢查询日志 优先处理非异常查询或不常执行的查询之外的 查找执行频率高的查询 定期执行SHOW PROCESSLIST命令，或查询 Performance Schema 的threads表，查看当前正在执行的语句及其持续时间，并识别新出现的模式。 使用sys.statement_analysis查看标准化语句及其聚合统计信息。 将慢查询日志的阈值设置得较低，以记录大多数语句。 选择待优化的查询\r不要假定只需要优化最慢的查询语句 尽管这样的查询执行已经相对较快，通过优化频率最高的查询语句来提升系统的整体性能 优化频繁执行的查询（即使只是小幅优化）也能释放资源、减少锁定，并提高服务器的响应时间和吞吐量。 而优化不常执行的查询，整体收益会小得多 考虑以下示例 单次优化幅度看似微小：查询耗时从 20 毫秒减少到 15 毫秒，单次仅节省 5 毫秒。 但累计收益巨大：假设每分钟执行 5000 次，那么每分钟累计节省的时间为 5000×5 毫秒 = 25000 毫秒（25 秒），每小时累计节省 1500 秒（25 分钟），每天累计节省 600 分钟（10 小时）。这意味着服务器每天可额外释放 10 小时的资源用于处理其他任务，对整体吞吐量和响应速度的提升非常明显。 如果服务器在一个每分钟执行数千次的查询上多花费 5 毫秒，那么这可能会转化为该服务器上累计 15 到 20 秒的语句执行延迟。对频繁执行的查询进行微小优化，可能会带来更显著的整体性能提升。\n">
+<title>MySQL-08-优化查询性能</title>
+
+<link rel='canonical' href='http://localhost:1313/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-08-优化查询性能">
+<meta property='og:description' content="优化查询性能\r目标：\n识别适用于优化的查询 检验查询索引耗用 创建查询以提高服务性能 维护索引统计信息 使用MySQL查询分析器 识别慢查询\r识别服务端执行的查询 通过通用查询日志和慢查询日志 识别耗时长的查询 使用慢查询日志 优先处理非异常查询或不常执行的查询之外的 查找执行频率高的查询 定期执行SHOW PROCESSLIST命令，或查询 Performance Schema 的threads表，查看当前正在执行的语句及其持续时间，并识别新出现的模式。 使用sys.statement_analysis查看标准化语句及其聚合统计信息。 将慢查询日志的阈值设置得较低，以记录大多数语句。 选择待优化的查询\r不要假定只需要优化最慢的查询语句 尽管这样的查询执行已经相对较快，通过优化频率最高的查询语句来提升系统的整体性能 优化频繁执行的查询（即使只是小幅优化）也能释放资源、减少锁定，并提高服务器的响应时间和吞吐量。 而优化不常执行的查询，整体收益会小得多 考虑以下示例 单次优化幅度看似微小：查询耗时从 20 毫秒减少到 15 毫秒，单次仅节省 5 毫秒。 但累计收益巨大：假设每分钟执行 5000 次，那么每分钟累计节省的时间为 5000×5 毫秒 = 25000 毫秒（25 秒），每小时累计节省 1500 秒（25 分钟），每天累计节省 600 分钟（10 小时）。这意味着服务器每天可额外释放 10 小时的资源用于处理其他任务，对整体吞吐量和响应速度的提升非常明显。 如果服务器在一个每分钟执行数千次的查询上多花费 5 毫秒，那么这可能会转化为该服务器上累计 15 到 20 秒的语句执行延迟。对频繁执行的查询进行微小优化，可能会带来更显著的整体性能提升。\n">
+<meta property='og:url' content='http://localhost:1313/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-26T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-08-26T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="MySQL-08-优化查询性能">
+<meta name="twitter:description" content="优化查询性能\r目标：\n识别适用于优化的查询 检验查询索引耗用 创建查询以提高服务性能 维护索引统计信息 使用MySQL查询分析器 识别慢查询\r识别服务端执行的查询 通过通用查询日志和慢查询日志 识别耗时长的查询 使用慢查询日志 优先处理非异常查询或不常执行的查询之外的 查找执行频率高的查询 定期执行SHOW PROCESSLIST命令，或查询 Performance Schema 的threads表，查看当前正在执行的语句及其持续时间，并识别新出现的模式。 使用sys.statement_analysis查看标准化语句及其聚合统计信息。 将慢查询日志的阈值设置得较低，以记录大多数语句。 选择待优化的查询\r不要假定只需要优化最慢的查询语句 尽管这样的查询执行已经相对较快，通过优化频率最高的查询语句来提升系统的整体性能 优化频繁执行的查询（即使只是小幅优化）也能释放资源、减少锁定，并提高服务器的响应时间和吞吐量。 而优化不常执行的查询，整体收益会小得多 考虑以下示例 单次优化幅度看似微小：查询耗时从 20 毫秒减少到 15 毫秒，单次仅节省 5 毫秒。 但累计收益巨大：假设每分钟执行 5000 次，那么每分钟累计节省的时间为 5000×5 毫秒 = 25000 毫秒（25 秒），每小时累计节省 1500 秒（25 分钟），每天累计节省 600 分钟（10 小时）。这意味着服务器每天可额外释放 10 小时的资源用于处理其他任务，对整体吞吐量和响应速度的提升非常明显。 如果服务器在一个每分钟执行数千次的查询上多花费 5 毫秒，那么这可能会转化为该服务器上累计 15 到 20 秒的语句执行延迟。对频繁执行的查询进行微小优化，可能会带来更显著的整体性能提升。\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">好记性不如烂笔头</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#优化查询性能">优化查询性能</a>
+      <ol>
+        <li><a href="#识别慢查询">识别慢查询</a>
+          <ol>
+            <li><a href="#选择待优化的查询">选择待优化的查询</a></li>
+          </ol>
+        </li>
+        <li><a href="#explain语句"><code>EXPLAIN</code>语句</a>
+          <ol>
+            <li><a href="#使用-explain语句来查看优化器选择的索引">使用 <code>EXPLAIN</code>语句来查看优化器选择的索引</a></li>
+            <li><a href="#重写与优化操作">重写与优化操作</a></li>
+            <li><a href="#explain示例全表扫描"><code>EXPLAIN</code>示例：全表扫描</a></li>
+            <li><a href="#explain示例主键"><code>EXPLAIN</code>示例：主键</a></li>
+            <li><a href="#explain示例不唯一索引"><code>EXPLAIN</code>示例：不唯一索引</a></li>
+            <li><a href="#explain和复杂查询"><code>EXPLAIN</code>和复杂查询</a></li>
+            <li><a href="#explain示例简单连接"><code>EXPLAIN</code>示例：简单连接</a></li>
+            <li><a href="#explain-格式">EXPLAIN 格式</a></li>
+            <li><a href="#explain-analyze">EXPLAIN ANALYZE</a></li>
+            <li><a href="#哈希连接优化hash-join-optimization">哈希连接优化（Hash Join Optimization）</a></li>
+          </ol>
+        </li>
+        <li><a href="#索引的使用">索引的使用</a>
+          <ol>
+            <li><a href="#索引类型">索引类型</a></li>
+            <li><a href="#创建索引来提升查询性能">创建索引来提升查询性能</a></li>
+            <li><a href="#在已存在的表上创建索引">在已存在的表上创建索引</a></li>
+            <li><a href="#删除索引">删除索引</a></li>
+            <li><a href="#展示索引源数据">展示索引源数据</a></li>
+            <li><a href="#不可见索引invisible-indexes">不可见索引（Invisible Indexes）</a></li>
+          </ol>
+        </li>
+        <li><a href="#索引统计信息">索引统计信息</a>
+          <ol>
+            <li><a href="#维护-innodb索引统计信息">维护 <code>InnoDB</code>索引统计信息</a></li>
+            <li><a href="#自动更新索引统计信息">自动更新索引统计信息</a></li>
+            <li><a href="#使用-analyze-table">使用 <code>ANALYZE TABLE</code></a></li>
+            <li><a href="#重建索引">重建索引</a></li>
+            <li><a href="#mysqlcheck-客户端程序">mysqlcheck 客户端程序</a></li>
+            <li><a href="#直方图histograms">直方图（Histograms）</a></li>
+          </ol>
+        </li>
+        <li><a href="#mysql查询分析器">MySQL查询分析器</a>
+          <ol>
+            <li><a href="#查询响应时间指数query-response-time-indexqrti"><strong>查询响应时间指数（Query Response Time Index，QRTi）</strong></a></li>
+            <li><a href="#查询分析器用户界面">查询分析器用户界面</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql/" style="background-color: ; color: #fff;">
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/">MySQL-08-优化查询性能</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-08-26</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="优化查询性能">优化查询性能
+</h2><p>目标：</p>
+<ul>
+<li>识别适用于优化的查询</li>
+<li>检验查询索引耗用</li>
+<li>创建查询以提高服务性能</li>
+<li>维护索引统计信息</li>
+<li>使用<code>MySQL</code>查询分析器</li>
+</ul>
+<h3 id="识别慢查询">识别慢查询
+</h3><ul>
+<li>识别服务端执行的查询
+<ul>
+<li>通过通用查询日志和慢查询日志</li>
+</ul>
+</li>
+<li>识别耗时长的查询
+<ul>
+<li>使用慢查询日志</li>
+<li>优先处理非异常查询或不常执行的查询之外的</li>
+</ul>
+</li>
+<li>查找执行频率高的查询
+<ul>
+<li>定期执行<code>SHOW PROCESSLIST</code>命令，或查询 Performance Schema 的<code>threads</code>表，查看当前正在执行的语句及其持续时间，并识别新出现的模式。</li>
+<li>使用<code>sys.statement_analysis</code>查看标准化语句及其聚合统计信息。</li>
+<li>将慢查询日志的阈值设置得较低，以记录大多数语句。</li>
+</ul>
+</li>
+</ul>
+<h4 id="选择待优化的查询">选择待优化的查询
+</h4><ul>
+<li>不要假定只需要优化最慢的查询语句
+<ul>
+<li>尽管这样的查询执行已经相对较快，通过优化频率最高的查询语句来提升系统的整体性能
+<ul>
+<li>优化频繁执行的查询（即使只是小幅优化）也能释放资源、减少锁定，并提高服务器的响应时间和吞吐量。</li>
+<li>而优化不常执行的查询，整体收益会小得多</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>考虑以下示例
+<ul>
+<li>单次优化幅度看似微小：查询耗时从 20 毫秒减少到 15 毫秒，单次仅节省 5 毫秒。</li>
+<li>但累计收益巨大：假设每分钟执行 5000 次，那么每分钟累计节省的时间为 5000×5 毫秒 = 25000 毫秒（25 秒），每小时累计节省 1500 秒（25 分钟），每天累计节省 600 分钟（10 小时）。这意味着服务器每天可额外释放 10 小时的资源用于处理其他任务，对整体吞吐量和响应速度的提升非常明显。</li>
+</ul>
+</li>
+</ul>
+<p>如果服务器在一个每分钟执行数千次的查询上多花费 5 毫秒，那么这可能会转化为该服务器上累计 15 到 20 秒的语句执行延迟。对频繁执行的查询进行微小优化，可能会带来更显著的整体性能提升。</p>
+<h3 id="explain语句"><code>EXPLAIN</code>语句
+</h3><h4 id="使用-explain语句来查看优化器选择的索引">使用 <code>EXPLAIN</code>语句来查看优化器选择的索引
+</h4><ul>
+<li><code>EXPLAIN</code>命令的核心功能是生成查询执行计划，展示优化器打算如何执行给定的 SQL 语句，其中包含 MySQL 服务器优化的相关信息。</li>
+<li>该命令适用于多种 SQL 语句，包括<code>SELECT</code>、<code>INSERT</code>、<code>REPLACE</code>、<code>UPDATE</code>和<code>DELETE</code>。</li>
+<li>使用<code>EXPLAIN</code>时，不会从数据集中返回任何数据，也不会对语句中的数据进行任何修改（仅用于分析执行计划，不实际执行操作）。</li>
+<li>优化器选择最佳操作的依据包括：查询本身的内容、查询中涉及的表的结构，以及所有相关的索引。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507101638621.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="EXPLAIN:example"
+	
+	
+></p>
+<p>（上图输出存在一个警告，当使用 <code>EXPLAIN</code>去查看 <code>SELECT</code>语句的执行计划时，它会产生一个 <code>note</code>级别的事件用来说明查询重写和优化动作，当 <code>sql_notes</code>系统变量设置为 1 (默认值) 时<code>note</code>级别的事件被视作警告）</p>
+<p><code>EXPLAIN</code>语句输出详解：</p>
+<ul>
+<li>
+<p>id</p>
+<ul>
+<li>标识每个 SELECT (或子查询/DML语句)的执行顺序</li>
+<li>id值相同表示同一执行层级（从上到下顺序执行），值越大优先级越高</li>
+</ul>
+</li>
+<li>
+<p><strong><code>select_type</code></strong></p>
+<ul>
+<li><strong>核心作用</strong>：描述查询的复杂度类型。</li>
+<li>常见值
+<ul>
+<li><strong><code>SIMPLE</code></strong>：简单查询（不含UNION/子查询）</li>
+<li><strong><code>PRIMARY</code></strong>：最外层查询（含子查询时出现）。</li>
+<li><strong><code>UNION</code></strong>：UNION中第二个及之后的查询。</li>
+<li><strong><code>SUBQUERY</code></strong>：子查询中的第一个SELECT。</li>
+<li><strong><code>INSERT/REPLACE/UPDATE/DELETE</code></strong>：DML语句的查询类型标识。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>table</code></strong></p>
+<ul>
+<li><strong>作用</strong>：显示当前行数据访问的<strong>表名</strong>或子查询别名（如<code>&lt;subquery2&gt;</code>）。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>partitions</code></strong></p>
+<ul>
+<li><strong>作用</strong>：查询匹配的分区名（未分区时为<code>NULL</code>）。</li>
+<li><strong>示例</strong>：若按月份分区，值可能为<code>p_2023_jan</code>。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>type</code></strong>（<strong>关键性能指标</strong>）</p>
+<ul>
+<li>定义：
+<ul>
+<li>表访问方式（性能从优到劣排序）：</li>
+<li><code>system</code> &gt; <code>const</code> &gt; <code>eq_ref</code> &gt; <code>ref</code> &gt; <code>range</code> &gt; <code>index</code> &gt; <code>ALL</code></li>
+</ul>
+</li>
+<li>说明：
+<ul>
+<li><strong><code>system</code></strong>：表只有一行数据(如系统表或衍生表)</li>
+<li><strong><code>const</code></strong>：通过主键/唯一索引定位单行（最高效）。</li>
+<li><strong><code>eq_ref</code></strong>：多表关联时，主键或唯一索引作为关联条件(每轮匹配仅返回一行)。</li>
+<li><strong><code>ref</code></strong>：使用非唯一索引单值查找（可能返回多行）。</li>
+<li><strong><code>range</code></strong>：索引范围扫描（如 BETWEEN、IN、&gt;等）。</li>
+<li><strong><code>index</code></strong>：全索引扫描（遍历索引树，但比ALL稍快）。</li>
+<li><strong><code>ALL</code></strong>：全表扫描（无索引可用，性能最差）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>possible_keys</code></strong></p>
+<ul>
+<li><strong>作用</strong>：<strong>理论上</strong>可用的索引（可能为空）。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>key</code></strong></p>
+<ul>
+<li><strong>作用</strong>：<strong>实际使用的索引</strong>（优化器选择的最优索引）。</li>
+<li><strong>注意</strong>：可能不在<code>possible_keys</code>中（优化器根据成本选择）。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>key_len</code></strong></p>
+<ul>
+<li>
+<p><strong>作用</strong>：表示查询中<strong>实际使用的索引部分</strong>的字节长度（从左到右计算）。</p>
+</li>
+<li>
+<p>关键点：</p>
+<ul>
+<li>复合索引中，若仅使用前两列，则<code>key_len</code>只计算这两列的总字节数。</li>
+<li>可判断<strong>索引是否被充分利用</strong>（例如：<code>varchar(255)</code>+<code>NOT NULL</code>的<code>key_len</code>为<code>255 * 3+2=767</code>字节，UTF-8编码）。</li>
+</ul>
+</li>
+<li>
+<p>示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">users</span> <span class="n">ADD</span> <span class="n">INDEX</span> <span class="n">idx_name_age</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">EXPLAIN</span> <span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">users</span> <span class="n">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Alice&#39;</span><span class="p">;</span> <span class="o">--</span> <span class="err">假设</span><span class="n">name是varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">key_len</span><span class="o">=</span><span class="mi">767</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>. <strong><code>ref</code></strong></p>
+<ul>
+<li>
+<p><strong>作用</strong>：显示与索引比较的<strong>列名或常量</strong>（即索引的匹配条件）。</p>
+</li>
+<li>
+<p>常见值：</p>
+<ul>
+<li><code>const</code>：常量值（如<code>WHERE id = 1</code>）。</li>
+<li><code>func</code>：函数计算结果（如<code>WHERE UPPER(name) = 'ALICE'</code>）。</li>
+<li>列名：多表关联时显示关联列（如<code>users.id</code>）。</li>
+</ul>
+</li>
+<li>
+<p>示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">EXPLAIN SELECT * FROM orders JOIN users ON orders.user_id = users.id;
+</span></span><span class="line"><span class="cl">-- ref字段可能显示：`test_db.users.id`（数据库名.表名.列名）
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p><strong><code>rows</code></strong></p>
+<ul>
+<li>
+<p><strong>作用</strong>：优化器<strong>预估</strong>需要扫描的行数（非精确值，基于统计信息）。</p>
+</li>
+<li>
+<p>重要性：</p>
+<ul>
+<li>值越大，查询成本越高。</li>
+<li>若实际行数与预估差异大，可能需更新统计信息（<code>ANALYZE TABLE</code>）。</li>
+</ul>
+</li>
+<li>
+<p>示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">EXPLAIN SELECT * FROM logs WHERE date &gt; &#39;2023-01-01&#39;; -- rows=10000（预估扫描1万行）
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p><strong><code>filtered</code></strong></p>
+<ul>
+<li>
+<p><strong>作用</strong>：表示<strong>存储引擎层过滤后</strong>，剩余数据满足其他条件的百分比（范围：0~100）。</p>
+</li>
+<li>
+<p>应用场景：</p>
+<ul>
+<li>低百分比（如10%）可能提示索引效率低或条件过于宽松。</li>
+<li>与<code>type=ALL</code>结合时，可判断全表扫描后的过滤代价。</li>
+</ul>
+</li>
+<li>
+<p>示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">EXPLAIN SELECT * FROM products WHERE price &gt; 100 AND category = &#39;electronics&#39;;
+</span></span><span class="line"><span class="cl">-- filtered=30%（价格&gt;100的记录中，30%属于电子产品类别）
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p><strong><code>Extra</code></strong>（<strong>关键诊断字段</strong>）</p>
+<ul>
+<li>
+<p>作用：</p>
+<ul>
+<li>
+<p>提供优化器或存储引擎的额外执行细节，常见值及含义</p>
+<ul>
+<li>
+<p><strong><code>Using index</code></strong>：仅通过索引即可获取数据（覆盖索引，高效）。</p>
+</li>
+<li>
+<p><strong><code>Using where</code></strong>：需在存储引擎层后过滤数据（可能未用索引）。</p>
+</li>
+<li>
+<p><strong><code>Using temporary</code></strong>：使用临时表（排序/分组时常见，需优化）。</p>
+</li>
+<li>
+<p><strong><code>Using filesort</code></strong>：额外排序操作（可能需添加索引优化）。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="重写与优化操作">重写与优化操作
+</h4><ul>
+<li>使用 <code>SHOW WARNINGS</code>  来展示更多关于优化的细节</li>
+<li>每条展示的信息提供了该查询关于优化器计划的更多扩展信息</li>
+<li>会以<strong>伪SQL形式</strong>展示查询优化后的操作序列，例如：
+<img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507101735086.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250710173519950"
+	
+	
+></li>
+</ul>
+<p><code>EXPLAIN</code> 会产生错误代码为 <strong>1003</strong> 的提示信息（Note-Level Messages）。该错误代码对应的内部符号为 <code>ER_YES</code>，关联的错误名称为 <code>YES</code>。当 <code>sql_notes</code> 设置为 <strong>1</strong> 时，这些提示信息会被视为警告（Warnings）。虽然它们并非传统意义上的警告或错误，但可以通过客户端接口查看这些额外信息。某些存储引擎（如 <strong>NDB</strong>）还会在 <code>SHOW WARNINGS</code> 的输出中添加存储引擎特定的优化提示。</p>
+<h4 id="explain示例全表扫描"><code>EXPLAIN</code>示例：全表扫描
+</h4><p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507101735876.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<ul>
+<li><code>possible_keys</code>, <code>key</code>和 <code>key_len</code> 列显示为 <code>NULL</code>
+<ul>
+<li>查询不能用任何索引来提升查询性能</li>
+</ul>
+</li>
+<li><code>type</code>列显示的值为 <code>ALL</code>说明是全表扫描</li>
+<li><code>rows</code>列显示数字为 299246
+<ul>
+<li>这是 <code>InnoDB</code>预估的表的行数（实际行数可能有差异，但代表要扫描的数据量级 ）</li>
+</ul>
+</li>
+</ul>
+<h4 id="explain示例主键"><code>EXPLAIN</code>示例：主键
+</h4><p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111004217.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="explain-primarykey"
+	
+	
+></p>
+<ul>
+<li>操作类型（<code>type</code>）为 <code>const</code>。
+<code>const</code> 类型的查询会将字面量（常量）值与主键或唯一键进行匹配。</li>
+<li>所选索引在 <code>key</code> 列中显示为 <code>PRIMARY</code>，长度为 4 字节。
+该索引会与一个引用的常量值进行等值比较，由 <code>ref: const</code> 体现。
+将主键与指定常量值比较，最多只会产生一行结果。</li>
+<li>此外，优化器估计只需检查一行数据，这由 <code>rows</code> 列中的值体现。</li>
+</ul>
+<h4 id="explain示例不唯一索引"><code>EXPLAIN</code>示例：不唯一索引
+</h4><p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111129533.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711112945293"
+	
+	
+></p>
+<ul>
+<li>操作类型（<code>type</code>）为 <code>ref</code>
+<ul>
+<li>将列值与一个引用值（常量）进行比较。</li>
+<li>把引用值与非唯一列进行匹配。</li>
+<li>可能匹配到多条记录。</li>
+</ul>
+</li>
+<li>优化器估算匹配的行数为 2 行。
+<ul>
+<li>实际数值取决于数据情况。</li>
+</ul>
+</li>
+<li>“<code>Extra</code>” 中的 “<code>Using index</code>” 表示：查询无需额外回表去读取实际行的数据（即利用了覆盖索引 ）</li>
+</ul>
+<h4 id="explain和复杂查询"><code>EXPLAIN</code>和复杂查询
+</h4><ul>
+<li>当分析一个复杂查询语句时，<code>EXPLAIN</code>产生多个输出行
+<ul>
+<li>复杂查询语句博爱错子查询 <code>UNION</code>子句或者 <code>JOIN</code>子句</li>
+</ul>
+</li>
+<li>每行使用一个 <code>id</code>来唯一标识与它相关的语句
+<ul>
+<li>如果一个 <code>SELECT</code>语句含有的一个子查询或者 <code>UNION</code>子句 中包含了 <code>SELECT</code>语句，将会得到两行、每行有不同的id
+<ul>
+<li>每行相关的表操作在独立的语句中</li>
+</ul>
+</li>
+<li>对于连接两个表的单个 <code>SELECT</code>语句，会得到有着相同 <code>id</code>的两行
+<ul>
+<li>两行都是在相同语句下相关的表操作</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="explain示例简单连接"><code>EXPLAIN</code>示例：简单连接
+</h4><p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111130475.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711113045394"
+	
+	
+></p>
+<p>当在一个查询中连接多个表时，优化器必须对每个表进行一次操作</p>
+<ul>
+<li>当面的连接有一个 WHERE 子句，它引用了一个未索引的字段。</li>
+<li>第一个操作是对 titles 表的 emp_no 索引中的所有行进行索引扫描。
+<ul>
+<li>它读取所有索引条目，并根据 WHERE 子句针对主键值对其进行过滤。InnoDB 表中的所有二级索引也包含主键值。・</li>
+</ul>
+</li>
+<li>第二个操作引用第一个操作：
+<ul>
+<li>第二个操作的类型是 eq_ref，表明它将每行与比较值进行相等匹配。</li>
+<li>所涉及的值是限定列名 employees.titles.emp_no，这表明要比较的值不是语句中提供的常量，而是来自另一个列</li>
+</ul>
+</li>
+</ul>
+<h4 id="explain-格式">EXPLAIN 格式
+</h4><ul>
+<li>TRADITIONAL：（默认）
+<ul>
+<li>以默认的表格格式呈现输出</li>
+</ul>
+</li>
+<li>JSON：
+<ul>
+<li>以 JSON 格式呈现输出</li>
+<li>包含估算的成本和行数</li>
+</ul>
+</li>
+<li>TREE：
+<ul>
+<li>以树形格式呈现输出</li>
+<li>包含估算的成本和行数</li>
+<li>自 MySQL 8.0.16 起可用</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111346007.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711134650878"
+	
+	
+></p>
+<h5 id="explain的json格式">EXPLAIN的JSON格式：
+</h5><p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111350066.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711135023962"
+	
+	
+></p>
+<h4 id="explain-analyze">EXPLAIN ANALYZE
+</h4><ul>
+<li>自 MySQL <u>8.0.18</u> 版本起可用。
+它允许你为查询生成执行计划、监测查询执行过程，并执行查询但不返回查询结果。</li>
+<li>输出类似于 <code>EXPLAIN FORMAT=TREE</code>，但包含额外的实际统计信息：
+<ul>
+<li>返回首行的时间（以毫秒为单位）</li>
+<li>返回所有行的时间（以毫秒为单位）</li>
+<li>迭代器返回的行数</li>
+<li>循环次数</li>
+</ul>
+</li>
+</ul>
+<h4 id="哈希连接优化hash-join-optimization">哈希连接优化（Hash Join Optimization）
+</h4><ul>
+<li>自 MySQL 8.0.18 版本起可用</li>
+<li>适用于满足以下条件的查询：每个连接都有等值连接条件，且未使用索引</li>
+<li>在上述场景中，比块嵌套循环算法更快</li>
+<li>在第一个表上构建哈希表，然后扫描第二个表中的每一行，利用哈希表查找匹配的行</li>
+<li>仅可通过 <code>EXPLAIN FORMAT=TREE</code> 和 <code>EXPLAIN ANALYZE</code> 查看相关执行信息</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111353737.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711135316626"
+	
+	
+></p>
+<h3 id="索引的使用">索引的使用
+</h3><h4 id="索引类型">索引类型
+</h4><ul>
+<li><strong>非唯一（Nonunique）</strong>：值在索引中可以多次出现。—— 这是默认的索引类型。</li>
+<li><strong>唯一（Unique）</strong>：值必须唯一（或为 NULL ）。</li>
+<li><strong>主键（Primary key）</strong>：值是唯一的，且不能包含 NULL 。—— 每个表最多有一个主键。</li>
+<li><strong>全文（Fulltext）</strong>：值是字符串数据，且该索引支持全文搜索。</li>
+<li><strong>空间（Spatial）</strong>：值是空间数据类型，如 GEOMETRY、POINT 或 POLYGON 。</li>
+<li><strong>函数式（Functional）</strong>：值是基于表中值的表达式或函数的结果</li>
+</ul>
+<p>上述索引类型在 <code>InnoDB</code>中时支持使用的，其他存储引擎可能不支持</p>
+<h4 id="创建索引来提升查询性能">创建索引来提升查询性能
+</h4><ul>
+<li>能够高效的获取数据行
+<ul>
+<li>在索引字段中搜索某个值的查询可以立即找到包含该值的行。
+<ul>
+<li>一种<strong>高效</strong>的<strong>查找</strong>操作</li>
+</ul>
+</li>
+<li>在非索引字段中搜索某个值的查询必须读取所有行才能找到包含该值的行。
+<ul>
+<li>一种<strong>低效</strong>的<strong>扫描</strong>操作</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>支持以下操作：
+<ul>
+<li>直接值匹配</li>
+<li>存在性检查</li>
+<li>范围扫描</li>
+</ul>
+</li>
+</ul>
+<h4 id="在已存在的表上创建索引">在已存在的表上创建索引
+</h4><p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111413966.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711141341868"
+	
+	
+></p>
+<p>注意： <code>ALTER TABLE</code>操作可能会锁表（尤其是达标），另其他数据库的函数式索引语法可能不尽相同</p>
+<h4 id="删除索引">删除索引
+</h4><p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111418904.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711141838808"
+	
+	
+></p>
+<h4 id="展示索引源数据">展示索引源数据
+</h4><ul>
+<li><code>SHOW CREATE TABLE tablename</code> 语句：
+<ul>
+<li>结果会显示表中的所有索引，包括索引名称、索引类型以及被索引的列。</li>
+</ul>
+</li>
+<li><code>SHOW INDEXES FROM tablename</code> 语句：
+<ul>
+<li>它会返回表的索引信息，包括一些索引统计数据。</li>
+<li>通过查询 <code>INFORMATION_SCHEMA</code> 的 <code>STATISTICS</code> 视图，或者使用带 <code>-k</code> 选项的 <code>mysqlshow</code> 客户端程序，也可以获得类似信息 。</li>
+</ul>
+</li>
+</ul>
+<h4 id="不可见索引invisible-indexes">不可见索引（Invisible Indexes）
+</h4><ul>
+<li>
+<p>允许你将索引对优化器 “隐藏” 起来</p>
+</li>
+<li>
+<p>测试移除索引对查询性能的影响</p>
+<ul>
+<li>无需执行删除索引这样具有破坏性的操作</li>
+<li>若发现索引仍需使用，可避免重新创建索引的高昂开销</li>
+</ul>
+</li>
+<li>
+<p>当通过数据操作语言（DML）语句修改数据时，服务器仍会更新这些索引</p>
+</li>
+<li>
+<p>不能应用于主键</p>
+</li>
+<li>
+<p>应<code>在CREATE TABLE</code>、<code>ALTER TABLE</code></p>
+<p>或<code>CREATE INDEX</code>语句中标记为<code>INVISIBLE</code></p>
+<ul>
+<li>可使用 <code>VISIBLE</code> 关键字 “取消隐藏”</li>
+</ul>
+</li>
+</ul>
+<h3 id="索引统计信息">索引统计信息
+</h3><h4 id="维护-innodb索引统计信息">维护 <code>InnoDB</code>索引统计信息
+</h4><ul>
+<li>MySQL 的优化器使用索引键分布统计信息来决定：
+<ul>
+<li>在查询中，MySQL 对特定表使用哪些索引</li>
+<li>当对非常量进行连接操作时的连接顺序</li>
+</ul>
+</li>
+<li>更新索引统计信息：
+<ul>
+<li>当表中 10% 的行发生变化后，自动更新</li>
+<li>使用 <code>ANALYZE TABLE</code> 语句手动更新</li>
+</ul>
+</li>
+</ul>
+<h4 id="自动更新索引统计信息">自动更新索引统计信息
+</h4><ul>
+<li><code>InnoDB</code>持久化存储统计信息
+<ul>
+<li>通过 <code>innodb_stats_persistent</code>变量启用</li>
+<li>每个表通过表选项 <code>STATS_PERSISTENT</code>启用</li>
+<li>存储于 <code> mysql.innodb_index_stats</code>表中</li>
+</ul>
+</li>
+<li>统计信息自动更新
+<ul>
+<li>默认采样 20 个数据页
+<ul>
+<li>可通过 <code>innodb_stats_persistent_sample_pages</code> 变量修改</li>
+</ul>
+</li>
+<li>当 10% 的行发生变化后，由 <code>innodb_stats_auto_recalc</code> 变量默认启用更新</li>
+<li>可选地，在执行 <code>SHOW TABLE STATUS</code> 等元数据语句后，或查询 <code>INFORMATION_SCHEMA.TABLES</code> 时，由 <code>innodb_stats_on_metadata</code> 变量启用更新</li>
+</ul>
+</li>
+</ul>
+<p>如果为一个或多个表禁用持久化统计信息收集，InnoDB 会在内部以临时形式（重启后会丢失）存储这些表的统计信息，并使用 <code>innodb_stats_transient_sample_pages</code> 变量的值来决定读取多少个数据页。</p>
+<h4 id="使用-analyze-table">使用 <code>ANALYZE TABLE</code>
+</h4><ul>
+<li>
+<p>分析并存储表的键分布统计信息</p>
+</li>
+<li>
+<p>用于优化查询执行计划的选择</p>
+</li>
+<li>
+<p>适用于 InnoDB、NDB 和 MyISAM 存储引擎的表</p>
+</li>
+<li>
+<p>支持分区表</p>
+</li>
+<li>
+<p><code>ANALYZE TABLE</code>选项：</p>
+<ul>
+<li><code>NO_WRITE_TO_BINLOG</code> 或 <code>LOCAL</code>：禁止将操作写入二进制日志</li>
+</ul>
+</li>
+<li>
+<p><code>ANALYZE TABLE</code> 结果示例
+<img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111440712.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711144057577"
+	
+	
+></p>
+</li>
+</ul>
+<h4 id="重建索引">重建索引
+</h4><ul>
+<li>
+<p>使用<code>FORCE</code>选项：</p>
+<ul>
+<li>即使语句未改变表结构，也强制重建索引</li>
+<li>重新组织数据，使数据在数据页上分布更均匀</li>
+<li>回收空页占用的文件系统空间</li>
+</ul>
+<p>表经过大量 <code>DELETE</code> 或 <code>UPDATE</code> 后出现性能下降（如查询变慢），可能是索引碎片过多导致，此时用 <code>FORCE</code> 重建可优化性能</p>
+</li>
+<li>
+<p>使用 <code>OPTIMIZE TABLE</code>重建全文索引：</p>
+<ul>
+<li>默认情况下，<code>OPTIMIZE TABLE</code> 会重建整个表</li>
+<li><code>innodb_optimize_fulltext_only</code> 选项确保 <code>OPTIMIZE TABLE</code> 仅重建全文索引</li>
+</ul>
+<p>全文索引（如文章内容的索引）因频繁更新导致查询效率下降时，单独重建全文索引比优化整个表更高效，尤其适合大表</p>
+</li>
+</ul>
+<p><strong>注意事项</strong></p>
+<ul>
+<li><strong>锁表影响</strong>：<code>FORCE</code> 和 <code>OPTIMIZE TABLE</code> 执行时会对表加锁（InnoDB 中可能是短时表锁），期间会阻塞读写操作，建议在低峰期执行。</li>
+<li><strong>性能开销</strong>：重建索引需扫描和重写数据，大表可能耗时较长，且会增加磁盘 I/O 和 CPU 负载</li>
+</ul>
+<h4 id="mysqlcheck-客户端程序">mysqlcheck 客户端程序
+</h4><ul>
+<li>相比执行 SQL 语句，使用它可能更便捷</li>
+<li>适用于 InnoDB、MyISAM 和 ARCHIVE 存储引擎的表</li>
+<li>支持三个级别的检查：
+<ul>
+<li>特定表</li>
+<li>特定数据库</li>
+<li>所有数据库</li>
+</ul>
+</li>
+<li><code>mysqlcheck</code>的一些维护选项：
+<ul>
+<li><code>--analyze</code>：执行 <code>ANALYZE TABLE</code> 操作</li>
+<li><code>--check</code>：执行 <code>CHECK TABLE</code> 操作（默认选项）</li>
+<li><code>--optimize</code>：执行 <code>OPTIMIZE TABLE</code> 操作</li>
+</ul>
+</li>
+</ul>
+<h4 id="直方图histograms">直方图（Histograms）
+</h4><ul>
+<li>为优化器提供非索引列内数据分布的额外信息
+<ul>
+<li>优化器了解索引列的数据分布，但不了解未构成索引的列的数据分布。</li>
+<li>倾斜的数据可能会影响查询性能。</li>
+</ul>
+</li>
+<li>近似估算这些列内的数据分布</li>
+<li>使优化器能够做出更合理的决策</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111608000.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711160851876"
+	
+	
+></p>
+<h3 id="mysql查询分析器">MySQL查询分析器
+</h3><ul>
+<li>监控在MySQL服务器上执行的SQL语句
+<ul>
+<li>查询的类型</li>
+<li>执行次数</li>
+<li>执行事件</li>
+</ul>
+</li>
+<li>默认通过使用MySQL Enterprise Monitor Agent从性能模式中提取信息
+<ul>
+<li>可以配置客户端应用程序，通过 MySQL 代理（MySQL Proxy）和 MySQL 聚合器（MySQL Aggregator）路由数据库请求</li>
+<li>可以安装连接器插件（Connector plugin），将这些信息直接发送到 MySQL 企业监控服务管理器（MySQL Enterprise Monitor Service Manager）</li>
+</ul>
+</li>
+<li>对查询进行标准化处理，以便于报告生成
+<ul>
+<li>将具有不同字面量值的相似查询合并</li>
+</ul>
+</li>
+<li>允许深入查看每个查询的详细信息</li>
+</ul>
+<h4 id="查询响应时间指数query-response-time-indexqrti"><strong>查询响应时间指数（Query Response Time Index，QRTi）</strong>
+</h4><p>MySQL 查询分析器会为每个查询生成一个查询响应时间指数（QRTi）。</p>
+<ul>
+<li>提供一个 “一目了然” 的查询性能指标</li>
+<li>由一种算法生成，该算法会考虑每个查询的执行次数和持续时间
+<img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111618743.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711161848652"
+	
+	
+></li>
+</ul>
+<h4 id="查询分析器用户界面">查询分析器用户界面
+</h4><p><img src="https://cdn.jsdelivr.net/gh/limlx233/images@main/202507111612098.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250711161221001"
+	
+	
+></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/mysql-13-%E9%80%9A%E8%BF%87-innodb-%E9%9B%86%E7%BE%A4%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-13-通过 InnoDB 集群实现高可用性</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-12-管理复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-11-配置复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-10-执行备份</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-09-备份策略</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

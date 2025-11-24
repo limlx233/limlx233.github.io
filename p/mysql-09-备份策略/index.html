@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="备份策略\r目标：\n认识备份的不同类型 阐述不同备份技术的优缺点 实施备份策略 理解备份\r备份的原因\r数据库恢复 从完全系统故障中恢复 将系统的某些部分恢复到用户发生错误之前 审计和分析 创建一个独立于主要生产环境用来数据审计或分析 DBA经典任务 不同系统间迁移数据 基于一个产品服务器的具体状态创建开发环境 备份的类型\r备份的类型影响在备份期间应用如何于数据交互\n">
+<title>MySQL-09-备份策略</title>
+
+<link rel='canonical' href='http://localhost:1313/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-09-备份策略">
+<meta property='og:description' content="备份策略\r目标：\n认识备份的不同类型 阐述不同备份技术的优缺点 实施备份策略 理解备份\r备份的原因\r数据库恢复 从完全系统故障中恢复 将系统的某些部分恢复到用户发生错误之前 审计和分析 创建一个独立于主要生产环境用来数据审计或分析 DBA经典任务 不同系统间迁移数据 基于一个产品服务器的具体状态创建开发环境 备份的类型\r备份的类型影响在备份期间应用如何于数据交互\n">
+<meta property='og:url' content='http://localhost:1313/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-27T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-08-27T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="MySQL-09-备份策略">
+<meta name="twitter:description" content="备份策略\r目标：\n认识备份的不同类型 阐述不同备份技术的优缺点 实施备份策略 理解备份\r备份的原因\r数据库恢复 从完全系统故障中恢复 将系统的某些部分恢复到用户发生错误之前 审计和分析 创建一个独立于主要生产环境用来数据审计或分析 DBA经典任务 不同系统间迁移数据 基于一个产品服务器的具体状态创建开发环境 备份的类型\r备份的类型影响在备份期间应用如何于数据交互\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">好记性不如烂笔头</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#备份策略">备份策略</a>
+      <ol>
+        <li><a href="#理解备份">理解备份</a>
+          <ol>
+            <li><a href="#备份的原因">备份的原因</a></li>
+            <li><a href="#备份的类型">备份的类型</a></li>
+          </ol>
+        </li>
+        <li><a href="#备份技术">备份技术</a>
+          <ol>
+            <li><a href="#逻辑备份">逻辑备份</a></li>
+            <li><a href="#物理备份">物理备份</a></li>
+            <li><a href="#基于快照备份">基于快照备份</a></li>
+            <li><a href="#基于复制的备份">基于复制的备份</a></li>
+            <li><a href="#二进制日志备份">二进制日志备份</a></li>
+          </ol>
+        </li>
+        <li><a href="#创建备份策略">创建备份策略</a>
+          <ol>
+            <li><a href="#备份方法对比">备份方法对比</a></li>
+            <li><a href="#决定备份策略">决定备份策略</a></li>
+            <li><a href="#更复杂的策略">更复杂的策略</a></li>
+          </ol>
+        </li>
+        <li><a href="#详细解释">详细解释</a>
+          <ol>
+            <li><a href="#1-全量备份--二进制日志备份的组合策略">1. 全量备份 + 二进制日志备份的组合策略</a></li>
+            <li><a href="#2-部分备份策略针对数据特性分层">2. 部分备份策略（针对数据特性分层）</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql/" style="background-color: ; color: #fff;">
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">MySQL-09-备份策略</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-08-27</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="备份策略">备份策略
+</h2><p>目标：</p>
+<ul>
+<li>认识备份的不同类型</li>
+<li>阐述不同备份技术的优缺点</li>
+<li>实施备份策略</li>
+</ul>
+<h3 id="理解备份">理解备份
+</h3><h4 id="备份的原因">备份的原因
+</h4><ul>
+<li>数据库恢复
+<ul>
+<li>从完全系统故障中恢复</li>
+<li>将系统的某些部分恢复到用户发生错误之前</li>
+</ul>
+</li>
+<li>审计和分析
+<ul>
+<li>创建一个独立于主要生产环境用来数据审计或分析</li>
+</ul>
+</li>
+<li>DBA经典任务
+<ul>
+<li>不同系统间迁移数据</li>
+<li>基于一个产品服务器的具体状态创建开发环境</li>
+</ul>
+</li>
+</ul>
+<h4 id="备份的类型">备份的类型
+</h4><p>备份的类型影响在备份期间应用如何于数据交互</p>
+<ul>
+<li>热备份通常允许应用程序完全访问数据。</li>
+<li>冷备份通常不允许应用程序访问数据。</li>
+<li>温备份允许应用程序读取数据，但不允许修改数据。</li>
+</ul>
+<h5 id="热备份">热备份
+</h5><ul>
+<li>热备份在数据读取和修改时进行，几乎不会中断您与数据交互或操作数据的能力。</li>
+<li>系统对于读取和修改数据的操作仍可访问。</li>
+<li>通过以下方式锁定数据：
+<ul>
+<li>使用多版本并发控制（MVCC）</li>
+<li>在较低级别（如行级别）进行锁定</li>
+<li>完全不锁定，以便应用程序可以继续访问数据</li>
+</ul>
+</li>
+</ul>
+<h5 id="冷备份">冷备份
+</h5><ul>
+<li>在数据对用户不可访问时进行
+<ul>
+<li>通常在冷备份期间，服务器处于不可访问模式或完全关闭。</li>
+<li>在备份进行时，你无法读取或对数据进行任何修改。</li>
+</ul>
+</li>
+<li>阻止你对数据执行任何操作</li>
+<li>在系统正常运行时不干扰系统性能
+<ul>
+<li>然而，对于某些应用程序来说，长时间锁定或完全阻止用户访问数据是不可接受的。</li>
+</ul>
+</li>
+</ul>
+<h5 id="温备份">温备份
+</h5><ul>
+<li>在数据被访问时进行
+<ul>
+<li>在大多数情况下，备份进行时数据无法被修改。</li>
+</ul>
+</li>
+<li>优点是无需完全阻止终端用户访问
+<ul>
+<li>然而，备份进行时无法修改数据这一缺点，可能使这种备份类型不适合某些应用程序。</li>
+</ul>
+</li>
+<li>可能会导致性能问题，因为在备份期间无法修改数据。
+<ul>
+<li>更新数据的用户可能会长时间受阻。</li>
+</ul>
+</li>
+</ul>
+<h3 id="备份技术">备份技术
+</h3><ul>
+<li>逻辑备份
+<ul>
+<li>文本表示形式：以逗号分隔文件、制表符分隔文件或 XML 文件形式存在的 SQL 语句或数据文件</li>
+<li>生成一个文本文件，其中包含用于重建数据库的 SQL 语句或数据</li>
+</ul>
+</li>
+<li>物理备份
+<ul>
+<li>MySQL数据库文件二进制复制</li>
+</ul>
+</li>
+<li>基于快照（物理备份）</li>
+<li>基于复制（逻辑备份和物理备份）</li>
+<li>增量备份
+<ul>
+<li>通过复制和刷新MySQL二进制日志创建</li>
+</ul>
+</li>
+</ul>
+<h4 id="逻辑备份">逻辑备份
+</h4><p>通过执行SQL语句 <code>mysqldump</code> 或 <code>mysqlpump</code> 完成数据转储</p>
+<ul>
+<li>
+<p>这些数据转储基于特定的时间点，但却是所有备份技术中速度最慢的</p>
+</li>
+<li>
+<p>优点：</p>
+<ul>
+<li>该过程会创建一个 SQL 脚本，你可以在 MySQL 服务器上执行该脚本，或者创建可导入数据库表的数据文件</li>
+<li>你可以使用该脚本来在另一台主机上重新加载数据库，该主机可以运行不同的架构或不同版本的 MySQL</li>
+</ul>
+</li>
+<li>
+<p>缺点：</p>
+<ul>
+<li>默认情况下（对于非 InnoDB 表始终如此），mysqldump 和 mysqlpump 在转储期间会锁定表，这会阻止用户在备份期间修改数据。</li>
+</ul>
+</li>
+<li>
+<p>逻辑备份：</p>
+<ul>
+<li>将数据库和表转换为包含 SQL 语句或文本数据的文本文件</li>
+<li>可以备份所有数据库、一个或多个数据库，或一个或多个表</li>
+<li>具有可移植性</li>
+<li>要求在备份期间 MySQL  服务器处于运行状态</li>
+<li>可以备份本地和远程 MySQL 服务器</li>
+<li>通常比物理（二进制）备份慢</li>
+</ul>
+</li>
+<li>
+<p>逻辑备份文件的大小可能超过正在备份的数据库的大小。</p>
+<ul>
+<li>语句占用的空间可能比它们所表示的数据更多。</li>
+<li>文本数据通常比二进制数据占用更多空间。</li>
+<li>然而，由于 InnoDB 将数据存储在数据页中，这些数据页可能包含未使用的空间，因此 InnoDB 数据文件在磁盘上占用的空间通常比数据所需的空间大得多。</li>
+</ul>
+</li>
+</ul>
+<h5 id="逻辑备份的条件">逻辑备份的条件
+</h5><ul>
+<li>通常是热备份
+<ul>
+<li>创建备份时服务器是运行状态</li>
+<li>逻辑备份期间，其他应用可以执行读取操作</li>
+<li>服务器通过读取要备份的表的结构和内容来创建文件。</li>
+<li>然后，它将结构和数据转换为 SQL 语句或文本文件</li>
+</ul>
+</li>
+<li>借助 InnoDB 多版本并发控制（MVCC），可以进行热逻辑备份
+<ul>
+<li>以可重复读隔离级别启动事务，以备份 InnoDB 表的一致时间点副本</li>
+</ul>
+</li>
+<li>使用逻辑备份，您可以备份本地和远程 MySQL 服务器
+<ul>
+<li>物理备份只能在服务器主机上执行</li>
+</ul>
+</li>
+</ul>
+<h5 id="逻辑备份的性能">逻辑备份的性能
+</h5><ul>
+<li>通常慢于物理备份
+<ul>
+<li>MySQL 服务器必须读取表并解读其内容</li>
+<li>然后它必须将表内容转换为磁盘文件，或者将语句发送到客户端程序，由客户端程序将其写出</li>
+<li><code>mysqlpump</code> 客户端实用程序比 <code>mysqldump</code> 性能更好，因为它可以并行处理数据库及其对象，但它仍然比物理备份慢</li>
+</ul>
+</li>
+<li>从逻辑备份恢复从比物理备份恢复慢
+<ul>
+<li>恢复过程会执行包含各个 CREATE 和 INSERT 语句的脚本，这些语句用于创建每个备份的表和行</li>
+<li>恢复后的表中的所有索引都必须重建</li>
+</ul>
+</li>
+</ul>
+<h4 id="物理备份">物理备份
+</h4><ul>
+<li>
+<p>通过复制数据文件创建</p>
+<ul>
+<li>使用诸如 tar、cp、cpio、rsync 或 xcopy 等标准命令</li>
+<li>使用物理镜像或块设备在线磁盘复制</li>
+<li>使用基于<strong>快照</strong>的文件归档</li>
+</ul>
+</li>
+<li>
+<h6 id="必须恢复到相同的存储引擎和-mysql-版本">必须恢复到相同的存储引擎和 MySQL 版本
+</h6><ul>
+<li>当从 InnoDB 表恢复物理 MySQL 备份时，在目标服务器上它仍然是一个 InnoDB 表</li>
+</ul>
+</li>
+<li>
+<p>可以跨机器架构恢复</p>
+<ul>
+<li>文件在存储引擎级别必须是二进制可移植的</li>
+</ul>
+</li>
+<li>
+<p>与逻辑备份和恢复相比，执行和恢复速度更快</p>
+</li>
+</ul>
+<h5 id="物理备份文件">物理备份文件
+</h5><ul>
+<li>基于文件的二进制备份比逻辑备份速度更快，因为该过程只是简单的文件或文件系统复制</li>
+<li>物理备份是数据库文件中数据位的精确呈现
+<ul>
+<li>这些副本以 MySQL 自身在磁盘上存储数据库的完全相同格式来保存数据库</li>
+<li>由于它们是原始文件的精确副本，物理备份与原始文件大小相同</li>
+</ul>
+</li>
+</ul>
+<h5 id="物理备份条件">物理备份条件
+</h5><ul>
+<li>在备份期间，服务器<strong>不得修改数据文件</strong>
+<ul>
+<li>如果复制实时数据文件，要防止对这些文件进行写入操作
+<ul>
+<li>对于 InnoDB：需要关闭 MySQL 服务器</li>
+<li>对于 MyISAM：锁定表以允许读取但不允许更改</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>还可以通过使用将正在备份的数据文件与 MySQL 服务器分离的技术，来尽量减少对 MySQL 和应用程序的影响
+<ul>
+<li>快照</li>
+<li>复制</li>
+<li><code>DRBD</code> 或其他复制整个文件系统的方法</li>
+</ul>
+</li>
+</ul>
+<h5 id="磁盘拷贝">磁盘拷贝
+</h5><ul>
+<li>可以通过以下方式直接将数据备份到另一块磁盘
+<ul>
+<li>诸如存储复制或 RAID 镜像之类的流程</li>
+<li>诸如 DRBD（分布式复制块设备）之类的外部应用程序
+<ul>
+<li>支持在集群计算机之间进行底层磁盘拷贝</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>这些技术可提供
+<ul>
+<li>实时（或近乎实时）备份</li>
+<li>在发生硬件故障时快速恢复数据的方法</li>
+</ul>
+</li>
+<li>缺点
+<ul>
+<li>副本是实时（或近乎实时）创建的，因此你无法使用此技术从用户或应用程序错误导致的数据丢失中恢复</li>
+</ul>
+</li>
+</ul>
+<h4 id="基于快照备份">基于快照备份
+</h4><ul>
+<li>创建一个数据在某一时间点的副本
+<ul>
+<li>通常针对快照副本执行物理备份</li>
+</ul>
+</li>
+<li>提供文件系统的逻辑冻结版本，从中可以进行 MySQL 备份
+<ul>
+<li>冻结的文件系统不一定包含一致的数据库映像</li>
+<li>当您从这样的文件系统恢复时，InnoDB 必须执行自身的恢复操作，以确保不存在不完整的事务</li>
+</ul>
+</li>
+<li>可能需要关闭 MySQL 服务器（对于 InnoDB 表）或锁定表（对于 MyISAM 表）
+<ul>
+<li>以确保数据一致性</li>
+<li>数据文件存储在多个卷中，需要进行多个快照</li>
+</ul>
+</li>
+<li>大幅减少数据库和应用程序不可用的时间</li>
+</ul>
+<h5 id="执行快照">执行快照
+</h5><ul>
+<li>
+<p>基于快照的备份使用 MySQL 外部的快照功能。</p>
+<ul>
+<li>例如：如果数据文件位于 Linux 上的 LVM2 逻辑卷上，且该卷包含合适的文件系统（如 ext4），则可以创建快照备份</li>
+</ul>
+</li>
+<li>
+<p>基于快照的备份对于能够自行执行恢复的事务引擎（如 InnoDB）效果最佳</p>
+</li>
+<li>
+<p>执行快照所需的时间不会随着数据库大小的增长而增加</p>
+<ul>
+<li>从应用程序的角度来看，备份窗口几乎为零</li>
+<li>快照使用写时复制方法(copy-on-write)，以确保几乎瞬间完成。
+<ul>
+<li>会导致额外的 I/O 开销</li>
+</ul>
+</li>
+<li>在快照处于活动状态时会产生性能成本</li>
+</ul>
+<p>“写时复制” 是一种在磁盘数据块发生变化时复制这些数据块的技术，它与 InnoDB 撤销日志和多版本并发控制（MVCC）所使用的方法类似。当执行快照时，逻辑卷管理器（LVM）会标记所有后续发生变化的块，并记录这些块的快照版本。初始快照需要花费一点时间，但在快照处于活动状态时，所有后续的写入操作都会带来额外的性能和存储成本。</p>
+</li>
+</ul>
+<h4 id="基于复制的备份">基于复制的备份
+</h4><ul>
+<li>MySQL 支持单向异步复制，其中一台服务器作为主服务器（master），而一台或多台其他服务器作为从服务器（slave）。</li>
+<li>MySQL 复制可用于备份：
+<ul>
+<li>主服务器用于运行生产应用。</li>
+<li>从服务器用于备份目的。</li>
+</ul>
+</li>
+<li>这消除了对生产应用的影响。</li>
+<li>对从服务器的备份可以是逻辑备份或物理备份。</li>
+<li>成本较高：必须额外配备一台服务器和存储设备来存储数据库的副本。</li>
+<li>基于异步复制的特性：
+<ul>
+<li>从服务器可能会落后于主服务器。</li>
+<li>只要二进制日志（binary log）在从服务器读取之前未被清除，这种延迟是可以接受的。</li>
+</ul>
+</li>
+</ul>
+<h4 id="二进制日志备份">二进制日志备份
+</h4><p>二进制日志备份记录对数据的修改操作，核心价值是<strong>补充全量备份</strong>。</p>
+<ul>
+<li>用途：通过恢复上次全量备份后发生的事件，最大限度地减少全量备份之间的数据暴露风险（即减少数据丢失量）。</li>
+<li>优点：
+<ul>
+<li>二进制日志备份包含了数据随时间发生的所有变更记录。</li>
+<li>其他类型的备份仅包含数据的某个快照。</li>
+<li>可以按顺序进行多次二进制日志备份。</li>
+</ul>
+</li>
+<li>缺点：
+<ul>
+<li>必须按顺序恢复从上一次全量备份后生成的所有连续二进制日志。</li>
+<li>系统故障后的恢复速度可能很慢，具体取决于需要执行的二进制日志数量。</li>
+</ul>
+</li>
+</ul>
+<h5 id="二进制日志与增量备份incremental-backups">二进制日志与增量备份(Incremental Backups)
+</h5><ul>
+<li>在<strong>会话级</strong>别控制二进制日志：
+<code>SET SQL_LOG_BIN = {0|1|ON|0FF}</code>
+<ul>
+<li>MySQL 服务器已启用二进制日志。</li>
+<li>必须拥有 <code>SUPER</code> 权限才能设置此变量。</li>
+</ul>
+</li>
+<li>执行逻辑备份或物理备份时刷新二进制日志。
+<ul>
+<li>使二进制日志与备份同步。</li>
+</ul>
+</li>
+<li>逻辑备份和物理备份均为全量备份。
+<ul>
+<li>所有表的所有行都会被备份。</li>
+</ul>
+</li>
+<li>要执行增量备份，需复制二进制日志。</li>
+<li>二进制日志可用于时间点恢复。
+<ul>
+<li>可以识别导致数据损坏的事务，并在恢复过程中跳过它们</li>
+</ul>
+</li>
+</ul>
+<h3 id="创建备份策略">创建备份策略
+</h3><h4 id="备份方法对比">备份方法对比
+</h4><img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507140927001.png" alt="备份方法对比" style="zoom:67%;" />
+<h5 id="mysqldump-与-mysqlpump">mysqldump 与 mysqlpump
+</h5><p>这两个工具仅在通过指定 <code>--single-transaction</code> 选项将整个操作包装在一个事务中时，才能对 InnoDB 表执行热备份。</p>
+<h5 id="快照snapshots">快照（Snapshots）
+</h5><p>快照的工作方式并非对所有存储引擎都相同。例如，InnoDB 表不需要执行 <code>FLUSH TABLES WITH READ LOCK</code> 来启动快照，但 MyISAM 表则需要</p>
+<h4 id="决定备份策略">决定备份策略
+</h4><ul>
+<li>所实施的备份和恢复策略取决于以下因素：
+<ul>
+<li>数据记录的完整性要求如何？
+<ul>
+<li>可能选择不备份每个表或每个表中的所有数据。</li>
+</ul>
+</li>
+<li>备份的时效性要求如何？
+<ul>
+<li>有些数据变更不频繁，因此可能选择对某些表（或某些表的部分数据）进行非频繁备份。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>确定策略时还需考虑的其他问题：
+<ul>
+<li>系统能承受多长时间的停机(down time)（如果允许停机的话）？</li>
+<li>需要备份的数据量有多大？</li>
+<li>数据使用哪些存储引擎存储（InnoDB、MyISAM 或两者兼有）？</li>
+</ul>
+</li>
+</ul>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507140935006.png" alt="image-20250714093536903" style="zoom:67%;" />
+<h4 id="更复杂的策略">更复杂的策略
+</h4><p>通过组合多种备份技术，可以创建更复杂的策略：</p>
+<ul>
+<li>示例：使用全量备份与二进制日志备份的组合
+<ul>
+<li>利用复制从库，通过 <code>mysqlbackup</code> 进行 nightly（每晚）全量备份</li>
+<li>每小时进行多次二进制日志备份，以最大限度减少白天的（数据丢失）风险</li>
+</ul>
+</li>
+<li>示例：使用部分备份
+<ul>
+<li>技术手段：
+<ul>
+<li>带 <code>--where</code> 选项的 <code>mysqldump</code></li>
+<li><code>SELECT INTO OUTFILE</code> 语句</li>
+</ul>
+</li>
+<li>每周对大型事务表进行条件备份，仅包含固定数据或历史数据
+<ul>
+<li>例如：已过 “退货期限” 的已完成订单（这类数据不会再变更）</li>
+</ul>
+</li>
+<li>每天 / 每小时对实时数据进行补充备份</li>
+</ul>
+</li>
+</ul>
+<h3 id="详细解释">详细解释
+</h3><h4 id="1-全量备份--二进制日志备份的组合策略">1. 全量备份 + 二进制日志备份的组合策略
+</h4><p>这是应对高频变更数据的典型方案，核心思路是 “全量备份打底，增量日志补全”，具体逻辑如下：</p>
+<ul>
+<li>
+<p>夜间全量备份（基于从库）</p>
+<p>：</p>
+<ul>
+<li>利用复制从库执行 <code>mysqlbackup</code>（MySQL 官方物理备份工具），避免对主库的性能影响。全量备份捕获某一时刻（如凌晨 3 点）的完整数据快照，作为恢复的基础。</li>
+<li>优势：物理备份恢复速度快，适合大规模数据。</li>
+</ul>
+</li>
+<li>
+<p>每小时二进制日志备份</p>
+<p>：</p>
+<ul>
+<li>全量备份后，每小时备份一次主库的二进制日志。由于二进制日志记录了全量备份后的所有数据变更，即使白天发生故障，也能通过 “全量备份 + 故障前的所有二进制日志” 恢复数据，最大限度减少数据丢失（例如，若上午 10 点故障，只需补充 3 点到 10 点的日志）。</li>
+<li>关键：确保二进制日志在备份前不被自动清理（通过 <code>expire_logs_days</code> 配置保留时间）。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-部分备份策略针对数据特性分层">2. 部分备份策略（针对数据特性分层）
+</h4><p>适用于数据量庞大且变更频率差异大的场景，通过 “区分数据类型、按需备份” 优化效率：</p>
+<ul>
+<li>技术手段：
+<ul>
+<li><code>mysqldump --where</code>：按条件导出部分数据，例如 <code>mysqldump orders --where &quot;order_date &lt; '2023-01-01'&quot;</code> 仅备份 2023 年之前的订单。</li>
+<li><code>SELECT INTO OUTFILE</code>：将查询结果导出为文本文件，适合灵活筛选数据（如仅备份活跃用户数据）。</li>
+</ul>
+</li>
+<li>分层备份逻辑：
+<ul>
+<li><strong>历史 / 固定数据</strong>：如已过退货期的订单、归档日志等，这类数据几乎不变更，每周备份一次即可，减少重复备份的资源消耗。</li>
+<li><strong>实时 / 活跃数据</strong>：如当日订单、用户会话数据等，需每天甚至每小时备份，确保故障时最新数据可恢复。</li>
+<li>优势：降低备份总量，缩短备份时间，同时保证核心数据的时效性。</li>
+</ul>
+</li>
+</ul>
+<p>如果你能确定某个阈值日期之前的历史数据不会再发生变更，那么只需对这部分数据进行一次备份即可。仅备份该时间点之后的数据会更快，但这意味着你必须确保备份的数据具有一致性，且恢复操作会更复杂</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/mysql-13-%E9%80%9A%E8%BF%87-innodb-%E9%9B%86%E7%BE%A4%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-13-通过 InnoDB 集群实现高可用性</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-12-管理复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-11-配置复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-10-执行备份</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-08-优化查询性能</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

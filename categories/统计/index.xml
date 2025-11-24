@@ -1,0 +1,1592 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>统计 on Penna_a</title>
+        <link>http://localhost:1313/categories/%E7%BB%9F%E8%AE%A1/</link>
+        <description>Recent content in 统计 on Penna_a</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Penna_a</copyright>
+        <lastBuildDate>Tue, 02 Sep 2025 00:35:01 +1730</lastBuildDate><atom:link href="http://localhost:1313/categories/%E7%BB%9F%E8%AE%A1/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>统计-01-基础知识</title>
+        <link>http://localhost:1313/p/%E7%BB%9F%E8%AE%A1-01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+        <pubDate>Tue, 02 Sep 2025 00:35:01 +1730</pubDate>
+        
+        <guid>http://localhost:1313/p/%E7%BB%9F%E8%AE%A1-01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;从原始数据中抽取出有价值信息&lt;/strong&gt;的这个过程我们就称之为&lt;strong&gt;数据分析&lt;/strong&gt;，它是数据科学的重要组成部分&lt;/p&gt;
+&lt;p&gt;需要掌握技能：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;数据思维
+&lt;ul&gt;
+&lt;li&gt;统计思维&lt;/li&gt;
+&lt;li&gt;分析方法&lt;/li&gt;
+&lt;li&gt;分析模型&lt;/li&gt;
+&lt;li&gt;业务知识&lt;/li&gt;
+&lt;li&gt;挖掘算法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;分析工具
+&lt;ul&gt;
+&lt;li&gt;Excel&lt;/li&gt;
+&lt;li&gt;SQL&lt;/li&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;BI&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;工作流程：结合业务完成&lt;strong&gt;监控数据&lt;/strong&gt;、&lt;strong&gt;发现异常&lt;/strong&gt;、&lt;strong&gt;深挖原因&lt;/strong&gt;、&lt;strong&gt;探索趋势&lt;/strong&gt;等&lt;/p&gt;
+&lt;p&gt;资深的数据分析师还要参与指标体系的建设和维护，需要跨部门参与产品的迭代优化、埋点和算法的设计和落地、各种运营数据的复盘等&lt;/p&gt;
+&lt;p&gt;工具只是达成目标的手段，&lt;strong&gt;数据思维才是最硬核的东西&lt;/strong&gt;，从实际业务问题出发到最终&lt;strong&gt;发现数据中的商业价值&lt;/strong&gt;是终极目标&lt;/p&gt;
+&lt;h2 id=&#34;关于统计&#34;&gt;关于统计
+&lt;/h2&gt;&lt;h3 id=&#34;概述&#34;&gt;概述
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;从数学角度研究不确定性，寻找随机性背后规律&lt;/strong&gt;的人是赌徒而不是数学家&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;大数定理&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;在一个随机事件中，随着试验次数的增加，事件发生的频率越趋近于一个稳定值&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;统计学&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;收集、处理、分析、解释数据并从中得出结论的科学&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;统计学分类&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;描述统计
+&lt;ul&gt;
+&lt;li&gt;描绘和总结观察量基本情况的统计方法&lt;/li&gt;
+&lt;li&gt;集中趋势、离散程度、分布规律、相关性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;推断统计
+&lt;ul&gt;
+&lt;li&gt;如何根据样本数据特征推断总体数据特征&lt;/li&gt;
+&lt;li&gt;在无法获得全量数据的情况下，推断统计就是最为行之有效的方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;贝叶斯统计
+&lt;ul&gt;
+&lt;li&gt;基础是贝叶斯定理&lt;/li&gt;
+&lt;li&gt;简单的说就是在获得数据（证据）之后，先前凭借经验和直觉得出的先验概率是可以改变的&lt;/li&gt;
+&lt;li&gt;重新计算后的概率我们称之为后验概率&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;基本概念&#34;&gt;基本概念
+&lt;/h3&gt;&lt;h4 id=&#34;总体和样本&#34;&gt;总体和样本
+&lt;/h4&gt;&lt;h5 id=&#34;总体population&#34;&gt;总体(population)
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;无限总体
+&lt;ul&gt;
+&lt;li&gt;每抽取一个单位并不影响下一次的抽样结果&lt;/li&gt;
+&lt;li&gt;因此每次抽取可以看做是独立的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;有限总体
+&lt;ul&gt;
+&lt;li&gt;每抽取一个样本后，总体的对象数量就会减少一个&lt;/li&gt;
+&lt;li&gt;前一次抽样会对本次抽样产生影响，每次抽取并不是独立的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;样本sample&#34;&gt;样本(sample)
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;总体中抽取一部分元素构成的集合&lt;/li&gt;
+&lt;li&gt;够成样本的元素的数量称为样本容量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;参数和统计量&#34;&gt;参数和统计量
+&lt;/h4&gt;&lt;h5 id=&#34;参数parameter&#34;&gt;参数（parameter)
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;描述总体特征的概括性数字度量
+&lt;ul&gt;
+&lt;li&gt;例如：总体均值通常用 μ 表示，总体标准差通常用 σ 表示&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;无法获得全体对象的情况下，总体参数通常是一个&lt;strong&gt;未知的常量&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;如此才需要抽样，通过样本计算出统计量&lt;/li&gt;
+&lt;li&gt;来估计总体参数的值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;统计量statistic&#34;&gt;统计量（statistic）
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;描述样本特征的概括性数字度量&lt;/li&gt;
+&lt;li&gt;根据样本数据计算得出&lt;/li&gt;
+&lt;li&gt;由于抽样是随机的，因此统计量的值并不确定&lt;/li&gt;
+&lt;li&gt;它是一个以样本作为其自变量的函数，其本质就是一个&lt;strong&gt;随机变量&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;例如：样本均值通常用 $\bar{x}$  表示，样本标准差通常用 s&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;解读数据&#34;&gt;解读数据
+&lt;/h2&gt;&lt;p&gt;统计的本质&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;从原始的数据中找出重要的有用的信息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;指标&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;具备业务意义的统计数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;描述性统计&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;运用分类、制表、绘图、概括性计算等操作来描述数据的各项特征&lt;/li&gt;
+&lt;li&gt;通常是针对所有数据而不是部分数据&lt;/li&gt;
+&lt;li&gt;主要包括数据的频数分析、集中趋势分析、离散程度分析以及一些基本统计图表的绘制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;数据类型与变量&#34;&gt;数据类型与变量
+&lt;/h3&gt;&lt;h4 id=&#34;定性数据&#34;&gt;定性数据
+&lt;/h4&gt;&lt;p&gt;反映属性特征，无数值含义&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;分类变量：无序类别，仅用于区分事物，不可数学运算 如 性别&lt;/li&gt;
+&lt;li&gt;顺序变量：有序类别，可比较大小但无法计算差异 如教育程度&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;图表展示：饼图（比例分别）、条形图（类别频数）、环形图（多变量结构比较）&lt;/p&gt;
+&lt;h4 id=&#34;定量数据&#34;&gt;定量数据
+&lt;/h4&gt;&lt;p&gt;数值型数据，具有明确的数学含义，可计算绝对差和相对差。（如 身高、收入）&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;连续型&lt;/li&gt;
+&lt;li&gt;离散型&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;通过表格能更清晰区分二者的核心差异：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;对比维度&lt;/th&gt;
+          &lt;th&gt;离散型数据&lt;/th&gt;
+          &lt;th&gt;连续型数据&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;取值特征&lt;/td&gt;
+          &lt;td&gt;有限 / 可列的孤立值，有间隔&lt;/td&gt;
+          &lt;td&gt;区间内任意值，无间隔、可无限细分&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;数据来源&lt;/td&gt;
+          &lt;td&gt;计数（数出来）&lt;/td&gt;
+          &lt;td&gt;测量（测出来）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;能否取小数&lt;/td&gt;
+          &lt;td&gt;通常不能（除非是比例换算，如 “人均 2.3 个”）&lt;/td&gt;
+          &lt;td&gt;能（且可无限细分，如 170.123cm）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;典型例子&lt;/td&gt;
+          &lt;td&gt;人数、订单数、错题数&lt;/td&gt;
+          &lt;td&gt;身高、体重、温度、分数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;描述统计核心指标&lt;/td&gt;
+          &lt;td&gt;频数、频率、中位数、众数&lt;/td&gt;
+          &lt;td&gt;均值、标准差、方差、四分位数间距&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;对应分布&lt;/td&gt;
+          &lt;td&gt;二项分布、泊松分布等&lt;/td&gt;
+          &lt;td&gt;正态分布、t 分布、F 分布等&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;图表展示：直方图（分布形态）、折线图（趋势）、散点图（变量关系）&lt;/p&gt;
+&lt;h3 id=&#34;数据来源与收集方法&#34;&gt;数据来源与收集方法
+&lt;/h3&gt;&lt;h4 id=&#34;数据来源&#34;&gt;数据来源
+&lt;/h4&gt;&lt;h5 id=&#34;直接来源&#34;&gt;直接来源
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;原始数据，通过统计调查（观测数据）或实验法(实验数据)获取&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;间接来源&#34;&gt;间接来源
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;次级数据，如公开出版物（年鉴、数据库），要&lt;strong&gt;注意适用性与时效性&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;收集方法&#34;&gt;收集方法
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;方法&lt;/th&gt;
+          &lt;th&gt;特点&lt;/th&gt;
+          &lt;th&gt;适用场景&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;普查&lt;/td&gt;
+          &lt;td&gt;全面调查，耗时耗力但数据详尽&lt;/td&gt;
+          &lt;td&gt;国情国力调查、重大基础数据收集&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;抽样调查&lt;/td&gt;
+          &lt;td&gt;按随机原则抽取样本，用样本推断总体（抽样误差可控）&lt;/td&gt;
+          &lt;td&gt;大规模社会调查&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;重点调查&lt;/td&gt;
+          &lt;td&gt;选取关键单位&lt;/td&gt;
+          &lt;td&gt;快速掌握总体基本情况&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;典型调查&lt;/td&gt;
+          &lt;td&gt;主管选择代表性单位&lt;/td&gt;
+          &lt;td&gt;深入案例分析，需结合其他方法验证&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;统计报表&lt;/td&gt;
+          &lt;td&gt;按统一格式定期上报&lt;/td&gt;
+          &lt;td&gt;常规数据监测&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;抽样方法&#34;&gt;抽样方法
+&lt;/h4&gt;&lt;h5 id=&#34;概率抽样&#34;&gt;概率抽样
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;简单随机抽样（等概率）&lt;/li&gt;
+&lt;li&gt;分层抽样 （按层分组）&lt;/li&gt;
+&lt;li&gt;整群抽样（按群组抽取）&lt;/li&gt;
+&lt;li&gt;系统抽样（等距抽样）&lt;/li&gt;
+&lt;li&gt;多阶段抽样&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;非概率抽样&#34;&gt;非概率抽样
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;随意抽样、志愿者抽样、判断抽样、重点调查、典型调查&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;方便抽样（就近选取）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;配额抽样（预设比例）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;适用于 探索性 研究&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;抽样误差-vs-非抽样误差&#34;&gt;抽样误差 vs 非抽样误差
+&lt;/h5&gt;&lt;p&gt;抽样误差&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;由随机性引起，可通过增大样本量降低&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;非抽样误差&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无回答偏差&lt;/li&gt;
+&lt;li&gt;测量错误&lt;/li&gt;
+&lt;li&gt;需优化涉及避免&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;数据分组原则&#34;&gt;数据分组原则
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;定量数据分组遵循 &amp;ldquo;上限不在内&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;组距 需区分总体性质差异&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;数据描述&#34;&gt;数据描述
+&lt;/h2&gt;&lt;h3 id=&#34;数据可视化展示&#34;&gt;数据可视化展示
+&lt;/h3&gt;&lt;h4 id=&#34;定性数据-1&#34;&gt;定性数据
+&lt;/h4&gt;&lt;h5 id=&#34;频数分布表&#34;&gt;频数分布表
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;列出所有类别并统计频数（次数）&lt;/li&gt;
+&lt;li&gt;确保 穷尽性 （所有类别覆盖）和 互斥性 （类别不重叠）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;饼图&#34;&gt;饼图
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;展示各类别占比&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;条形图&#34;&gt;条形图
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;比较类别频数高低&lt;/li&gt;
+&lt;li&gt;纵轴为频数&lt;/li&gt;
+&lt;li&gt;横轴为类别&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;环形图&#34;&gt;环形图
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;比较多个变量的结构差异（如不同年费消费支出构成）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;定量数据-1&#34;&gt;定量数据
+&lt;/h4&gt;&lt;h5 id=&#34;频数分布表-1&#34;&gt;频数分布表
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;等距分组： 数据均匀分布时&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;不等距分组：数据差异大时&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;组数通常 5~15组 遵循不重不漏的原则&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;相邻两组上下限重叠&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;上限不在内&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;组距确定&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;组中值计算 （下限+上限）/ 2 ，开口组用相邻组距推算&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;直方图&#34;&gt;直方图
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;展示连续数据分布，横轴为组限，纵轴为频数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;折线图&#34;&gt;折线图
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;描述趋势变化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;箱线图&#34;&gt;箱线图
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;基于五数概括（最小值、Q1、中位数、Q3、最大值）&lt;/li&gt;
+&lt;li&gt;识别异常值（超出Q3 + 1.5 IQR 或 Q1 - 1.5 IQR）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;茎叶图&#34;&gt;茎叶图
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;保留原始数据的原始展示分布形态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;统计量描述&#34;&gt;统计量描述
+&lt;/h3&gt;&lt;h4 id=&#34;集中趋势度量&#34;&gt;集中趋势度量
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;指标&lt;/th&gt;
+          &lt;th&gt;计算方式&lt;/th&gt;
+          &lt;th&gt;适用数据类型&lt;/th&gt;
+          &lt;th&gt;特点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;均值&lt;/td&gt;
+          &lt;td&gt;所有数值之和 / 样本量&lt;/td&gt;
+          &lt;td&gt;数值型数据&lt;/td&gt;
+          &lt;td&gt;受极端值影响大，对称分布适用&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;中位数&lt;/td&gt;
+          &lt;td&gt;数据排序后中间位置的值（n为偶数时取平均）&lt;/td&gt;
+          &lt;td&gt;顺序数据、数值型数据&lt;/td&gt;
+          &lt;td&gt;不受极端值影响，偏态分布首选&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;众数&lt;/td&gt;
+          &lt;td&gt;出现频数最高的值&lt;/td&gt;
+          &lt;td&gt;所有类型的数据&lt;/td&gt;
+          &lt;td&gt;可有多峰，适用于分类数据&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;算术平均值的性质：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;离均差（变量的每个观测值与均值的差异）之和等于0&lt;/li&gt;
+&lt;li&gt;离均差平方和最小
+&lt;ul&gt;
+&lt;li&gt;几何平均值
+&lt;ul&gt;
+&lt;li&gt;计算不同渠道的平均转化率、不同客群的平均留存率、不同品类的平均付费率&lt;/li&gt;
+&lt;li&gt;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508200919567.png&#34; alt=&#34;image-20250820091923401&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;/li&gt;
+&lt;li&gt;Excel中计算公式 &lt;code&gt;GEOMEAN&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;调和平均值
+&lt;ul&gt;
+&lt;li&gt;处理速率或比率问题，平均速度、平均工作时间、单位成本，机器学习中的 F1 评分，准确率和召回的调和平均数&lt;/li&gt;
+&lt;li&gt;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508200920010.png&#34; alt=&#34;image-20250820092045938&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;/li&gt;
+&lt;li&gt;Excel中计算公式 &lt;code&gt;HARMEAN&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;离散程度度量&#34;&gt;离散程度度量
+&lt;/h4&gt;&lt;p&gt;衡量数据的&amp;quot;波动范围&amp;quot;&lt;/p&gt;
+&lt;h5 id=&#34;极差&#34;&gt;极差
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;最大值-最小值&lt;/li&gt;
+&lt;li&gt;易受异常值影响&lt;/li&gt;
+&lt;li&gt;极差越大 离散程度越大&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;方差与标准差&#34;&gt;方差与标准差
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;方差
+&lt;ul&gt;
+&lt;li&gt;各数值与均值离差平方的平均值&lt;/li&gt;
+&lt;li&gt;方差越小，数据越稳定、波动越平滑、数据整体比较集中&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;标准差
+&lt;ul&gt;
+&lt;li&gt;方差的平方根&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;四分位距-iqr&#34;&gt;四分位距 IQR
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;Q3~Q1, 反映中间 50% 数据的离散性&lt;/li&gt;
+&lt;li&gt;如 IQR = 10 说明主体数据集中&lt;/li&gt;
+&lt;li&gt;其大小反映了中位数对一组数据的代表程度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;变异系数-cv&#34;&gt;变异系数 CV
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;又称离散系数、变差系数&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一组数据离散程度的一种归一化量度&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;变异系数只在平均值不为零时有意义，而且一般适用于平均值大于零的情况&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;变异系数也被称为标准离差率或单位风险&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;变异系数没有量纲，因此在比较两组量纲不同或均值不同的数据时，它比标准差更具参考性&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;标准差 / 均值&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;通过 “相对离散程度” 替代标准差（绝对离散程度）&lt;/li&gt;
+&lt;li&gt;决了 “不同量纲、不同均值数据无法直接用标准差比较” 的问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;分布形态度量&#34;&gt;分布形态度量
+&lt;/h3&gt;&lt;h4 id=&#34;偏度&#34;&gt;偏度
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;偏度系数（SK）&amp;lt; 0 , 左偏（负偏）：均值&amp;lt;中位数，众数位于右侧&lt;/li&gt;
+&lt;li&gt;偏度系数（SK）&amp;gt; 0 , 右偏（正偏）：均值&amp;gt;中位数，众数位于左侧&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;峰度&#34;&gt;峰度
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;基于原始峰度&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;峰度 &amp;gt; 3：尖峰分布 极端值多&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;峰度 &amp;lt; 3：平峰分布 数据分散 如均匀分布&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508191502037.png&#34; alt=&#34;image-20250819150241656&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508191503651.png&#34; alt=&#34;image-20250819150309562&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;实际应用中，更多用&lt;strong&gt;超额峰度&lt;/strong&gt;（以 0 为基准）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;尖峰（极端值多）：超额峰度 \(&gt; 0\)（或原始峰度 \(&gt; 3\)）&lt;/li&gt;
+&lt;li&gt;平峰（极端值少）：超额峰度 \(&lt; 0\)（或原始峰度 \(&lt; 3\)）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;数据分布特征与应用&#34;&gt;数据分布特征与应用
+&lt;/h3&gt;&lt;h4 id=&#34;分布类型与识别&#34;&gt;分布类型与识别
+&lt;/h4&gt;&lt;h5 id=&#34;正态分布&#34;&gt;正态分布
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;对称钟形曲线&lt;/li&gt;
+&lt;li&gt;均值=中位数=众数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;偏态分布&#34;&gt;偏态分布
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;左偏：数据集中在右侧，左侧拖尾，如 疾病发病年龄&lt;/li&gt;
+&lt;li&gt;右偏：数据集中在左侧，右侧拖尾，如 收入分布&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;检验方法&#34;&gt;检验方法
+&lt;/h5&gt;&lt;p&gt;Q-Q图&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;散点是否沿直线分布&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Shapiro-Wilk检验&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;小样本 【n &amp;lt; 50（或 n &amp;lt; 30）】&lt;/li&gt;
+&lt;li&gt;p&amp;gt;0.05 视为正态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Kolmogorov-Smirnov检验&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;大样本&lt;/li&gt;
+&lt;li&gt;p&amp;gt;0.05 视为正态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;统计表涉及规范&#34;&gt;统计表涉及规范
+&lt;/h4&gt;&lt;h5 id=&#34;五要素&#34;&gt;五要素
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;表头&lt;/li&gt;
+&lt;li&gt;行标题&lt;/li&gt;
+&lt;li&gt;列标题&lt;/li&gt;
+&lt;li&gt;数字资料&lt;/li&gt;
+&lt;li&gt;表外附加（数据来源、注释）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;原则&#34;&gt;原则
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;左右不封口   类似于 “三线表”&lt;/li&gt;
+&lt;li&gt;分类清晰&lt;/li&gt;
+&lt;li&gt;避免冗余&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;随机和概率&#34;&gt;随机和概率
+&lt;/h2&gt;&lt;h3 id=&#34;基本概念-1&#34;&gt;基本概念
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在一定条件下，对某事物或现象进行的观察或实验叫做&lt;strong&gt;试验&lt;/strong&gt;（&lt;em&gt;trails&lt;/em&gt;），试验的结果叫做&lt;strong&gt;事件&lt;/strong&gt;（&lt;em&gt;event&lt;/em&gt;）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;随机事件（&lt;em&gt;random event&lt;/em&gt;）：在一定条件下可能发生也可能不发生的事件，即结果具有偶然性的事件，通常用大写字母 A、B 、C 等来表示。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;必然事件（&lt;em&gt;certain event&lt;/em&gt;）和不可能事件（&lt;em&gt;impossible event&lt;/em&gt;）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;必然事件是在一定条件下每次试验一定出现的事件；&lt;/li&gt;
+&lt;li&gt;不可能事件是在一定条件下每次试验一定不出现的事件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;基本事件（&lt;em&gt;elementary event&lt;/em&gt;）：如果一个事件不能拆分为两个或更多的事件，则将该事件称为基本事件或简单事件。在一次试验中，只能观察到一个且仅有一个基本事件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;样本空间&lt;/strong&gt;（&lt;em&gt;sample space&lt;/em&gt;）：一个试验中所有的基本事件（一切可能的结果）组成的集合，通常记为Ω 。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;抛一枚硬币的样本空间： Ω = {正，反}；&lt;/li&gt;
+&lt;li&gt;抛两枚硬币的样本空间： Ω = {（正，正）, （正，反）, （反，正）, （反,反）}；&lt;/li&gt;
+&lt;li&gt;掷一颗色子的样本空间： Ω = {1，2，3，4，5，6}。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;随机试验&lt;/strong&gt;（&lt;em&gt;random trials&lt;/em&gt;）：在相同条件下对某种随机事件进行观测的试验。随机试验满足三个特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;可以在相同条件下重复的进行。&lt;/li&gt;
+&lt;li&gt;每次试验的结果不止一个，事先可以明确指出全部可能的结果。&lt;/li&gt;
+&lt;li&gt;重复试验的结果以随机的方式出现（事先不确定会出现哪个结果）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;概率&#34;&gt;概率
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;对事件在试验中出现的可能性大小的一种度量&lt;/li&gt;
+&lt;li&gt;事件 出现的可能性通常记为 P(A)&lt;/li&gt;
+&lt;li&gt;是一个取值范围在0到1之间的值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;古典概型&#34;&gt;古典概型
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;试验的结果有限&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;各个结果出现的可能性相同&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$
+    P(A)= \frac{事件A所包含的基本事件的个数} {样本空间所包含的基本事件的个数}
+    $$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;伯努利大数定理表明：当试验次数无限增加时，事件发生的频率会依概率收敛于其概率，即 $ \lim_{n \to \infty} P\left{ \left| \frac{n_A}{n} - p \right| &amp;lt; \varepsilon \right} = 1 $。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;只要实验次数足够多，事件的实际概率就会无限接近理论概率&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;复合事件&#34;&gt;复合事件
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;讨论两个或两个以上的事件的概率&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;三种最常见的复合事件&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;设样本空间 Ω={ω}，事件 A、B 是 Ω 的子集。&lt;/li&gt;
+&lt;li&gt;交事件（同时发生）：A∩B 或 AB&lt;/li&gt;
+&lt;li&gt;并事件（至少发生一个）：A∪B&lt;/li&gt;
+&lt;li&gt;补事件（不发生）：Ā = Ω\A&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;加法公式：P(A∪B)=P(A)+P(B)−P(AB)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;互斥事件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;两个事件不能同时发生  A∩B = 0，P(AB) = 0&lt;/li&gt;
+&lt;li&gt;P(A∪B)=P(A)+P(B)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;互补事件&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;事件A的对立面称为事件A的互补事件Ā
+&lt;ul&gt;
+&lt;li&gt;P(Ā )  = 1- P(A)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;条件概率&#34;&gt;条件概率
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;事件A在事件B发生的条件下发生的概率&lt;/li&gt;
+&lt;li&gt;记作 P(A|B)&lt;/li&gt;
+&lt;li&gt;P(A|B) = $\frac{P(A \cap B)}{P(B)}$（其中 \(P(B) &gt; 0\)，若 B 不可能发生，条件概率无意义）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;乘法公式与独立事件&#34;&gt;乘法公式与独立事件
+&lt;/h5&gt;&lt;ol&gt;
+&lt;li&gt;乘法公式
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;P&lt;/em&gt;(&lt;em&gt;A&lt;/em&gt;∩&lt;em&gt;B&lt;/em&gt;)=&lt;em&gt;P&lt;/em&gt;(&lt;em&gt;A&lt;/em&gt;∣&lt;em&gt;B&lt;/em&gt;)×&lt;em&gt;P&lt;/em&gt;(&lt;em&gt;B&lt;/em&gt;)=&lt;em&gt;P&lt;/em&gt;(&lt;em&gt;B&lt;/em&gt;∣&lt;em&gt;A&lt;/em&gt;)×&lt;em&gt;P&lt;/em&gt;(&lt;em&gt;A&lt;/em&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;独立事件的判定
+&lt;ul&gt;
+&lt;li&gt;A和B满足 &lt;strong&gt;“B 的发生不影响 A 的概率”&lt;/strong&gt;，反之亦然 则 A和B为独立事件&lt;/li&gt;
+&lt;li&gt;P(A|B) = P(A)&lt;/li&gt;
+&lt;li&gt;P(A∩B)=P(A)×P*(*B)  P(AB)=P(A)⋅P(B)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;全概率公式&#34;&gt;全概率公式
+&lt;/h4&gt;&lt;p&gt;若事件组 $B_1, B_2, \dots, B_n$ 满足：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;互斥性&lt;/strong&gt;：任意两个事件不重叠，即 $B_i \cap B_j = \varnothing (i \neq j$，比如抽奖时 “选 A 箱” 和 “选 B 箱” 不可能同时发生 ）；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;穷尽性&lt;/strong&gt;：所有事件覆盖全部可能，即$B_1 \cup B_2 \cup \dots \cup B_n = \Omega$ ( $\Omega$ 是所有可能结果的集合，比如抽奖只有 A、B、C 箱，选完这三个就覆盖所有可能 )；&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;则对任意事件 A，&lt;strong&gt;全概率公式&lt;/strong&gt;为：$P(A) = \sum_{i=1}^n P(A|B_i) \cdot P(B_i)$&lt;/p&gt;
+&lt;h4 id=&#34;贝叶斯公式&#34;&gt;贝叶斯公式
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;P(A∣B)⋅P(B)=P(B∣A)⋅P(A)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A 和 B 同时发生的概率”，既可以理解成 “先发生 B、再在 B 的条件下发生 A”，也可以理解成 “先发生 A、再在 A 的条件下发生 B”&lt;/strong&gt; ，两种路径的结果必然相等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;随机变量及其分布&#34;&gt;随机变量及其分布
+&lt;/h2&gt;&lt;h3 id=&#34;随机变量&#34;&gt;随机变量
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在相同的条件下，如果每次试验可能出现这样或那样的结果&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对随机事件进行数量化，用X表示所有可能的事件，也就是说X可以有不同的取值&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;P(X)表示 X 取不同的值时对应事件发生的概率&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;P(X) 概率函数&lt;/li&gt;
+&lt;li&gt;X 称为概率函数 P(X) 的随机变量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;离散型随机变量&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;随机变量 X 的所有取值&lt;strong&gt;可以逐个列出&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;连续型随机变量&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;随机变量 X 的所有取值&lt;strong&gt;不可以逐个列出&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;注意 如果离散型随机变量的取值非常庞大时，可近似看作连续型随机变量&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;随机变量的分布&#34;&gt;随机变量的分布
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;分布&amp;quot;明确了”每个取值（或取值区间）对应的概率是多少“&lt;/li&gt;
+&lt;li&gt;离散型和连续型的分布形式不同&lt;/li&gt;
+&lt;li&gt;核心是 概率的累加法则&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;离散型随机变量分布&#34;&gt;离散型随机变量分布
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;核心工具 &lt;strong&gt;概率质量函数&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;记为 $P(X = x)$，&lt;/li&gt;
+&lt;li&gt;直接定义 “随机变量取某个具体值 x 的概率”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;h5 id=&#34;2个核心性质&#34;&gt;2个核心性质
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;非负性：
+&lt;ul&gt;
+&lt;li&gt;概率不能为负&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;归一性：
+&lt;ul&gt;
+&lt;li&gt;所有可能取值的概率之和为1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;h5 id=&#34;常用离散分布&#34;&gt;常用离散分布
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;0-1分布（伯努利分布）
+&lt;ul&gt;
+&lt;li&gt;仅2个结果&lt;/li&gt;
+&lt;li&gt;记为$X \sim Bernoulli(p)$&lt;/li&gt;
+&lt;li&gt;$P(X=1)=p$，$P(X=0)=1-p$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;二项分布
+&lt;ul&gt;
+&lt;li&gt;n 次独立的 0-1 试验中&amp;quot;成功次数&amp;quot;的分布&lt;/li&gt;
+&lt;li&gt;记为 $X \sim B(n,p)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;泊松分布
+&lt;ul&gt;
+&lt;li&gt;描述 单位时间/空间内稀有事件的发生次数&lt;/li&gt;
+&lt;li&gt;记为 $X \sim Poisson(\lambda)$
+&lt;ul&gt;
+&lt;li&gt;$\lambda$ 是 平均发生次数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;连续型随机变量分布&#34;&gt;连续型随机变量分布
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;概率密度函数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;描述 区间概率&lt;/li&gt;
+&lt;li&gt;记作 $f(x)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;h5 id=&#34;概率密度函数核心性质&#34;&gt;概率密度函数核心性质
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;非负性：对于所有$x$, $f(x)≥0$ (密度不能为负)&lt;/li&gt;
+&lt;li&gt;归一性：所有区间的概率总和为 1
+&lt;ul&gt;
+&lt;li&gt;$\int_{-\infty}^{+\infty} f(x)dx = 1$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;h5 id=&#34;区间概率&#34;&gt;区间概率
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;随机变量 $X$ 落在区间 $[a,b]$内的概率&lt;/li&gt;
+&lt;li&gt;$P(a≤X≤b)=\int_{a}^{b}f(x)dx$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;h5 id=&#34;常用连续分布&#34;&gt;常用连续分布
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;均匀分布
+&lt;ul&gt;
+&lt;li&gt;取值在$[a,b]$内 等概率分布&lt;/li&gt;
+&lt;li&gt;记为 $X \sim U(a,b)$&lt;/li&gt;
+&lt;li&gt;概率密度函数为：$f(x) = \frac{1}{b-a}  (a \leq x \leq b)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;正态分布（高斯分布）
+&lt;ul&gt;
+&lt;li&gt;记为 $X \sim N(\mu, \sigma^2)$
+&lt;ul&gt;
+&lt;li&gt;$\mu$（均值）：决定分布的 “中心位置&lt;/li&gt;
+&lt;li&gt;$\sigma^2$（方差）：决定分布的 “离散程度”（\(\sigma\) 越小，曲线越尖）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;指数分布
+&lt;ul&gt;
+&lt;li&gt;连续型随机事件的间隔时间&lt;/li&gt;
+&lt;li&gt;记为 $X \sim Exp(\lambda)$
+&lt;ul&gt;
+&lt;li&gt;$\lambda$ 是  平均发生率&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;例如：手机从满电到关机的使用时间&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;假设检验&#34;&gt;假设检验
+&lt;/h2&gt;&lt;h3 id=&#34;基本原理&#34;&gt;基本原理
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;基于样本数据判断总体假设是否成立&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;基本思想&#34;&gt;基本思想
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;小概率反正法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;小概率事件再一次随机试验中几乎不可能发生&lt;/li&gt;
+&lt;li&gt;小概率事件发生的概率 称之为 &lt;strong&gt;显著性水平&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;显著性水平记作 $\alpha$&lt;/li&gt;
+&lt;li&gt;通常取 0.1  0.05  或 0.01&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;反证法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;先提出原假设（也称为 零假设或虚无假设 记作 $H_0$）&lt;/li&gt;
+&lt;li&gt;然后用适当的统计方法 确定 原假设的可能性&lt;/li&gt;
+&lt;li&gt;如果可能性非常小 则拒绝原假设
+&lt;ul&gt;
+&lt;li&gt;$\alpha$的值越小 拒绝原假设犯错误的概率就越小&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;转而去接收原假设的对立面  即 备择假设$H_1$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;适用假设检验产生两种类型的错误&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;拒真错误&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;原假设为真 但是却被拒绝了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;采伪错误&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;原假设为假 但是没有被被拒绝&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实施步骤&#34;&gt;实施步骤
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;补充：中心极限定理（Central Limit Theorem, CLT）是统计学中最核心的定理之一，它揭示了 “大量独立随机变量的总和或均值，会趋近于正态分布” 的规律&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;提出原假设和备择假设&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;选择检验方法与显著性水平（α）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;计算 检验统计量 与 P值&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;检验统计量&lt;/strong&gt;：将样本数据转化为标准化数值（如t值、Z值）
+&lt;ul&gt;
+&lt;li&gt;反映“样本与H₀的偏离程度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;P值
+&lt;ul&gt;
+&lt;li&gt;在H₀成立的前提下，&lt;/li&gt;
+&lt;li&gt;“观测到当前样本（或更极端样本）”的概率&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对比P值与α，做出决策 这是检验的核心判断规则&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;两种结果
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;P ≤ α&lt;/strong&gt;：“小概率事件（H₀成立时观测到当前样本）发生
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;拒绝原假设&lt;/strong&gt;，&lt;strong&gt;接受备择假设&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;P &amp;gt; α&lt;/strong&gt;：“样本差异可由随机误差解释”
+&lt;ul&gt;
+&lt;li&gt;则&lt;strong&gt;不拒绝原假设&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;结合实际场景，解读结论&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;若上述“差异”在教育场景中（如85分和80分）对学生能力影响极小，即使统计显著，实际意义也有限&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;关键注意点：避免常见误区&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;P值≠效应大小&lt;/strong&gt;：P值仅反映“差异是否由随机导致”，不代表“差异有多大”。例：两组平均分差0.1分，但样本量极大，也可能得到P&amp;lt;0.05，但实际差异可忽略。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;“不拒绝H₀”≠“接受H₀”&lt;/strong&gt;：可能是样本量不足、效应微弱，而非“总体真的无差异”。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;综上，假设检验是“用概率说话”的工具，核心是通过反证法排除随机干扰，但其结论需结合统计逻辑与实际场景，不可盲目依赖P值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;检验方法&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;场景&lt;/th&gt;
+          &lt;th&gt;检验方法&lt;/th&gt;
+          &lt;th&gt;统计量分布&lt;/th&gt;
+          &lt;th&gt;适用条件&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;单样本均值（σ已知）&lt;/td&gt;
+          &lt;td&gt;z检验&lt;/td&gt;
+          &lt;td&gt;标准正态&lt;/td&gt;
+          &lt;td&gt;大样本或正态总体+σ已知&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;单样本均值（σ未知）&lt;/td&gt;
+          &lt;td&gt;t检验&lt;/td&gt;
+          &lt;td&gt;t分布&lt;/td&gt;
+          &lt;td&gt;正态总体或小样本&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;两独立样本均值&lt;/td&gt;
+          &lt;td&gt;t检验&lt;/td&gt;
+          &lt;td&gt;t分布&lt;/td&gt;
+          &lt;td&gt;正态总体+方差齐性&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;配对样本均值&lt;/td&gt;
+          &lt;td&gt;配对t检验&lt;/td&gt;
+          &lt;td&gt;t分布&lt;/td&gt;
+          &lt;td&gt;差值服从正态分布&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;单样本方差&lt;/td&gt;
+          &lt;td&gt;χ²检验&lt;/td&gt;
+          &lt;td&gt;χ²分布&lt;/td&gt;
+          &lt;td&gt;正态总体&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;两样本方差&lt;/td&gt;
+          &lt;td&gt;F检验&lt;/td&gt;
+          &lt;td&gt;F分布&lt;/td&gt;
+          &lt;td&gt;两正态总体&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;参数估计&#34;&gt;参数估计
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;是在抽样及抽样分布的基础上&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用样本统计量去估计总体的参数&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;应用&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;产品方面
+&lt;ul&gt;
+&lt;li&gt;评估 关键用户行为指标 （留存率、转化率）&lt;/li&gt;
+&lt;li&gt;评估 A/B测试的效果&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;运营方面
+&lt;ul&gt;
+&lt;li&gt;参数估计  优化活动配置和推荐策略&lt;/li&gt;
+&lt;li&gt;评估 用户生命周期价值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;市场方面
+&lt;ul&gt;
+&lt;li&gt;制定广告投放策略&lt;/li&gt;
+&lt;li&gt;建立模型时，对参数进行评估 上述参数估计的应用请举出具体的实例&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;参数估计的方法&#34;&gt;参数估计的方法
+&lt;/h3&gt;&lt;h4 id=&#34;点估计&#34;&gt;点估计
+&lt;/h4&gt;&lt;p&gt;单个样本统计量的值直接作为总体参数的估计值&lt;/p&gt;
+&lt;p&gt;衡量一个样本统计量是不是总体参数的良好估计，有以下三个标准：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;无偏性: 估计的“无系统偏差”
+&lt;ul&gt;
+&lt;li&gt;判断估计量是否 “平均准确” 的基础标准&lt;/li&gt;
+&lt;li&gt;核心是&lt;strong&gt;估计量的数学期望等于总体参数的真实值&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;估计量不会系统性地高估或低估总体参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;设总体参数为$\theta$（如总体均值$\mu$、总体方差$\sigma^2$用于估计$\theta$的样本统计量（估计量）为 $\hat{\theta}$
+（如样本均值$\bar{X}$、样本方差$S^2$）。
+若满足：$E(\hat{\theta}) = \theta
+$ 则称 $\hat{\theta}$ 是 $\theta$ 的&lt;strong&gt;无偏估计量&lt;/strong&gt;；
+若$E(\hat{\theta}) \neq \theta$，则称$\hat{\theta}$存在&lt;strong&gt;偏差&lt;/strong&gt;（偏差值为$B(\hat{\theta}) = E(\hat{\theta}) - \theta$）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;有效性：估计的 ”最小波动“
+&lt;ul&gt;
+&lt;li&gt;一个参数存在多个无偏估计时
+&lt;ul&gt;
+&lt;li&gt;“有效性” 用于判断哪个估计量更优&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;在所有无偏估计中，方差最小的估计量最有效&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;克拉默 - 拉奥下界&lt;/strong&gt;（Cramér-Rao Lower Bound, &lt;strong&gt;CRLB&lt;/strong&gt;）
+&lt;ul&gt;
+&lt;li&gt;给出了无偏估计量方差的 “理论最小值”
+&lt;ul&gt;
+&lt;li&gt;某个无偏估计的方差等于 CRLB，则该估计量必为 MVUE(&lt;strong&gt;最小方差无偏估计&lt;/strong&gt;)，是最优的无偏估计&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;对于正态总体$N(\mu, \sigma^2)$，总体均值$\mu$的 CRLB 为$\frac{\sigma^2}{n}$，而样本均值的方差恰好等于该下界，因此样本均值是$\mu$的 MVUE&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;一致性：估计的&amp;quot;大样本收敛性&amp;rdquo;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;随着样本量n增大，估计量 $\hat{\theta}$ 会越来越接近总体参数 $\theta$ 的真实值&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;即大样本下估计量的 “渐进准确性”&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&#34;实现方法&#34;&gt;实现方法
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;矩估计&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;利用 “样本矩” 与 “总体矩” 相等的原则推断总体参数
+&lt;ul&gt;
+&lt;li&gt;矩（Moment）是描述数据分布的 “数字特征”
+&lt;ul&gt;
+&lt;li&gt;一阶矩：均值（描述数据的集中趋势）；&lt;/li&gt;
+&lt;li&gt;二阶矩：方差（描述数据的离散程度）；&lt;/li&gt;
+&lt;li&gt;高阶矩：偏度（描述分布对称性）、峰度（描述分布陡峭程度）等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;步骤（以总体均值和方差为例）
+&lt;ol&gt;
+&lt;li&gt;定义总体矩：
+&lt;ul&gt;
+&lt;li&gt;总体一阶原点矩（均值）：$E(X) = μ$&lt;/li&gt;
+&lt;li&gt;总体二阶中心矩（方差）：$E[(X - μ)^2] = σ²$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;计算样本矩：
+&lt;ul&gt;
+&lt;li&gt;样本一阶原点矩（样本均值）：$(\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$（n 为样本量）&lt;/li&gt;
+&lt;li&gt;样本二阶中心矩（样本方差）：$S_n^2 = \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2$
+&lt;ul&gt;
+&lt;li&gt;注：实际应用中常用修正样本方差$s^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2$，因S$_n^2$是 σ² 的有偏估计&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;令 “样本矩 = 总体矩”，解出参数估计值
+&lt;ul&gt;
+&lt;li&gt;$\hat{μ} = \bar{X}$（用样本均值估计总体均值）；&lt;/li&gt;
+&lt;li&gt;$\hat{σ}^2 = S_n^2$（用样本二阶中心矩估计总体方差）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;最大似然估计(MLE，maximum likelihood estimation) 也叫 极大似然估计&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;概率最大的事件最可能发生&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;选择使 “当前样本出现概率最大” 的参数值作为总体参数的估计值&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;似然函数
+&lt;ul&gt;
+&lt;li&gt;给定样本观测值$x_1,x_2,&amp;hellip;,x_n$&lt;/li&gt;
+&lt;li&gt;似然函数$L(θ|x_1,&amp;hellip;,x_n)$表示 “参数为 θ 时，观测到该样本的概率
+&lt;ul&gt;
+&lt;li&gt;若总体是离散分布，似然函数 = 联合概率&lt;/li&gt;
+&lt;li&gt;若为连续分布，似然函数 = 联合概率密度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;抽样需要满足的重要前提条件&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;所有的抽样都是独立同分布的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;利用已知的样本结果信息，反推最有可能（最大概率）导致这些样本结果出现的模型参数&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;步骤（以正态总体 $X∼N(μ,σ^2) $为例）&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;写出总体的概率密度函数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x - \mu)^2}{2\sigma^2}}$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;构造似然函数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;因样本独立同分布，联合密度 = 各样本密度乘积&lt;/li&gt;
+&lt;li&gt;$L(\mu, \sigma^2 | x_1, \dots, x_n) = \prod_{i=1}^n f(x_i | \mu, \sigma^2) = (2\pi\sigma^2)^{-n/2} e^{-\frac{1}{2\sigma^2} \sum_{i=1}^n (x_i - \mu)^2}$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;简化计算&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对似然函数取自然对数
+&lt;ul&gt;
+&lt;li&gt;因对数是单调递增函数，最大化$\ln L$等价于最大化$L$&lt;/li&gt;
+&lt;li&gt;取对数的作用：把“极小乘积”变成“可加的、可导的、数值稳定的”对数似然&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;得到&lt;strong&gt;对数似然函数&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;$ln L(\mu,\sigma^2) = -\frac{n}{2}\ln(2\pi) - \frac{n}{2}\ln\sigma^2 - \frac{1}{2\sigma^2}\sum_{i=1}^{n}(x_i - \mu)^2$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;求 对数似然函数 的最大值&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;对参数 μ 和 σ² 求偏导，令偏导数为 0，解方程组&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;对 μ 求偏导并令其为 0：$\frac{\partial \ln L}{\partial μ} = \frac{1}{σ²}\sum_{i=1}^n (x_i - μ) = 0 \implies \hat{μ} = \frac{1}{n}\sum_{i=1}^n x_i = \bar{x}$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对 σ² 求偏导并令其为 0:&lt;/p&gt;
+&lt;p&gt;$\frac{\partial \ln L}{\partial \sigma^2}
+= -\frac{n}{2\sigma^2} + \frac{1}{2\sigma^4}\sum_{i=1}^{n}(x_i-\mu)^2
+= 0\implies\quad\hat\sigma^2=\frac{1}{n}\sum_{i=1}^{n}(x_i-\mu)^2 = S^2$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;区间估计&#34;&gt;区间估计
+&lt;/h4&gt;&lt;h5 id=&#34;定义&#34;&gt;定义
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;是通过样本数据构造一个区间$[L, U]$  (置信区间)
+&lt;ul&gt;
+&lt;li&gt;由样本计算的区间$[L, U]$，&lt;/li&gt;
+&lt;li&gt;其中$L$为置信下限，$U$为置信上限&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;给出出该区间 “包含总体参数的概率（置信水平/置信度）
+&lt;ul&gt;
+&lt;li&gt;区间包含总体参数的概率&lt;/li&gt;
+&lt;li&gt;置信度 = 1 -  显著性水平&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;核心思想及步骤&#34;&gt;核心思想及步骤
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;利用估计量的抽样分布，结合置信水平，构造出包含总体参数的区间&lt;/li&gt;
+&lt;li&gt;具体步骤：
+&lt;ol&gt;
+&lt;li&gt;选择合适的 点估计量
+&lt;ul&gt;
+&lt;li&gt;选 无偏、有效的点估计量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;构造抽样分布
+&lt;ul&gt;
+&lt;li&gt;确定 点估计量的抽样分布&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;确定分位数
+&lt;ul&gt;
+&lt;li&gt;根据 置信水平 查抽样分布 的 分位数表&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;推导置信区间
+&lt;ul&gt;
+&lt;li&gt;不等式变形&lt;/li&gt;
+&lt;li&gt;将 估计量的区间 转化为 总体参数 的区间&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;贝叶斯估计&#34;&gt;贝叶斯估计
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;思想：将参数视为随机变量，结合先验分布与数据得到后验分布，再取后验均值/中位数等作为估计&lt;/li&gt;
+&lt;li&gt;步骤：
+&lt;ol&gt;
+&lt;li&gt;选择先验分布&lt;/li&gt;
+&lt;li&gt;计算后验分布&lt;/li&gt;
+&lt;li&gt;后验均值&lt;/li&gt;
+&lt;li&gt;最小二乘法
+&lt;ul&gt;
+&lt;li&gt;最小化残差平方和，常用于回归模型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;对比&#34;&gt;对比
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;维度&lt;/th&gt;
+          &lt;th&gt;点估计&lt;/th&gt;
+          &lt;th&gt;区间估计&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;结果形式&lt;/td&gt;
+          &lt;td&gt;单个数值（如\(\hat{μ}=175cm\)）&lt;/td&gt;
+          &lt;td&gt;区间 + 置信水平（如 [173,177] cm, 95%）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;核心优势&lt;/td&gt;
+          &lt;td&gt;简洁、直观，便于后续计算&lt;/td&gt;
+          &lt;td&gt;反映估计的不确定性，更具统计意义&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;核心劣势&lt;/td&gt;
+          &lt;td&gt;无法量化不确定性&lt;/td&gt;
+          &lt;td&gt;结果较复杂，需指定置信水平&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;适用场景&lt;/td&gt;
+          &lt;td&gt;快速粗略估计、后续统计分析（如假设检验）的中间步骤&lt;/td&gt;
+          &lt;td&gt;正式报告、决策制定（如产品质量控制、政策评估）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;方差分析&#34;&gt;方差分析
+&lt;/h2&gt;&lt;h3 id=&#34;应用示例&#34;&gt;应用示例
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;同一个客群在实施某个策略前后的指标对比&lt;/li&gt;
+&lt;li&gt;两个或多个客群对比同一指标，评估同一指标在不同客群上的差异&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;基本思路&#34;&gt;基本思路
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;判断数据的变化是不是某一因素导致&lt;/li&gt;
+&lt;li&gt;用于两个及两个以上分组样本差异显著性检验的方法&lt;/li&gt;
+&lt;li&gt;要检验的对象称为&lt;strong&gt;因素&lt;/strong&gt;或&lt;strong&gt;因子&lt;/strong&gt;（factor）&lt;/li&gt;
+&lt;li&gt;因素的不同表现称为水平或处理（treatment）&lt;/li&gt;
+&lt;li&gt;在每个因素水平下得到的样本数据称为观测值&lt;/li&gt;
+&lt;li&gt;关心的是均值，但是判断均值之间是否存在差异时需要借助&lt;strong&gt;方差&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;定性分析&#34;&gt;定性分析
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;组内误差
+&lt;ul&gt;
+&lt;li&gt;数据的差异是由个体差异导致的或者说是由抽样的随机性导致的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;组间误差
+&lt;ul&gt;
+&lt;li&gt;组与组之间的差异有可能是随机因素导致的，也有可能是因素导致的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;组间误差足够大，而组内误差又足够小时
+&lt;ul&gt;
+&lt;li&gt;可以认为因素和自变量之间存在显著差异&lt;/li&gt;
+&lt;li&gt;也就是说因素和自变量之间存在某种关系&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;定量分析&#34;&gt;定量分析
+&lt;/h4&gt;&lt;h5 id=&#34;组间误差-ssa&#34;&gt;组间误差 (SSA)
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;$SSA = \sum_{i \in G} n_i (\bar{Y}_i - \bar{Y})^2$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;组内误差-sse&#34;&gt;组内误差 (SSE)
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;$SSE = \sum_{i \in G} \sum_{j \in O} (Y_{ij} - \bar{Y}_i)^2$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;组间方差&#34;&gt;组间方差
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;$MSA = \frac{SSA}{k - 1} = \frac{\sum_{i \in G} n_i (\bar{Y}_i - \bar{Y})^2}{k - 1}$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;组内方差&#34;&gt;组内方差
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;$MSE = \frac{SSE}{n - k} = \frac{\sum_{i \in G} \sum_{j \in O} (Y_{ij} - \bar{Y}_i)^2}{n - k}$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;将 MSA 和 MASE 进行对比，可以构造出 F 统计量，它服从自由度为 k-1和 n-k 的 F 分布&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$F = \frac{\text{MSA}}{\text{MSE}} \sim F(k - 1, n - k)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;单因素方差分析&#34;&gt;单因素方差分析
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;包含 1 个自变量(也称&amp;quot;因素&amp;quot;)&lt;/li&gt;
+&lt;li&gt;且该自变量至少分为 2 个组别&lt;/li&gt;
+&lt;li&gt;用于检验这 1 个因素的不同组别，对因变量的均值是否有显著影响&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;双因素方差分析&#34;&gt;双因素方差分析
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;包含 2 个自变量(因素A和因素B)&lt;/li&gt;
+&lt;li&gt;用于同时检验
+&lt;ul&gt;
+&lt;li&gt;因素 A 的不同组别对因变量的影响（主效应 A）&lt;/li&gt;
+&lt;li&gt;因素 B 的不同组别对因变量的影响（主效应 B）&lt;/li&gt;
+&lt;li&gt;因素 A 和因素 B 的 “交互作用” 对因变量的影响（交互效应 A×B）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;复杂多因素对因变量的共同影响&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实施细节&#34;&gt;实施细节
+&lt;/h3&gt;&lt;h4 id=&#34;前提条件&#34;&gt;前提条件
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;差分析需要先判断样本是否满足：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每个分组中的每个值都必须来自同一个总体样本&lt;/li&gt;
+&lt;li&gt;方差分析只能分析满足正态分布的指标
+&lt;ul&gt;
+&lt;li&gt;事实上，在产品运营中大部分指标都基本满足
+&lt;ul&gt;
+&lt;li&gt;几乎所有的转化率都近似正态分布：购买率、点击率、转化率、活跃率、留存率、复购率等；&lt;/li&gt;
+&lt;li&gt;几乎所有的业务量都近似正态分布：客单价、每日新增用户数、渠道引流的流量等；&lt;/li&gt;
+&lt;li&gt;几乎所有的用户画像指标都近似正态分布：年龄、城市、登录次数、使用时长等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;分析的样本必须是随机抽样得到&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果方差分析得到的结论是组与组之间存在显著差异&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;需要进一步评估差异的大小&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用到指标 $R^2$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;$R^2=\frac{SSA}{SST}$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;$SST=SSA+SSE$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$SST$为总误差 ：组间误差与组内误差之和&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;回归分析&#34;&gt;回归分析
+&lt;/h2&gt;&lt;p&gt;假定因变量和自变量存在某种关系并且可以用适当的数学模型表达出来，然后可以借助模型根据给定的自变量来预测或解释因变量&lt;/p&gt;
+&lt;h3 id=&#34;变量间的关系&#34;&gt;变量间的关系
+&lt;/h3&gt;&lt;h4 id=&#34;函数关系&#34;&gt;函数关系
+&lt;/h4&gt;&lt;p&gt;变量间的内在驱动逻辑&lt;/p&gt;
+&lt;p&gt;变量y随着变量x 一起变化并且完全依赖于 x,$y=f(x)$&lt;/p&gt;
+&lt;h4 id=&#34;相关关系&#34;&gt;相关关系
+&lt;/h4&gt;&lt;p&gt;变量间的伴随关系&lt;/p&gt;
+&lt;p&gt;变量之间不是完全确定的关系，影响关系复杂&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;描述相关关系的常用工具是散点图&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;通过散点图可以看出变量之间是否存在相关性以及相关性的强弱&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;量化变量之间关系的强度，需要计算相关系数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;总体相关系数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$$
+            \rho = \frac{\mathrm{Cov}(X,Y)}{\sqrt{\mathrm{Var}(X)\cdot\mathrm{Var}(Y)}}
+            $$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;样本 Pearson 相关系数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;$$
+r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}
+{\sqrt{\sum_{i=1}^{n}(x_i - \bar{x})^2 \cdot \sum_{i=1}^{n}(y_i - \bar{y})^2}}&lt;/p&gt;
+&lt;p&gt;$$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;当$r$的绝对值在 之间，$[0.6,1]$认为指标间是&lt;strong&gt;强相关&lt;/strong&gt;，指标间的业务联系非常紧密。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;当$r$的绝对值在$[0.1,6]$ 之间，认为指标间是&lt;strong&gt;弱相关&lt;/strong&gt;，指标间的业务联系不太紧密。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;当$r$的绝对值在$[0,0.1]$ 之间，认为指标间是&lt;strong&gt;无相关&lt;/strong&gt;，指标间没有什么业务联系，也就是说当我们去运营指标 A 时，指标 B 不会产生相应的变化&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不相关并不代表是独立的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;注意 离群点会对相关系数产生较大的影响，计算时要进行剔除&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;实际工作中，还需要关注相关关系的稳定性&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;相关系数的显著性检验 通常使用 $t$检验&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;既适用小样本也适用于大样本&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$
+        t = \frac{r\sqrt{n-2}}{\sqrt{1-r^{2}}} \sim t(n-2)
+        $$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;注意&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;相关关系不等同于因果关系，相关关系是伴随关系而不是因果关系&lt;/li&gt;
+&lt;li&gt;强相关关系才具有业务价值，相关系数的绝对值在0.6以上&lt;/li&gt;
+&lt;li&gt;相关关系的本质是 Y 的变化有多少能被 X 解释&lt;/li&gt;
+&lt;li&gt;相关关系是不稳定的&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;拟合优度和显著性&#34;&gt;拟合优度和显著性
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;回归模型需要评价模型的拟合度和显著性，关系到能否通过回归模型做出可靠预测&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;决定系数 $R^2$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;于度量因变量的变化中可由自变量解释部分所占的比例&lt;/li&gt;
+&lt;li&gt;回归模型的解释力是否良好，值越接近1越好&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$
+        R^{2} = \frac{\mathrm{SSR}}{\mathrm{SST}} = \frac{\sum_{i=1}^{n}(\hat{y}_i - \bar{y})^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+        $$&lt;/li&gt;
+&lt;li&gt;
+$$
+        R^{2} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}} = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+        $$&lt;ul&gt;
+&lt;li&gt;n 次观测值的总误差记为 SST,通常称之为总平方和（&lt;em&gt;total sum of squares&lt;/em&gt;）
+&lt;ul&gt;
+&lt;li&gt;由两个部分构成&lt;/li&gt;
+&lt;li&gt;SSE（残差平方和）&lt;/li&gt;
+&lt;li&gt;回归平方和（&lt;em&gt;regression sum of squares&lt;/em&gt;），记为 SSR&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;越接近&lt;strong&gt;1&lt;/strong&gt;越好&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;回归方程的显著性进行检验&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$t$  检验（回归系数的检验）&lt;/li&gt;
+&lt;li&gt;$F$ 检验（回归方程的检验）
+&lt;ul&gt;
+&lt;li&gt;告诉我们因变量的变化到底能不能通过自变量的变化进行解释&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;要关注$P$值，
+&lt;ul&gt;
+&lt;li&gt;如果$P$值小于0.05，说明模型以及模型的系数具备统计上的显著性&lt;/li&gt;
+&lt;li&gt;如果$P$值小于0.01，说明模型是极其显著的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;残差的检验&#34;&gt;残差的检验
+&lt;/h4&gt;&lt;p&gt;残差是因变量的观测值 $y_i$ 与  由回归方程求出的估计值 $\hat{y}_i$ 的差，它反映了通过回归方程预测 $y_i$ 时引起的误差。第 i 个观测值的残差可以表示为 $e_i = y_i-\hat{y}_i$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;对残差进行标准化，得到标准化残差&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;$Z_{e_i} = \frac{e_i}{S_e}=\frac{y_i-\hat{y}_i}{S_e}$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;其中 $S_e$是残差的标准差&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;时间序列分析&#34;&gt;时间序列分析
+&lt;/h2&gt;&lt;h3 id=&#34;时间序列&#34;&gt;时间序列
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;定义&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;同一现象在不同时间的相继观察值排列而成的序列&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一组按照时间顺序排列的数据点，常见于金融、运营、销售等领域&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;分类&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;平稳序列
+&lt;ul&gt;
+&lt;li&gt;基本上不存在趋势的序列，即各个观察值在某个固定的水平上波动，不同的时间段波动程度不同，但并不存在某种规律&lt;/li&gt;
+&lt;li&gt;特点就是均值、方差恒定，协方差不随时间变化（协方差只依赖于时间间隔，与具体的时间点无关）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;非平稳序列
+&lt;ul&gt;
+&lt;li&gt;特点就是均值、方差恒定，协方差不随时间变化（协方差只依赖于时间间隔，与具体的时间点无关）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;趋势&lt;/strong&gt;（trend）：时间序列长期呈现出来的某种上升或下降的变动，可以是线性的也可以是非线性的&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;季节性&lt;/strong&gt;（seasonality）：时间序列在一年内出现的周期性波动。商业活动中经常说的“销售旺季”、“旅游淡季”这类术语就是对季节性的描述&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;周期性&lt;/strong&gt;（cyclicity）：时间序列中呈现出来的围绕长期趋势的波浪式或振荡式变动
+&lt;ul&gt;
+&lt;li&gt;周期性是无固定规律的，变动周期通常在一年以上且周期长度不一&lt;/li&gt;
+&lt;li&gt;序列较短时不太容易发现周期性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;随机性&lt;/strong&gt;或&lt;strong&gt;不规则波动&lt;/strong&gt;（irregular variations）：时间序列中的偶然性因素，是时间序列中去除趋势、周期性和季节性之后剩下的部分&lt;/li&gt;
+&lt;li&gt;按照四种成分对时间序列的影响方式不同，时间序列可以分解为
+&lt;ul&gt;
+&lt;li&gt;加法模型（additive model）&lt;/li&gt;
+&lt;li&gt;乘法模型（multiplicative model）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;常见的时间序列模型&#34;&gt;常见的时间序列模型
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;移动平均（&lt;strong&gt;MA&lt;/strong&gt;）模型：通过设置大小为 的移动窗口对窗口内的时间序列求平均作为预测值&lt;/li&gt;
+&lt;li&gt;指数平滑模型：通过对过去的观察值加权平均进行预测的一种方法，指数平滑是加权平均的一种特殊形式，观察值的时间越久远，其权重就呈现指数下降。指数平滑模型有一次指数平滑、二次指数平滑、三次指数平滑等不同的方法&lt;/li&gt;
+&lt;li&gt;自回归（&lt;strong&gt;AR&lt;/strong&gt;）模型：预测值由该时间序列的过去值经过线性模型计算获得，一般记为 AR(p)，其中 p 表示阶数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ARMA&lt;/strong&gt;：顾名思义，该模型是自回归（AR）和移动平均（MA）模型的结合，适用于平稳序列，一般记为 ARMA(p, q)，其中 p 表示 AR 的阶数，q 表示 MA 的阶数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ARIMA&lt;/strong&gt;：通过差分操作将非平稳序列转化为平稳序列后建模，通过记为 ARIMA(p, d, q)，其中 p 表示 AR 阶数、d 表示差分次数、q 表示 MA 阶数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SARIMA&lt;/strong&gt; / &lt;strong&gt;SARIMAX&lt;/strong&gt; 模型：对于没有其它外部因素影响且无明显季节性的数据（例如股票的每日收盘价），ARIMA 是一种可行的解决方案，但是对于存在明显季节性规律或者需要引入额外解释变量（如促销、节假日、天气等）的时间序列，SARIMA 和 SARIMAX 是更好的选择。SARIMA 模型在 ARIMA 的基础上引入了季节性项和外部变量，其中季节性项有四个参数&lt;code&gt;(P, D, Q, s)&lt;/code&gt;，分别代表季节性自回归阶数、季节性差分次数、季节性移动平均阶数和季节周期长度（例如：12 表示月度数据的一年周期）；而 SARIMAX 模型在 SARIMA 的基础上又引入了其他相关的解释变量来帮助预测&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

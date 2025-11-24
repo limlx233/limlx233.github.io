@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="MySQL 系统稳定性需通过建立性能基准、容量规划、故障预防、慢查询排查、锁冲突处理及崩溃恢复等全流程管理实现，核心是 “提前监控预防 + 快速定位解决”，避免非计划停机与性能劣化。\n">
+<title>MySQL-07-维护稳定系统</title>
+
+<link rel='canonical' href='http://localhost:1313/p/mysql-07-%E7%BB%B4%E6%8A%A4%E7%A8%B3%E5%AE%9A%E7%B3%BB%E7%BB%9F/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-07-维护稳定系统">
+<meta property='og:description' content="MySQL 系统稳定性需通过建立性能基准、容量规划、故障预防、慢查询排查、锁冲突处理及崩溃恢复等全流程管理实现，核心是 “提前监控预防 + 快速定位解决”，避免非计划停机与性能劣化。\n">
+<meta property='og:url' content='http://localhost:1313/p/mysql-07-%E7%BB%B4%E6%8A%A4%E7%A8%B3%E5%AE%9A%E7%B3%BB%E7%BB%9F/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-25T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-08-25T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="MySQL-07-维护稳定系统">
+<meta name="twitter:description" content="MySQL 系统稳定性需通过建立性能基准、容量规划、故障预防、慢查询排查、锁冲突处理及崩溃恢复等全流程管理实现，核心是 “提前监控预防 + 快速定位解决”，避免非计划停机与性能劣化。\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">好记性不如烂笔头</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#稳定系统的核心特质与基准建立">稳定系统的核心特质与基准建立</a>
+      <ol>
+        <li><a href="#稳定系统的关键表现">稳定系统的关键表现</a></li>
+        <li><a href="#建立性能基准measuring-what-you-manage">建立性能基准（Measuring What You Manage）</a>
+          <ol>
+            <li><a href="#基准的核心作用">基准的核心作用</a></li>
+            <li><a href="#需记录的基准指标">需记录的基准指标</a></li>
+            <li><a href="#基准更新频率">基准更新频率</a></li>
+          </ol>
+        </li>
+        <li><a href="#应用性能分析application-profiling">应用性能分析（Application Profiling）</a></li>
+      </ol>
+    </li>
+    <li><a href="#数据库故障的常见诱因">数据库故障的常见诱因</a>
+      <ol>
+        <li><a href="#基础环境相关">基础环境相关</a></li>
+        <li><a href="#软件与服务相关">软件与服务相关</a></li>
+        <li><a href="#不可抗力因素">不可抗力因素</a></li>
+      </ol>
+    </li>
+    <li><a href="#容量规划capacity-planning">容量规划（Capacity Planning）</a>
+      <ol>
+        <li><a href="#核心原则">核心原则</a></li>
+        <li><a href="#表大小监控与计算">表大小监控与计算</a>
+          <ol>
+            <li><a href="#逻辑大小数据--索引">逻辑大小（数据 + 索引）</a></li>
+            <li><a href="#物理大小磁盘占用">物理大小（磁盘占用）</a></li>
+          </ol>
+        </li>
+        <li><a href="#扩展性策略">扩展性策略</a>
+          <ol>
+            <li><a href="#垂直扩展scaling-up">垂直扩展（Scaling Up）</a></li>
+            <li><a href="#水平扩展scaling-out">水平扩展（Scaling Out）</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#故障排查方法论">故障排查方法论</a>
+      <ol>
+        <li><a href="#问题定位步骤">问题定位步骤</a></li>
+        <li><a href="#常见问题及解决方向">常见问题及解决方向</a></li>
+      </ol>
+    </li>
+    <li><a href="#服务器变慢排查">服务器变慢排查</a>
+      <ol>
+        <li><a href="#慢查询分类与诱因">慢查询分类与诱因</a>
+          <ol>
+            <li><a href="#少数查询变慢">少数查询变慢</a></li>
+            <li><a href="#多数--所有查询变慢">多数 / 所有查询变慢</a></li>
+            <li><a href="#单表相关查询变慢">单表相关查询变慢</a></li>
+          </ol>
+        </li>
+        <li><a href="#排查工具与命令">排查工具与命令</a></li>
+      </ol>
+    </li>
+    <li><a href="#锁冲突与死锁处理">锁冲突与死锁处理</a>
+      <ol>
+        <li><a href="#mysql-锁类型">MySQL 锁类型</a>
+          <ol>
+            <li><a href="#服务器级锁">服务器级锁</a></li>
+            <li><a href="#存储引擎级锁innodb">存储引擎级锁（InnoDB）</a></li>
+          </ol>
+        </li>
+        <li><a href="#锁冲突识别">锁冲突识别</a>
+          <ol>
+            <li><a href="#查看阻塞线程">查看阻塞线程</a></li>
+            <li><a href="#通过系统表查询锁信息">通过系统表查询锁信息</a></li>
+          </ol>
+        </li>
+        <li><a href="#解决方法">解决方法</a></li>
+      </ol>
+    </li>
+    <li><a href="#innodb-崩溃恢复">InnoDB 崩溃恢复</a>
+      <ol>
+        <li><a href="#自动恢复机制">自动恢复机制</a></li>
+        <li><a href="#手动恢复innodb_force_recovery">手动恢复（&ndash;innodb_force_recovery）</a>
+          <ol>
+            <li><a href="#操作步骤">操作步骤</a></li>
+            <li><a href="#恢复级别说明">恢复级别说明</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#实践思路">实践思路</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql/" style="background-color: ; color: #fff;">
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/mysql-07-%E7%BB%B4%E6%8A%A4%E7%A8%B3%E5%AE%9A%E7%B3%BB%E7%BB%9F/">MySQL-07-维护稳定系统</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-08-25</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/mysql-07-%E7%BB%B4%E6%8A%A4%E7%A8%B3%E5%AE%9A%E7%B3%BB%E7%BB%9F/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/mysql-07-%E7%BB%B4%E6%8A%A4%E7%A8%B3%E5%AE%9A%E7%B3%BB%E7%BB%9F/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>MySQL 系统稳定性需通过建立性能基准、容量规划、故障预防、慢查询排查、锁冲突处理及崩溃恢复等全流程管理实现，核心是 “提前监控预防 + 快速定位解决”，避免非计划停机与性能劣化。</p>
+<ol>
+<li>提升 MySQL 服务器稳定性，减少非计划 outage（停机）</li>
+<li>监控数据库增长趋势，制定科学的容量规划</li>
+<li>排查并解决服务器性能变慢、资源争用等问题</li>
+<li>识别并处理锁冲突、死锁等资源锁定问题</li>
+<li>掌握 InnoDB 崩溃恢复方法，快速恢复故障系统</li>
+</ol>
+<h2 id="稳定系统的核心特质与基准建立">稳定系统的核心特质与基准建立
+</h2><h3 id="稳定系统的关键表现">稳定系统的关键表现
+</h3><ul>
+<li>行为可预测：长期运行无意外停机，计划停机频率低</li>
+<li>性能稳定：应用程序响应时间在预期范围内，无突发波动</li>
+<li>适配变化：能应对业务增长、应用迭代、硬件升级等环境变化</li>
+</ul>
+<h3 id="建立性能基准measuring-what-you-manage">建立性能基准（Measuring What You Manage）
+</h3><h4 id="基准的核心作用">基准的核心作用
+</h4><ul>
+<li>作为问题排查的参考标准：遇到性能问题时，对比基准数据快速定位差异</li>
+<li>评估配置变更效果：硬件 / 软件升级、参数调整后，通过基准对比验证优化价值</li>
+<li>支撑容量规划：跟踪基准数据变化，预判资源扩容时机</li>
+</ul>
+<h4 id="需记录的基准指标">需记录的基准指标
+</h4><ul>
+<li>操作系统层面：文件系统使用率、内存占用、CPU 负载（Linux 用 top/iostat/vmstat，Windows 用资源监视器）</li>
+<li>MySQL 层面：运行进程（SHOW PROCESSLIST）、状态变量（mysqladmin extended-status）、配置参数</li>
+<li>应用层面：核心业务场景响应时间（登录、查询、数据提交等）</li>
+</ul>
+<h4 id="基准更新频率">基准更新频率
+</h4><ul>
+<li>配置变更后：立即重新记录基准，确认变更影响</li>
+<li>定期更新：根据业务增长速度，每周 / 每月更新一次，适配数据量与访问模式变化</li>
+</ul>
+<h3 id="应用性能分析application-profiling">应用性能分析（Application Profiling）
+</h3><ul>
+<li>记录关键事件时间节点：函数调用、数据库交互、外部系统调用等</li>
+<li>量化各环节耗时：识别性能瓶颈是否来自数据库（如数据库调用占比 &lt; 5%，优先优化应用其他模块）</li>
+<li>实现方式：通过开发环境工具、代码埋点或第三方插件采集数据</li>
+</ul>
+<h2 id="数据库故障的常见诱因">数据库故障的常见诱因
+</h2><h3 id="基础环境相关">基础环境相关
+</h3><ul>
+<li>硬件问题：电源故障、RAID 阵列降级、网络适配器故障、内存 / CPU 故障（多为间歇性，难诊断）</li>
+<li>虚拟化环境：资源争用（与其他虚拟机共享 CPU / 内存 / 存储）、分配延迟导致应用超时</li>
+<li>操作系统问题：未及时打补丁、文件系统满、SELinux 等强制访问控制干扰、系统日志占用过多磁盘空间</li>
+</ul>
+<h3 id="软件与服务相关">软件与服务相关
+</h3><ul>
+<li>共存应用影响：同一服务器上的其他应用占用资源（CPU / 内存 / I/O）、引发安全漏洞</li>
+<li>网络故障：客户端与服务器连接中断、复制环境中主从网络延迟、防火墙 / 负载均衡故障</li>
+<li>应用程序问题：代码 bug 导致数据错误、低效算法（如大数据集本地排序）、频繁读取大文件</li>
+</ul>
+<h3 id="不可抗力因素">不可抗力因素
+</h3><ul>
+<li>自然灾害、机房断电等极端事件，需通过灾备方案（异地备份、多数据中心）应对</li>
+</ul>
+<h2 id="容量规划capacity-planning">容量规划（Capacity Planning）
+</h2><h3 id="核心原则">核心原则
+</h3><ul>
+<li>满足增长需求：预留足够资源应对用户量增长、数据量增加及业务峰值（如促销活动）</li>
+<li>避免过度配置：无需一次性添加冗余资源，平衡成本与可用性</li>
+<li>动态监控：跟踪资源使用趋势（内存、磁盘、CPU），提前扩容</li>
+</ul>
+<h3 id="表大小监控与计算">表大小监控与计算
+</h3><h4 id="逻辑大小数据--索引">逻辑大小（数据 + 索引）
+</h4><ul>
+<li>
+<p>查询 INFORMATION_SCHEMA.TABLES 表的 DATA_LENGTH（数据大小）和 INDEX_LENGTH（索引大小），求和得到逻辑大小</p>
+</li>
+<li>
+<p>示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">TABLE_NAME</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="o">`</span><span class="k">table</span><span class="o">`</span><span class="p">,</span><span class="w"> </span><span class="n">DATA_LENGTH</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">INDEX_LENGTH</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="o">`</span><span class="n">logical_size</span><span class="o">`</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w"> </span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">TABLES</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w"> </span><span class="n">TABLE_SCHEMA</span><span class="o">=</span><span class="s1">&#39;employees&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h4 id="物理大小磁盘占用">物理大小（磁盘占用）
+</h4><ul>
+<li>
+<p>方法 1：查询 INFORMATION_SCHEMA.FILES 视图（适用于 InnoDB 表空间）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">FILE_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">TOTAL_EXTENTS</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">EXTENT_SIZE</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="o">`</span><span class="k">size</span><span class="o">`</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w"> </span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">FILES</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w"> </span><span class="n">FILE_NAME</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%employees%&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>方法 2：直接读取文件系统（适用于独立表空间）</p>
+<p>运行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> /var/lib/mysql/employees  <span class="c1"># 进入数据库目录</span>
+</span></span><span class="line"><span class="cl">ls -l *.ibd  <span class="c1"># 查看各表的物理文件大小</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="扩展性策略">扩展性策略
+</h3><h4 id="垂直扩展scaling-up">垂直扩展（Scaling Up）
+</h4><ul>
+<li>方式：增加单节点硬件资源（CPU 核心数、内存、存储 IOPS）</li>
+<li>优势：实施简单，无需修改应用架构</li>
+<li>适用场景：中小规模业务、读写压力集中在单节点</li>
+</ul>
+<h4 id="水平扩展scaling-out">水平扩展（Scaling Out）
+</h4><ul>
+<li>方式：增加服务器节点，分散负载（如读写分离、数据分片、InnoDB Cluster）</li>
+<li>优势：突破单节点性能上限，提升可用性</li>
+<li>适用场景：高并发读写、超大规模数据存储（如 TB 级数据）</li>
+</ul>
+<h2 id="故障排查方法论">故障排查方法论
+</h2><h3 id="问题定位步骤">问题定位步骤
+</h3><ol>
+<li>确认变更历史：近期是否修改过应用代码、数据库配置、硬件环境</li>
+<li>判断问题持续性：是否已自行恢复（可能是瞬时负载高峰）</li>
+<li>定位影响范围：特定应用功能、所有查询、特定表 / 数据库</li>
+<li>收集关键信息：错误日志、慢查询日志、系统资源监控数据、应用报错信息</li>
+<li>对比基准数据：找出与正常状态的差异（如 CPU 使用率翻倍、磁盘 IO 队列过长）</li>
+</ol>
+<h3 id="常见问题及解决方向">常见问题及解决方向
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>问题类型</th>
+          <th>典型原因</th>
+          <th>解决方向</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>配置错误</td>
+          <td>无效的 my.cnf 参数、权限配置错误</td>
+          <td>检查错误日志，恢复正确配置，记录配置变更</td>
+      </tr>
+      <tr>
+          <td>性能突降</td>
+          <td>业务峰值、批量操作、索引失效</td>
+          <td>查看慢查询日志，优化 SQL，临时扩容资源</td>
+      </tr>
+      <tr>
+          <td>数据不一致</td>
+          <td>应用 bug、复制冲突</td>
+          <td>修复应用代码，校验主从数据一致性</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="服务器变慢排查">服务器变慢排查
+</h2><h3 id="慢查询分类与诱因">慢查询分类与诱因
+</h3><h4 id="少数查询变慢">少数查询变慢
+</h4><ul>
+<li>原因：查询计划劣化（索引失效）、锁冲突、关联表数据量增长</li>
+<li>排查：用 EXPLAIN 分析查询计划，检查是否存在全表扫描、索引未命中</li>
+</ul>
+<h4 id="多数--所有查询变慢">多数 / 所有查询变慢
+</h4><ul>
+<li>原因：服务器资源耗尽（CPU / 内存 / IO）、全局锁、复制延迟（从库）</li>
+<li>排查：查看系统资源监控，执行 SHOW PROCESSLIST 检查阻塞线程</li>
+</ul>
+<h4 id="单表相关查询变慢">单表相关查询变慢
+</h4><ul>
+<li>原因：表结构设计不合理（无主键）、索引缺失、数据量过大未分区</li>
+<li>排查：分析表结构与索引，考虑分区表或数据归档</li>
+</ul>
+<h3 id="排查工具与命令">排查工具与命令
+</h3><ul>
+<li>SHOW PROCESSLIST：查看活跃线程状态，识别阻塞线程</li>
+<li>mysqladmin extended-status：查看全局状态变量，分析资源使用情况</li>
+<li>慢查询日志：记录执行时间超过阈值的查询，定位低效 SQL</li>
+<li>Performance Schema：跟踪线程等待、IO 耗时等底层指标</li>
+</ul>
+<h2 id="锁冲突与死锁处理">锁冲突与死锁处理
+</h2><h3 id="mysql-锁类型">MySQL 锁类型
+</h3><h4 id="服务器级锁">服务器级锁
+</h4><ul>
+<li>表锁：MyISAM 存储引擎默认锁机制，锁定整个表，并发度低</li>
+<li>元数据锁（MDL）：执行 DDL 时持有，阻止其他会话修改表结构</li>
+</ul>
+<h4 id="存储引擎级锁innodb">存储引擎级锁（InnoDB）
+</h4><ul>
+<li>行级锁：锁定单行数据，并发度高，支持共享锁（S 锁，读锁）和排他锁（X 锁，写锁）</li>
+<li>意向锁：表级锁，标识事务即将申请的行锁类型（IS 锁对应共享行锁，IX 锁对应排他行锁）</li>
+<li><code>mutex</code> 锁：底层资源锁（如日志文件、缓冲池），用于同步线程操作</li>
+</ul>
+<h3 id="锁冲突识别">锁冲突识别
+</h3><h4 id="查看阻塞线程">查看阻塞线程
+</h4><ul>
+<li>
+<p><code>SHOW PROCESSLIST</code>：状态列显示 “Waiting for table metadata lock”（元数据锁等待）或 “Searching rows for update”（行锁等待）</p>
+</li>
+<li>
+<p>示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SHOW</span><span class="w"> </span><span class="n">PROCESSLIST</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h4 id="通过系统表查询锁信息">通过系统表查询锁信息
+</h4><ul>
+<li>
+<p>INFORMATION_SCHEMA.INNODB_TRX：查看所有运行中的事务</p>
+</li>
+<li>
+<p>performance_schema.data_locks：查看当前持有和等待的锁</p>
+</li>
+<li>
+<p>performance_schema.data_lock_waits：查看锁等待关系（谁阻塞了谁）</p>
+</li>
+<li>
+<p>sys.innodb_lock_waits：简化的锁等待视图，直接显示阻塞线程和 SQL</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">sys</span><span class="p">.</span><span class="n">innodb_lock_waits</span><span class="err">\</span><span class="k">G</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="解决方法">解决方法
+</h3><ul>
+<li>
+<p>杀死阻塞线程：通过 KILL 命令终止持有锁的长时间运行线程（需谨慎，避免数据不一致）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">KILL</span><span class="w"> </span><span class="p">[</span><span class="err">线程</span><span class="n">ID</span><span class="p">];</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>优化 SQL：减少长事务（如拆分大事务）、避免全表扫描（添加索引）</p>
+</li>
+<li>
+<p>调整隔离级别：读提交（READ COMMITTED）可减少幻读，降低锁冲突概率</p>
+</li>
+<li>
+<p>避免并发 DDL：在业务低峰期执行表结构修改</p>
+</li>
+</ul>
+<h2 id="innodb-崩溃恢复">InnoDB 崩溃恢复
+</h2><h3 id="自动恢复机制">自动恢复机制
+</h3><ul>
+<li>InnoDB 默认在服务器启动时自动执行崩溃恢复：
+<ol>
+<li>检查 redo 日志，恢复未写入数据文件的已提交事务</li>
+<li>回滚未提交的事务</li>
+<li>验证数据一致性，确保表空间无损坏</li>
+</ol>
+</li>
+</ul>
+<h3 id="手动恢复innodb_force_recovery">手动恢复（&ndash;innodb_force_recovery）
+</h3><p>当自动恢复失败时，使用该参数强制启动服务器，提取数据后重建表。</p>
+<h4 id="操作步骤">操作步骤
+</h4><ol>
+<li>
+<p>备份数据目录：避免恢复过程中数据丢失</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp -r /var/lib/mysql /var/lib/mysql_backup
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>启动服务器并指定恢复级别（0-6，级别越高限制越多）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqld --innodb_force_recovery<span class="o">=</span><span class="m">1</span>  <span class="c1"># 从级别1开始尝试，逐步提升</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>导出数据：使用 mysqldump 导出受损表</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqldump -u root -p employees &gt; employees_backup.sql
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>停止服务器，删除受损数据目录，重建数据库并导入数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqld_stop
+</span></span><span class="line"><span class="cl">rm -rf /var/lib/mysql/*
+</span></span><span class="line"><span class="cl">mysqld --initialize-insecure  <span class="c1"># 初始化新数据目录</span>
+</span></span><span class="line"><span class="cl">mysql -u root -p &lt; employees_backup.sql  <span class="c1"># 导入数据</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<h4 id="恢复级别说明">恢复级别说明
+</h4><ul>
+<li>0：默认，自动恢复（无强制恢复）</li>
+<li>1-3：允许只读操作，逐步放宽恢复限制</li>
+<li>4-6：禁止写操作（INSERT/UPDATE/DELETE），仅用于数据导出，可能导致数据不一致</li>
+</ul>
+<h2 id="实践思路">实践思路
+</h2><ol>
+<li>定期备份：结合全量备份 + 增量备份，测试恢复流程，确保备份可用</li>
+<li>监控常态化：实时跟踪系统资源、慢查询、锁冲突，设置告警阈值（如 CPU 使用率 &gt; 80% 告警）</li>
+<li>避免直接修改授权表：通过官方命令（CREATE USER、GRANT）管理权限，防止锁表或权限失效</li>
+<li>规范变更流程：修改配置、表结构前先在测试环境验证，记录变更内容，便于回滚</li>
+<li>优化索引与 SQL：定期分析慢查询，避免全表扫描，维护索引统计信息（ANALYZE TABLE）</li>
+</ol>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/mysql-13-%E9%80%9A%E8%BF%87-innodb-%E9%9B%86%E7%BE%A4%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-13-通过 InnoDB 集群实现高可用性</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-12-管理复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-11-配置复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-10-执行备份</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-09-备份策略</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="目标：\n描述 MySQL 主从复制 解释复制在高可用性和可扩展性中的作用 配置MySQL复制环境 设计高级复制拓扑 克隆MySQL数据 主从复制概述\rMySQL复制概述\rMySQL复制的一个特性是能让服务器从一个实例复制变化到另一个\n">
+<title>MySQL-11-配置复制拓扑结构</title>
+
+<link rel='canonical' href='http://localhost:1313/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-11-配置复制拓扑结构">
+<meta property='og:description' content="目标：\n描述 MySQL 主从复制 解释复制在高可用性和可扩展性中的作用 配置MySQL复制环境 设计高级复制拓扑 克隆MySQL数据 主从复制概述\rMySQL复制概述\rMySQL复制的一个特性是能让服务器从一个实例复制变化到另一个\n">
+<meta property='og:url' content='http://localhost:1313/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-29T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-08-29T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="MySQL-11-配置复制拓扑结构">
+<meta name="twitter:description" content="目标：\n描述 MySQL 主从复制 解释复制在高可用性和可扩展性中的作用 配置MySQL复制环境 设计高级复制拓扑 克隆MySQL数据 主从复制概述\rMySQL复制概述\rMySQL复制的一个特性是能让服务器从一个实例复制变化到另一个\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">好记性不如烂笔头</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#主从复制概述">主从复制概述</a>
+      <ol>
+        <li><a href="#mysql复制概述">MySQL复制概述</a></li>
+        <li><a href="#复制的主服务器与从服务器">复制的主服务器与从服务器</a>
+          <ol>
+            <li><a href="#从服务器数量">从服务器数量</a></li>
+          </ol>
+        </li>
+        <li><a href="#中继从服务器relay-slaves">中继从服务器（Relay Slaves）</a>
+          <ol>
+            <li><a href="#中继从服务器详细说明">中继从服务器详细说明</a></li>
+          </ol>
+        </li>
+        <li><a href="#复杂拓扑结构">复杂拓扑结构</a></li>
+      </ol>
+    </li>
+    <li><a href="#复制冲突">复制冲突</a>
+      <ol>
+        <li><a href="#复制冲突-1">复制冲突</a>
+          <ol>
+            <li><a href="#冲突解决">冲突解决</a></li>
+            <li><a href="#复制冲突无冲突的示例场景">复制冲突：无冲突的示例场景</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#何时使用复制">何时使用复制</a>
+      <ol>
+        <li><a href="#复制的常见用途包括">复制的常见用途包括：</a>
+          <ol>
+            <li><a href="#用于水平扩展的复制">用于水平扩展的复制</a></li>
+            <li><a href="#用于商业智能和分析的复制">用于商业智能和分析的复制</a></li>
+          </ol>
+        </li>
+        <li><a href="#用于地理数据分布的复制">用于地理数据分布的复制</a>
+          <ol>
+            <li><a href="#地理数据分布补充说明">地理数据分布补充说明</a></li>
+          </ol>
+        </li>
+        <li><a href="#使用-blackhole-存储引擎进行复制">使用 BLACKHOLE 存储引擎进行复制</a>
+          <ol>
+            <li><a href="#补充说明">补充说明</a></li>
+          </ol>
+        </li>
+        <li><a href="#用于高可用性的复制">用于高可用性的复制</a></li>
+      </ol>
+    </li>
+    <li><a href="#配置复制">配置复制</a>
+      <ol>
+        <li><a href="#配置复制-1">配置复制</a></li>
+        <li><a href="#配置复制主服务器">配置复制主服务器</a>
+          <ol>
+            <li><a href="#补充说明-1">补充说明</a></li>
+          </ol>
+        </li>
+        <li><a href="#配置复制从服务器">配置复制从服务器</a>
+          <ol>
+            <li><a href="#change-master-to"><code>CHANGE MASTER TO</code></a></li>
+          </ol>
+        </li>
+        <li><a href="#查找日志坐标">查找日志坐标</a></li>
+        <li><a href="#全局事务标识符gtids">全局事务标识符（GTIDs）</a>
+          <ol>
+            <li><a href="#补充说明-2">补充说明</a></li>
+          </ol>
+        </li>
+        <li><a href="#识别源服务器">识别源服务器</a></li>
+        <li><a href="#记录事务">记录事务</a>
+          <ol>
+            <li><a href="#补充说明-3">补充说明</a></li>
+          </ol>
+        </li>
+        <li><a href="#使用-gtid-的复制">使用 GTID 的复制</a></li>
+        <li><a href="#复制过滤规则">复制过滤规则</a></li>
+        <li><a href="#应用过滤规则">应用过滤规则</a>
+          <ol>
+            <li><a href="#补充说明-4">补充说明</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#二进制和复制日志">二进制和复制日志</a>
+      <ol>
+        <li><a href="#二进制日志格式">二进制日志格式</a>
+          <ol>
+            <li><a href="#基于行的二进制日志记录">基于行的二进制日志记录</a></li>
+            <li><a href="#基于语句的二进制日志记录">基于语句的二进制日志记录</a></li>
+            <li><a href="#混合格式二进制日志记录">混合格式二进制日志记录</a></li>
+            <li><a href="#复制日志">复制日志</a></li>
+            <li><a href="#崩溃安全的复制">崩溃安全的复制</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#复制的类型">复制的类型</a>
+      <ol>
+        <li><a href="#异步复制asynchronous-replication">异步复制(Asynchronous Replication)</a></li>
+        <li><a href="#半同步复制semisynchronous-replication">半同步复制（Semisynchronous Replication）</a>
+          <ol>
+            <li><a href="#优缺点">优缺点</a></li>
+            <li><a href="#启用半同步复制">启用半同步复制</a></li>
+          </ol>
+        </li>
+        <li><a href="#多源复制">多源复制</a>
+          <ol>
+            <li><a href="#避免冲突avoiding-conflicts">避免冲突（Avoiding Conflicts）</a></li>
+            <li><a href="#注意事项note">注意事项（Note）</a></li>
+            <li><a href="#为基于-gtid-的主库配置多源复制configuring-multi-source-replication-for-a-gtid-based-master">为基于 GTID 的主库配置多源复制（Configuring Multi-Source Replication for a GTID-Based Master）</a></li>
+            <li><a href="#为基于二进制日志的主库配置多源复制configuring-multi-source-replication-for-a-binary-log-based-master">为基于二进制日志的主库配置多源复制（Configuring Multi-Source Replication for a Binary Log Based Master）</a></li>
+            <li><a href="#在多源复制拓扑中控制从库controlling-slaves-in-a-multi-source-replication-topology">在多源复制拓扑中控制从库（Controlling Slaves in a Multi-Source Replication Topology）</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#克隆-mysql-数据">克隆 MySQL 数据</a>
+      <ol>
+        <li><a href="#mysql克隆插件">MySQL克隆插件</a>
+          <ol>
+            <li><a href="#克隆克隆插件安装">克隆克隆插件安装</a></li>
+            <li><a href="#为用户授予权限granting-permissions-to-users">为用户授予权限（Granting Permissions to Users）</a></li>
+            <li><a href="#克隆本地数据cloning-local-data">克隆本地数据（Cloning Local Data）</a></li>
+            <li><a href="#克隆远程数据cloning-remote-data">克隆远程数据（Cloning Remote Data）</a></li>
+          </ol>
+        </li>
+        <li><a href="#用于复制的克隆cloning-for-replication">用于复制的克隆（Cloning for Replication）</a></li>
+        <li><a href="#克隆插件的限制clone-plugin-limitations">克隆插件的限制（Clone Plugin Limitations）</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql/" style="background-color: ; color: #fff;">
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">MySQL-11-配置复制拓扑结构</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-08-29</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>目标：</p>
+<ul>
+<li>描述 MySQL 主从复制</li>
+<li>解释复制在高可用性和可扩展性中的作用</li>
+<li>配置MySQL复制环境</li>
+<li>设计高级复制拓扑</li>
+<li>克隆MySQL数据</li>
+</ul>
+<h2 id="主从复制概述">主从复制概述
+</h2><h3 id="mysql复制概述">MySQL复制概述
+</h3><p>MySQL复制的一个特性是能让服务器从一个实例复制变化到另一个</p>
+<ul>
+<li>
+<p>主机写入所有的数据和结构性变化到二进制日志</p>
+<ul>
+<li>二进制日志格式是基于语句、基于行或者混合格式</li>
+</ul>
+</li>
+<li>
+<p>从服务器（slave）会向主服务器请求二进制日志，并在本地应用其内容。</p>
+<ul>
+<li>它会跟踪所有已接收和已应用事件的状态，以便在服务器重启或网络故障后，能够从停止的位置继续（复制）。</li>
+</ul>
+<p><strong>二进制日志格式</strong>：MySQL 支持基于语句、基于行以及混合格式的日志记录，具体内容将在本课程后续的 “二进制日志格式” 幻灯片中介绍。</p>
+<p><strong>网络中断</strong>：MySQL 复制可应对网络中断情况。每个从服务器会跟踪其已处理的日志进度，当网络连接恢复时，会自动恢复处理（日志）。此行为是自动的，无需特殊配置。</p>
+</li>
+</ul>
+<h3 id="复制的主服务器与从服务器">复制的主服务器与从服务器
+</h3><p>主 / 从关系通常是一对多的：</p>
+<ul>
+<li>每个从服务器从一个主服务器读取日志。</li>
+<li>一个主服务器可以向多个从服务器发送日志。</li>
+</ul>
+<p>MySQL 支持多源复制：</p>
+<ul>
+<li>一个从服务器可以从多个主服务器进行复制。</li>
+</ul>
+<h4 id="从服务器数量">从服务器数量
+</h4><p>单个主服务器可拥有的从服务器数量没有限制。然而，每增加一个从服务器都会在主服务器上占用少量资源，因此在生产环境中，你应仔细权衡每个从服务器带来的收益。在特定环境中，一个主服务器的最佳从服务器数量取决于多个因素：架构大小、写入操作数量、主服务器和从服务器的相对性能，以及 CPU 和内存可用性等因素。一般的指导原则是，将每个主服务器的从服务器数量限制<strong>在不超过 30 个</strong>。</p>
+<p>注意：通常一个从服务器仅从单个主服务器进行复制。不过，在多源复制场景中，一个从服务器可以从多个主服务器进行复制。</p>
+<h3 id="中继从服务器relay-slaves">中继从服务器（Relay Slaves）
+</h3><ul>
+<li>中继从服务器是一种复制从服务器，它会充当另一个从服务器的复制主服务器。</li>
+<li>更改会传播到更多的从服务器。</li>
+</ul>
+<h4 id="中继从服务器详细说明">中继从服务器详细说明
+</h4><p>从服务器可以充当另一个从服务器的主服务器。最顶层主服务器上发生的更改，会由其直接连接的从服务器请求并应用，这些从服务器会将更改中继传递给它们的从服务器，依此类推，直到复制到达链的末端。这使得更新能够通过多层复制进行传播，支持更复杂的拓扑结构。每增加一层，都会给系统增加更多的传播延迟，因此，相比更深层次的设置，较浅层次的设置复制延迟更小。</p>
+<h3 id="复杂拓扑结构">复杂拓扑结构
+</h3><p>可实现更复杂的拓扑结构：</p>
+<ul>
+<li><strong>双向拓扑</strong>：包含两台主服务器，彼此互为对方的从服务器。</li>
+<li>环形拓扑：可包含任意数量的服务器。
+<ul>
+<li>每台服务器既是另一台主服务器的主服务器，也是其从服务器。</li>
+<li>任意一台主服务器上的更改会复制到所有服务器。</li>
+<li>并非每个从服务器都必须充当主服务器。</li>
+</ul>
+</li>
+<li><strong>多源复制</strong>：允许一个从服务器接收来自多个主服务器的事务。</li>
+</ul>
+<p><strong>注意事项</strong></p>
+<p>标准 MySQL 复制不执行冲突解决。</p>
+<h2 id="复制冲突">复制冲突
+</h2><h3 id="复制冲突-1">复制冲突
+</h3><p>在包含多个主服务器的复制拓扑中，可能会出现冲突。</p>
+<ul>
+<li>如果两个客户端几乎同时在两台主服务器上写入同一行数据，你无法预测从服务器上该行的最终值。</li>
+<li>最终值取决于中继从服务器上的事件排序。
+<ul>
+<li>在分层复制中，从服务器上该行的最终值由层级结构决定：
+<ul>
+<li>如果某个中间主服务器修改了该行，从服务器上的值将与主服务器不一致。</li>
+</ul>
+</li>
+<li>在环形复制中，发生冲突时，不同服务器上该行的最终值会不一致。
+<ul>
+<li>最终值取决于每个主服务器应用事件的顺序。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>标准 MySQL 复制不执行冲突解决。不过，MySQL 组复制（<strong>MySQL Group Replication）可以检测并预防冲突</strong>。</li>
+</ul>
+<h4 id="冲突解决">冲突解决
+</h4><p>在典型配置中，客户端仅向主服务器写入更改，但可从任意服务器读取更改。在服务器允许对相似数据进行并发更新的环境中，多台服务器上的数据最终状态可能会变得不一致。应用程序有责任预防或管理冲突操作。MySQL 复制不执行冲突解决。</p>
+<h4 id="复制冲突无冲突的示例场景">复制冲突：无冲突的示例场景
+</h4><ul>
+<li>“奢侈品牌（Luxury Brands）” 团队将奢侈产品的价格提高 20%（记为操作 L ）。</li>
+<li>“特别活动（Special Events）” 团队将价格超过 500 美元的产品降价 50 美元（记为操作 S ）。</li>
+<li>有一款奢侈产品原价 520 美元，会受这两项变更影响。</li>
+<li>如果操作按 L 然后 S 的顺序执行，两台服务器上的最终价格都是 574 美元。</li>
+<li>如果操作按 S 然后 L 的顺序执行，两台服务器上的最终价格都是 564 美元。</li>
+</ul>
+<h5 id="详细示例">详细示例
+</h5><p>假设一家电商公司使用环形复制拓扑，其中两台服务器分别处理 “奢侈品牌” 和 “特别活动” 团队的应用。假设应用程序不管理冲突操作，发生以下事件：</p>
+<ol>
+<li>“奢侈品牌” 团队将奢侈产品的价格提高 20%。</li>
+<li>“特别活动” 团队因即将到来的特别假期，将所有价格超过 500 美元的产品降价 50 美元。</li>
+<li>一款售价 520 美元的产品同时属于这两个类别，其价格会被上述两项操作更新。</li>
+</ol>
+<p>产品在每台服务器上的最终价格取决于每台服务器执行操作的顺序。</p>
+<ul>
+<li>复制环境中的其他服务器会根据它们应用操作的顺序得到最终值。</li>
+</ul>
+<p>类似地，如果 “奢侈品牌” 团队添加了一个新产品，但在 “特别活动” 团队进行变更时尚未完全复制，或者两个团队在不同服务器上添加了具有相同主键的产品，就会发生冲突。</p>
+<p>由于 MySQL 服务器无法检测和解决复制冲突，应用程序必须处理所有可能发生的复制冲突。</p>
+<p>给 MySQL 集群用户的注意事项：MySQL 集群在内部使用一种复制形式，这种复制在某些方面与 MySQL 服务器中的复制不同，并且提供冲突检测（以及可选的冲突解决）功能。</p>
+<h2 id="何时使用复制">何时使用复制
+</h2><h3 id="复制的常见用途包括">复制的常见用途包括：
+</h3><ul>
+<li><strong>水平扩展</strong>：将查询（读）工作负载分散到多个从服务器。</li>
+<li><strong>商业智能与分析</strong>：在从服务器上运行耗时的报表和分析，让主服务器专注于生产应用。</li>
+<li><strong>地理数据分布</strong>：通过本地应用为本地用户提供服务，并将商业智能数据复制到公司服务器。</li>
+<li><strong>高可用性</strong>：在多台服务器之间提供冗余，便于受控切换或滚动升级。</li>
+</ul>
+<h4 id="用于水平扩展的复制">用于水平扩展的复制
+</h4><ul>
+<li>将客户端查询负载分散到多台服务器：
+<ul>
+<li>客户端将写操作发送到复制主服务器。</li>
+<li>客户端在复制从服务器之间分散读操作。
+<ul>
+<li>使用负载均衡器或具备负载均衡功能的连接器。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>由于只有一台服务器接受写操作，不会发生冲突。
+<ul>
+<li>但如果应用程序写入一个值后立即尝试再次读取该值，可能会出现不一致的情况。</li>
+</ul>
+</li>
+<li>水平扩展并非透明的。你必须修改客户端，使其：
+<ul>
+<li>向主服务器写数据</li>
+<li>从一组负载均衡的从服务器读数据</li>
+<li>处理因主服务器到从服务器的复制延迟而可能出现的不一致情况</li>
+</ul>
+</li>
+</ul>
+<h5 id="水平扩展补充说明">水平扩展补充说明
+</h5><p>实施复制最常见的原因是将查询工作负载分散到一台或多台从服务器，以提高整个应用中读操作的性能，并通过减少主服务器的读工作负载，提升主服务器上写操作的性能。</p>
+<h4 id="用于商业智能和分析的复制">用于商业智能和分析的复制
+</h4><ul>
+<li>商业智能工作负载通常对事务性数据有不同的性能要求。
+<ul>
+<li>因需从多张表读取大量行，所以需要高吞吐量</li>
+<li>包含聚合和汇总操作的长时间运行查询</li>
+</ul>
+</li>
+<li>通过将商业智能数据复制到专用的分析从服务器，避免影响事务性工作负载。
+<ul>
+<li>为不同业务单元使用多个从服务器。</li>
+<li>在每个从服务器上配置索引和存储引擎，以优化不同的分析需求。
+<ul>
+<li>使用复制过滤器或 BLACKHOLE 存储引擎，避免复制不需要在每个从服务器上存储的表数据。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="商业智能和分析补充说明">商业智能和分析补充说明
+</h5><p>商业智能报表和分析处理可能会占用大量资源，且执行时间较长。在复制环境中，你可以在从服务器上运行此类查询，这样主服务器就能继续处理生产工作负载，而不会受到长时间运行且 I/O 密集型报表的影响。</p>
+<h3 id="用于地理数据分布的复制">用于地理数据分布的复制
+</h3><ul>
+<li>将与地理位置相关的数据存储在靠近其主要用户的服务器上。
+<ul>
+<li>在每个位置使用水平扩展复制，为规模更大的本地用户群提高潜在吞吐量。</li>
+</ul>
+</li>
+<li>将部分或全部此类数据复制到其他位置。
+<ul>
+<li>将与位置无关的数据复制到所有位置。
+<ul>
+<li>例如：用户、产品、类别、销售记录</li>
+</ul>
+</li>
+<li>将汇总数据复制到公司中央服务器。
+<ul>
+<li>例如：销售汇总、营销活动结果、库存数据</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="地理数据分布补充说明">地理数据分布补充说明
+</h4><p>对于在地理上分散布局的公司而言，复制能让其受益。这些公司可在每个地区部署服务器来处理本地数据，并在整个组织内复制这些数据。这样做既能因服务器靠近客户和员工而带来性能与管理上的优势，又能让公司掌握全局数据情况。</p>
+<p><strong>注意事项</strong></p>
+<p>多源复制非常适合地理上分散的服务器。</p>
+<h3 id="使用-blackhole-存储引擎进行复制">使用 BLACKHOLE 存储引擎进行复制
+</h3><ul>
+<li>BLACKHOLE 存储引擎会默默丢弃所有数据更改，且不发出任何警告。
+<ul>
+<li>它会接受插入或更新数据的 DML 请求，即便不存在任何匹配数据。</li>
+<li>它没有任何更高级的智能或功能。</li>
+</ul>
+</li>
+<li>二进制日志会继续成功记录这些更改。</li>
+<li>当中继从服务器（relay slave）需将所有更改复制到下游从服务器，但自身无需在这些表中存储数据时，可对表使用 BLACKHOLE 存储引擎。</li>
+<li>传(日志)而不存(数据)</li>
+</ul>
+<h4 id="补充说明">补充说明
+</h4><p>可以使用复制过滤器阻止服务器复制某些数据，但如果需要将这些数据复制到下游从服务器，同时又不想在本地存储它，可使用 BLACKHOLE 存储引擎避免在本地保存该数据。</p>
+<p>例如，若你有一个中继从服务器，仅用于对少量表执行频繁的长时间运行的商业智能报表任务，你可将所有其他复制的表配置为使用 BLACKHOLE 存储引擎，这样服务器就不会存储不需要的数据，同时仍会将所有更改复制到其从服务器。</p>
+<h3 id="用于高可用性的复制">用于高可用性的复制
+</h3><p>复制支持多种高可用性用例：</p>
+<ul>
+<li><strong>受控切换</strong>：在硬件或系统升级期间，使用副本服务器替代生产服务器。</li>
+<li><strong>服务器冗余</strong>：发生系统故障时，故障转移到副本服务器。</li>
+<li><strong>在线架构变更</strong>：在多服务器环境中执行滚动升级，避免整体系统停机。</li>
+<li><strong>软件升级</strong>：在环境升级期间，跨不同版本的 MySQL 进行复制。
+<ul>
+<li>从服务器必须运行比主服务器更新的版本。</li>
+<li>升级期间发出的查询必须受升级过程中使用的所有版本支持。</li>
+</ul>
+</li>
+</ul>
+<h2 id="配置复制">配置复制
+</h2><h3 id="配置复制-1">配置复制
+</h3><ol>
+<li>绘制复制拓扑图。</li>
+<li>确定参与复制的所有服务器。
+<ul>
+<li>注意：任何从其他主服务器复制的主服务器，同时也是一个复制从服务器（即级联复制中的中继主，兼具主、从身份 ）。</li>
+</ul>
+</li>
+<li>为每个服务器配置唯一的<code>server-id</code>。
+<ul>
+<li>是一个无符号 32 位整数，默认值为 1。</li>
+<li>任何 <code>server-id</code> 为 0 的主服务器或从服务器，都会拒绝与其他服务器进行复制。</li>
+</ul>
+</li>
+<li>配置每个复制主服务器。</li>
+<li>配置每个复制从服务器以连接到其主服务器。</li>
+<li>使用 <code>START SLAVE</code> 语句在每个复制从服务器上启动复制。</li>
+</ol>
+<h3 id="配置复制主服务器">配置复制主服务器
+</h3><ul>
+<li>
+<p>启用 TCP/IP 网络。</p>
+<ul>
+<li>复制不能使用 UNIX 套接字文件。</li>
+</ul>
+</li>
+<li>
+<p>启用二进制日志。</p>
+<ul>
+<li>复制期间，每个主服务器会将其日志内容发送给每个从服务器。</li>
+</ul>
+</li>
+<li>
+<p>创建一个具有 <code>REPLICATION SLAVE</code>权限的用户。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="k">user</span><span class="o">@</span><span class="n">slave_hostname</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">GRANT</span><span class="w"> </span><span class="n">REPLICATION</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">user</span><span class="o">@</span><span class="n">slave_hostname</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>每个从服务器必须连接到一个主服务器以从中复制数据。</li>
+<li>若主服务器有多个从服务器，可在主机名中指定通配符以匹配所有从服务器，或创建多个用户。</li>
+</ul>
+</li>
+<li>
+<p>备份主服务器数据库，作为从服务器的起始点。</p>
+<ul>
+<li>若不使用 GTID，需记录日志坐标。
+<ul>
+<li>若使用 <code>mysqldump</code>，可使用 <code>--master-data</code> 选项。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="补充说明-1">补充说明
+</h4><p>从 MySQL 8.0 开始，<code>caching_sha2_password</code> 身份验证插件是新建用户的默认插件。要连接到复制主服务器（使用该插件认证的用户账户 ），必须按照 <a class="link" href="https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-encrypted-connections.html"  target="_blank" rel="noopener"
+    >https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-encrypted-connections.html</a> 中描述的方法，要么设置安全连接，要么启用未加密连接以支持使用 RSA 密钥对进行密码交换。</p>
+<p><strong>注意事项</strong></p>
+<p>GTID 指全局事务标识符。</p>
+<p>若使用 GTID，备份中捕获的已执行 GTID 集合是配置从服务器所必需的。可以在 <code>mysqldump</code> 中使用 <code>--set-gtid-purged</code> 选项，控制生成的 SQL 脚本中的 <code>SET @@GLOBAL.GTID_PURGED</code> 命令。</p>
+<h3 id="配置复制从服务器">配置复制从服务器
+</h3><ul>
+<li>恢复来自主服务器的备份。
+<ul>
+<li>若使用 GTID，验证 <code>gtid_purged</code> 变量是否已设置。</li>
+</ul>
+</li>
+<li>在每个从服务器上执行 <code>CHANGE MASTER TO</code>语句，包含以下信息：
+<ul>
+<li>主服务器的网络位置
+<ul>
+<li><code>MASTER_HOST</code> 和 <code>MASTER_PORT</code> 的值</li>
+<li>可选：使用 <code>MASTER_SSL</code> 及相关选项，在复制期间加密主从服务器之间的网络流量。</li>
+</ul>
+</li>
+<li>具有<code>REPLICATION SLAVE</code>权限的复制账户用户名和密码
+<ul>
+<li><code>MASTER_USER</code> 和 <code>MASTER_PASSWORD</code> 的值</li>
+</ul>
+</li>
+<li>开始复制的二进制日志坐标（若不使用 GTID ）
+<ul>
+<li><code>MASTER_LOG_FILE</code> 和 <code>MASTER_LOG_POS</code> 的值存储了从服务器开始复制的二进制日志位置。</li>
+<li>若使用 GTID，指定 <code>MASTER_AUTO_POSITION=1</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意事项</strong></p>
+<p><code>MASTER_SSL</code> 及相关选项仅在启用了 SSL 的服务器上可用。</p>
+<h4 id="change-master-to"><code>CHANGE MASTER TO</code>
+</h4><ul>
+<li>
+<p>在从服务器上执行 <code>CHANGE MASTER TO...</code> 语句，配置与主服务器的连接细节：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CHANGE</span><span class="w"> </span><span class="n">MASTER</span><span class="w"> </span><span class="k">TO</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">-&gt;</span><span class="w">     </span><span class="n">MASTER_HOST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;host_name&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">-&gt;</span><span class="w">     </span><span class="n">MASTER_PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">port_num</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">-&gt;</span><span class="w">     </span><span class="n">MASTER_USER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;user_name&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">-&gt;</span><span class="w">     </span><span class="n">MASTER_PASSWORD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">-&gt;</span><span class="w">     </span><span class="n">MASTER_LOG_FILE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;master_log_name&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">-&gt;</span><span class="w">     </span><span class="n">MASTER_LOG_POS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">master_log_pos</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>后续执行 <code>CHANGE MASTER TO</code> 时，未指定的选项会保留其当前值。</p>
+<ul>
+<li>更改主服务器的主机或端口时，也会重置日志坐标。</li>
+<li>以下语句仅更改密码，但保留所有其他设置：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CHANGE</span><span class="w"> </span><span class="n">MASTER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">MASTER_PASSWORD</span><span class="o">=</span><span class="s1">&#39;newpass&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="查找日志坐标">查找日志坐标
+</h3><ul>
+<li>
+<p>在执行备份后，立即在主服务器上执行 <code>SHOW MASTER STATUS</code>。</p>
+<ul>
+<li>确保备份后主服务器上没有活动，以保证日志坐标是备份前最后一个事件的坐标。</li>
+<li>示例：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SHOW</span><span class="w"> </span><span class="n">MASTER</span><span class="w"> </span><span class="n">STATUS</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">------------------+----------+-------------------+-------------------+-------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="n">File</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="k">Position</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Binlog_Do_DB</span><span class="w">      </span><span class="o">|</span><span class="w"> </span><span class="n">Binlog_Ignore_DB</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Executed_Gtid_Set</span><span class="w"> </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">------------------+----------+-------------------+-------------------+-------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="n">mysql</span><span class="o">-</span><span class="n">bin</span><span class="p">.</span><span class="mi">000014</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">51467</span><span class="o">|</span><span class="w">                   </span><span class="o">|</span><span class="w">                   </span><span class="o">|</span><span class="w">                   </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">------------------+----------+-------------------+-------------------+-------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="o">#</span><span class="p">.</span><span class="o">##</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>使用 <code>mysqldump</code> 备份主服务器时，使用 <code>--master-data</code> 选项，以查找备份时的日志坐标。</p>
+</li>
+</ul>
+<h3 id="全局事务标识符gtids">全局事务标识符（GTIDs）
+</h3><p>全局事务标识符（GTIDs）在复制拓扑中唯一标识每个事务。</p>
+<ul>
+<li>
+<p>每个 GTID 的格式为<code>&lt;source-uuid&gt;:&lt;transaction-id&gt;</code></p>
+<p>。例如：<code>0ed18583-47fd-11e2-92f3-0019b944b7f7:338</code></p>
+</li>
+<li>
+<p>一个 GTID 集合包含一系列 GTID：<code>0ed18583-47fd-11e2-92f3-0019b944b7f7:1-338</code></p>
+</li>
+<li>
+<p>使用以下选项启用 GTID 模式：</p>
+<ul>
+<li><code>gtid-mode=ON</code>：记录每个事务时，同时记录唯一的 GTID。</li>
+<li><code>enforce-gtid-consistency</code>：禁止无法以事务安全方式记录的事件。</li>
+<li><code>log-slave-updates</code>：将复制的事件记录到从服务器的二进制日志中。</li>
+</ul>
+</li>
+</ul>
+<h4 id="补充说明-2">补充说明
+</h4><p>MySQL 服务器提供了一些内置函数来处理 GTID。</p>
+<ul>
+<li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  GTID_SUBSET(set1, set2)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果 <code>set1</code> 中的所有 GTID 也在 <code>set2</code> 中，返回 <code>true</code>；否则返回 <code>false</code>。</li>
+</ul>
+</li>
+<li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  GTID_SUBTRACT(set1, set2)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>返回 <code>set1</code> 中不在 <code>set2</code> 中的 GTID。</li>
+</ul>
+</li>
+<li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  WAIT_FOR_EXECUTED_GTID_SET(gtid_set[, timeout])
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>等待直到服务器应用了 <code>gtid_set</code> 中包含的所有事务的 GTID。</li>
+</ul>
+</li>
+</ul>
+<h3 id="识别源服务器">识别源服务器
+</h3><p><code>server_uuid</code> 值的相关说明：</p>
+<ul>
+<li>
+<p>是存储在服务器数据目录中<code>auto.cnf</code></p>
+<p>文件里的通用唯一标识符（UUID）。</p>
+<ul>
+<li>如果 <code>auto.cnf</code> 文件不存在，服务器会生成一个新的 <code>auto.cnf</code> 文件，其中包含新的 <code>server_uuid</code> 值。</li>
+<li>你可以通过查询同名的系统变量来查看 <code>server_uuid</code> 值：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">@@</span><span class="n">server_uuid</span><span class="err">\</span><span class="k">G</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">***************************</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="o">***************************</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">@@</span><span class="n">server_uuid</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="n">ed18583</span><span class="o">-</span><span class="mi">47</span><span class="n">fd</span><span class="o">-</span><span class="mi">11</span><span class="n">e2</span><span class="o">-</span><span class="mi">92</span><span class="n">f3</span><span class="o">-</span><span class="mi">0019</span><span class="n">b944b7f7</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="o">#</span><span class="p">.</span><span class="o">##</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>用于 GTID 中，记录事务最初是在哪个服务器上执行的。</p>
+</li>
+<li>
+<p>在复制链中的所有从服务器上保留，以便识别每个事务的原始主服务器。</p>
+</li>
+</ul>
+<h3 id="记录事务">记录事务
+</h3><ul>
+<li>
+<p>当每个服务器执行一个事务时，它还会在 <code>gtid_executed</code> 变量中记录该事务的 ID。</p>
+<ul>
+<li>包含一组 GTID。</li>
+<li>表示来自本地服务器、直接主服务器以及任何其他上游主服务器的所有事务。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">@@</span><span class="k">global</span><span class="p">.</span><span class="n">gtid_executed</span><span class="err">\</span><span class="k">G</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">***************************</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="o">***************************</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">@@</span><span class="k">global</span><span class="p">.</span><span class="n">gtid_executed</span><span class="p">:</span><span class="w"> </span><span class="n">bac1b034d</span><span class="o">-</span><span class="mi">4785</span><span class="o">-</span><span class="mi">11</span><span class="n">e2</span><span class="o">-</span><span class="mi">8</span><span class="n">fe9</span><span class="o">-</span><span class="mi">0019</span><span class="n">b944b7f7</span><span class="p">:</span><span class="mi">1</span><span class="o">-</span><span class="mi">34</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">c237b5cd</span><span class="o">-</span><span class="mi">4785</span><span class="o">-</span><span class="mi">11</span><span class="n">e2</span><span class="o">-</span><span class="mi">8</span><span class="n">fea</span><span class="o">-</span><span class="mi">0019</span><span class="n">b944b7f7</span><span class="p">:</span><span class="mi">1</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">c9cec614</span><span class="o">-</span><span class="mi">4785</span><span class="o">-</span><span class="mi">11</span><span class="n">e2</span><span class="o">-</span><span class="mi">8</span><span class="n">fea</span><span class="o">-</span><span class="mi">0019</span><span class="n">b944b7f7</span><span class="p">:</span><span class="mi">1</span><span class="o">-</span><span class="mi">839</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="o">#</span><span class="p">.</span><span class="o">##</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>当二进制日志被清理（purged）时，GTID 集合会从二进制日志中移除，并存储在 <code>gtid_purged</code> 系统变量中。</p>
+</li>
+<li>
+<p>执行 <code>RESET MASTER</code> 会导致 <code>gtid_executed</code> 和 <code>gtid_purged</code> 都被设置为空字符串。所有二进制日志文件也会被删除。</p>
+</li>
+</ul>
+<h4 id="补充说明-3">补充说明
+</h4><p>每当二进制日志轮转（rotated）或服务器关闭时，服务器会将写入前一个二进制日志文件的所有事务的 GTID 写入 <code>mysql.gtid_executed</code> 表。</p>
+<p><code>gtid_executed</code> 变量是由 MySQL 服务器管理的只读变量，而 <code>gtid_purged</code> 是一个动态变量，你可以配置它来控制 GTID 复制从服务器。</p>
+<p>在执行 <code>RESET MASTER</code> 之前，你可能需要备份二进制日志文件；在执行 <code>RESET MASTER</code> 之后，你可能需要备份数据库。</p>
+<h3 id="使用-gtid-的复制">使用 GTID 的复制
+</h3><p>使用 <code>CHANGE MASTER TO...</code> 语句启用 GTID 复制：</p>
+<ul>
+<li>
+<p>告知从服务器事务由 GTID 标识：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">CHANGE</span><span class="w"> </span><span class="n">MASTER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">MASTER_AUTO_POSITION</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>无需提供主服务器的日志坐标（如 <code>MASTER_LOG_FILE</code> 和 <code>MASTER_LOG_POS</code> ），因为从服务器会将 <code>@@global.gtid_executed</code> 的值发送给主服务器。因此：</p>
+<ul>
+<li>主服务器知道从服务器已执行哪些事务。</li>
+<li>主服务器仅发送从服务器尚未执行的事务。</li>
+</ul>
+</li>
+<li>
+<p>不能在同一个 <code>CHANGE MASTER TO...</code> 语句中同时提供 <code>MASTER_AUTO_POSITION</code> 和日志坐标</p>
+</li>
+</ul>
+<h3 id="复制过滤规则">复制过滤规则
+</h3><ul>
+<li>使用<strong>复制过滤器</strong>控制复制的范围。</li>
+<li>过滤器是应用于主服务器或从服务器的服务器选项：
+<ul>
+<li>主服务器在写入二进制日志时，应用 <code>binlog-*</code> 类型的过滤器。</li>
+<li>从服务器在读取中继日志时，应用 <code>replicate-*</code> 类型的过滤器。</li>
+</ul>
+</li>
+<li>当环境中不同的从服务器有不同用途时使用这些过滤器。
+<ul>
+<li>示例：
+<ul>
+<li>负责显示网页内容的服务器不需要工资单或库存数据。</li>
+<li>为管理层提供销售数据的服务器不需要网页内容数据或营销数据。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="应用过滤规则">应用过滤规则
+</h3><ul>
+<li>根据以下条件选择要复制的事件：
+<ul>
+<li>数据库：
+<ul>
+<li><code>replicate-do-db</code>、<code>binlog-do-db</code></li>
+<li><code>replicate-ignore-db</code>、<code>binlog-ignore-db</code></li>
+</ul>
+</li>
+<li>表：
+<ul>
+<li><code>replicate-do-table</code>、<code>replicate-wild-do-table</code></li>
+<li><code>replicate-ignore-table</code>、<code>replicate-wild-ignore-table</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>应用过滤器时需考虑优先级规则：
+<ul>
+<li>数据库过滤器在表过滤器之前应用。</li>
+<li>表通配符过滤器（<code>*-wild-*</code> ）在非通配符表过滤器之后应用。</li>
+<li><code>*-do-*</code> 类型的过滤器在对应的 <code>*-ignore-*</code> 类型的过滤器之前应用。</li>
+</ul>
+</li>
+</ul>
+<h4 id="补充说明-4">补充说明
+</h4><p>使用多个过滤器时要谨慎。由于过滤器的应用顺序复杂，很容易出错。因为过滤器控制着复制的数据，这类错误很难恢复。因此，不要混合使用不同类型的过滤器。例如，如果你使用 <code>replicate-wild-*</code>，就不要使用任何非通配符的 <code>replicate-*</code> 过滤器。</p>
+<p>当 <code>binlog_format</code> 设置为 <code>ROW</code> 或 <code>MIXED</code> 时，临时表不会被复制。当 <code>binlog_format=STATEMENT</code> 时，要抑制特定临时表的复制，可使用 <code>replicate-ignore-table</code> 或 <code>replicate-wild-ignore-table</code>。其他复制过滤器对临时表无效。</p>
+<h2 id="二进制和复制日志">二进制和复制日志
+</h2><h3 id="二进制日志格式">二进制日志格式
+</h3><ul>
+<li>
+<p>MySQL 在二进制日志中以三种不同格式之一记录信息：</p>
+<ul>
+<li>基于行的日志记录（默认方法 ）</li>
+<li>基于语句的日志记录</li>
+<li>混合日志记录</li>
+</ul>
+</li>
+<li>
+<p>通过设置全局或会话级别的 <code>binlog_format</code> 服务器变量来更改二进制日志格式：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SET</span><span class="w"> </span><span class="p">[</span><span class="k">GLOBAL</span><span class="o">|</span><span class="k">SESSION</span><span class="p">]</span><span class="w"> </span><span class="n">BINLOG_FORMAT</span><span class="o">=</span><span class="p">[</span><span class="k">row</span><span class="o">|</span><span class="k">statement</span><span class="o">|</span><span class="n">mixed</span><span class="o">|</span><span class="k">default</span><span class="p">];</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在运行时，你无法在以下情况中设置 <code>binlog_format</code> 变量：</p>
+<ul>
+<li>在存储函数或触发器内部</li>
+<li>如果启用了 NDB 存储引擎</li>
+<li>如果会话当前正在使用基于行的复制且存在打开的临时表</li>
+</ul>
+</li>
+</ul>
+<h4 id="基于行的二进制日志记录">基于行的二进制日志记录
+</h4><ul>
+<li>是默认的二进制日志记录格式。</li>
+<li>记录对单个表行的更改：
+<ul>
+<li>当很多行被更新时，会生成更大的日志。</li>
+<li>日志中记录的值与发送到存储引擎的值完全相同。</li>
+<li>每个表需要有主键才能正确识别每一行。</li>
+<li>从服务器上需要的 DML（数据操作语言）锁更少。</li>
+</ul>
+</li>
+<li>即使语句是非确定性的，也始终能正确重放语句：
+<ul>
+<li>示例：<code>CURRENT_USER()</code> 或 <code>CONNECTION_ID()</code></li>
+</ul>
+</li>
+</ul>
+<h5 id="补充说明-5">补充说明
+</h5><p>复制的源表和目标表不必完全相同。主服务器上的表可以比从服务器上的表副本有更多或更少的列。此外，在满足特定条件时，主服务器和从服务器上对应的表列可以使用不同的数据类型。有关可能的场景和条件，请参见 <a class="link" href="https://dev.mysql.com/doc/refman/en/replication-features-differing-tables.html"  target="_blank" rel="noopener"
+    >https://dev.mysql.com/doc/refman/en/replication-features-differing-tables.html</a>。</p>
+<p>当使用基于行的复制时，你可以设置 <code>slave_type_conversions</code> 系统变量来控制从服务器上的数据类型转换模式。</p>
+<h4 id="基于语句的二进制日志记录">基于语句的二进制日志记录
+</h4><ul>
+<li>包含实际的 SQL 语句
+<ul>
+<li>可用于审计</li>
+<li>更容易为时间点恢复识别语句</li>
+</ul>
+</li>
+<li>包含 DDL（如 <code>CREATE</code>、<code>DROP</code> 等 ）和 DML（如 <code>UPDATE</code>、<code>DELETE</code> 等 ）语句</li>
+<li>由于所需文件大小相对较小，节省磁盘空间和网络带宽
+<ul>
+<li>当一条 SQL 语句修改许多行时</li>
+</ul>
+</li>
+<li>无法保证非确定性语句在远程机器上正确重放
+<ul>
+<li>如果 MySQL 无法做出此保证，会发出警告：该语句以语句格式记录可能不安全</li>
+</ul>
+</li>
+</ul>
+<h4 id="混合格式二进制日志记录">混合格式二进制日志记录
+</h4><ul>
+<li>默认使用基于语句的日志记录方式。</li>
+<li>当语句具有非确定性时，使用基于行的日志记录方式，具体情形包括：
+<ul>
+<li>调用 <code>UUID()</code>、<code>USER()</code>、<code>CURRENT_USER()</code>、<code>FOUND_ROWS()</code>、<code>ROWS_COUNT()</code> 函数，或者调用任何用户定义的函数。</li>
+<li>当更新包含 <code>AUTO_INCREMENT</code> 列的一个或多个表，且调用了触发器或存储函数时。</li>
+<li>当语句引用系统变量时。</li>
+<li>涉及视图或临时表的某些特定情况。</li>
+</ul>
+</li>
+<li>当存储引擎不支持基于语句的日志记录方式时，使用基于行的日志记录方式，具体涉及：
+<ul>
+<li>NDB Cluster 存储引擎。</li>
+<li>隔离级别为 <code>READ COMMITTED</code>（读已提交）或 <code>READ UNCOMMITTED</code>（读未提交 ）时的 InnoDB 存储引擎。</li>
+</ul>
+</li>
+</ul>
+<h4 id="复制日志">复制日志
+</h4><p>从服务器维护有关复制事件的信息。</p>
+<ul>
+<li>中继日志集：
+<ul>
+<li>包含中继日志和中继日志索引文件。</li>
+<li>包含来自主服务器的二进制日志事件的副本。</li>
+</ul>
+</li>
+<li>从服务器状态日志：
+<ul>
+<li>包含执行复制所需的信息：
+<ul>
+<li>主服务器连接详细信息和日志坐标</li>
+<li>中继日志坐标</li>
+</ul>
+</li>
+<li>存储在表（默认）或文件中：
+<ul>
+<li>MySQL 数据库中的 <code>slave_master_info</code> 和 <code>slave_relay_log_info</code> 表</li>
+<li>默认文件名：<code>master.info</code> 和 <code>relay-log.info</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="补充说明-6">补充说明
+</h5><p><strong>中继日志</strong>：MySQL 会自动管理中继日志文件集，当重放完所有事件后会删除文件，当前文件超过最大中继日志文件大小（或 <code>max_relay_log_size=0</code> 时同二进制日志大小）时会创建新文件。中继日志的存储格式与二进制日志相同，你可以用 <code>mysqlbinlog</code> 查看它们。从服务器会维护一个索引文件来跟踪中继日志文件。</p>
+<p>中继日志默认命名为 <code>&lt;host_name&gt;-relay-bin.xxxxxx</code>，索引文件命名为 <code>&lt;host_name&gt;-relay-bin.index</code>。要让服务器配置不受潜在的主机名变更影响，可通过设置 <code>--relay-log</code> 和 <code>--relay-log-index</code> 选项来更改这些主机名前缀。</p>
+<p><strong>从服务器状态日志</strong>：从服务器会存储有关如何连接到主服务器，以及主服务器二进制日志和从服务器中继日志的最近复制日志坐标的信息。</p>
+<p>有两种这样的日志：</p>
+<ul>
+<li><strong>主服务器信息日志</strong>：此日志包含主服务器的信息，包括主机名和端口、用于连接的凭据，以及最近下载的主服务器二进制日志的日志坐标。</li>
+<li><strong>中继日志信息日志</strong>：此日志包含中继日志最近执行的坐标，以及从服务器复制的事件落后于主服务器的秒数。</li>
+</ul>
+<h4 id="崩溃安全的复制">崩溃安全的复制
+</h4><ul>
+<li><strong>二进制日志具备崩溃安全性</strong>：
+<ul>
+<li>MySQL 仅记录完整的事件或事务。</li>
+<li>使用 <code>sync-binlog</code>提升安全性。
+<ul>
+<li>默认值为 1：最安全，操作系统在每个事务后写入文件。</li>
+<li>将值设为 0：性能最佳，但服务器崩溃时事务丢失的可能性最高，因为操作系统根据内部规则写入文件。</li>
+<li>将值设为大于 1 的任意数字：在执行该数量的事务后写入。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>将从服务器状态日志存储在表中以实现崩溃安全的复制</strong>：
+<ul>
+<li>选项：<code>master-info-repository</code>和<code>relay-log-info-repository</code>
+<ul>
+<li>可能的值为 <code>TABLE</code>（默认 ）和 <code>FILE</code>。</li>
+<li><code>TABLE</code> 具备崩溃安全性。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>恢复中继日志以防止日志损坏</strong>：
+<ul>
+<li>将 <code>relay-log-recovery</code> 选项设为 <code>ON</code>，以创建新的中继日志文件，并初始化 SQL 和 IO 线程，以便从服务器重启后继续复制。</li>
+</ul>
+</li>
+</ul>
+<h5 id="崩溃安全的复制补充说明">崩溃安全的复制（补充说明）
+</h5><p>与早期版本的 MySQL 相比，MySQL 8.0 已设置默认值，使复制具备崩溃安全性。</p>
+<p><code>sync-binlog</code> 变量现在默认值为 1，且 <code>master-info-repository</code> 和 <code>relay-log-info-repository</code> 均默认设为 <code>TABLE</code>。</p>
+<p>此外，二进制日志记录默认启用。</p>
+<h2 id="复制的类型">复制的类型
+</h2><h3 id="异步复制asynchronous-replication">异步复制(Asynchronous Replication)
+</h3><ul>
+<li>从库请求二进制日志并应用其内容。
+<ul>
+<li>从库通常会滞后于主库。</li>
+</ul>
+</li>
+<li>主库不关心从库何时应用日志。
+<ul>
+<li>主库无需等待从库，会继续运行。</li>
+</ul>
+</li>
+</ul>
+<p>在 MySQL 复制的默认配置中，主库服务器接收来自客户端的变更事件，提交这些事件并将其写入二进制日志。在一个单独的线程中，主库会将二进制日志流式传输给已连接的从库。由于主库提交变更时无需等待任何从库的响应，这种方式被称为异步复制。</p>
+<p>最重要的是，这意味着当主库向应用程序报告事务提交成功时，从库可能尚未应用这些事务。通常情况下，这不会有问题。然而，如果主库在提交事务后崩溃，且该事务尚未复制到任何从库，那么即使应用程序已向用户报告成功，该事务也会丢失。</p>
+<p>如果主库在提交事务前等待所有从库应用其变更，那么这种复制就会被称为同步复制。尽管 MySQL 复制默认不是同步的，但 MySQL NDB Cluster（NDB 集群）会使用同步复制来确保整个集群的数据一致性，而 MySQL 客户端请求是同步的，因为客户端在向服务器发出查询后会等待服务器响应</p>
+<h3 id="半同步复制semisynchronous-replication">半同步复制（Semisynchronous Replication）
+</h3><ul>
+<li>需要在主库和至少一个从库上安装插件</li>
+<li>会阻塞每个主库事件，直到至少有一个从库接收到该事件</li>
+<li>如果发生超时，会切换为异步复制</li>
+</ul>
+<p>在半同步复制过程中，主库在提交一个事务后会进入阻塞状态，直到至少有一个半同步从库确认自己也已接收到该事务。这意味着，当主库向应用程序报告（事务提交）成功时，至少有一个从库已接收到每个事务。如果主库在提交事务后因数据丢失而崩溃，且应用程序已向用户报告（事务提交）成功，那么该事务也会存在于至少一个从库上。</p>
+<h4 id="优缺点">优缺点
+</h4><ul>
+<li>确保数据完整性</li>
+<li>会导致性能下降
+<ul>
+<li>主库在提交事务前需等待从库响应。
+<ul>
+<li>超时时间由 <code>rpl_semi_sync_master_timeout</code> 变量控制，默认值为 10000 毫秒（10 秒 ）。</li>
+<li>若未收到响应，主库仍会提交事务，但会回退到异步模式。</li>
+</ul>
+</li>
+<li>每个事务额外花费的时间包括：
+<ul>
+<li>通过 TCP/IP 往返将提交信息发送给从库。</li>
+<li>从库将提交信息记录到其中继日志。</li>
+<li>主库等待从库对该提交的确认。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>主要适用于物理上集中部署、通过高速网络通信的服务器</li>
+</ul>
+<h4 id="启用半同步复制">启用半同步复制
+</h4><ul>
+<li>在主库和至少一个从库上安装以下插件：
+<ul>
+<li>在主库上安装 <code>rpl_semi_sync_master</code></li>
+<li>在一个或多个从库上安装 <code>rpl_semi_sync_slave</code></li>
+</ul>
+</li>
+<li>启用以下选项：
+<ul>
+<li>在主库上启用 <code>rpl_semi_sync_master_enabled</code></li>
+<li>在从库上启用 <code>rpl_semi_sync_slave_enabled</code></li>
+</ul>
+</li>
+<li>如有需要，配置 <code>rpl_semi_master_timeout</code>变量。
+<ul>
+<li>指定主库等待半同步从库响应的时间长度。
+<ul>
+<li>超过该时间后，主库会提交事务并回退到异步模式。</li>
+</ul>
+</li>
+<li>默认值为 10000 毫秒（10 秒）</li>
+</ul>
+</li>
+</ul>
+<h3 id="多源复制">多源复制
+</h3><ul>
+<li>使复制从库能够同时接收来自多个主库的事务
+<ul>
+<li>至少需要两个主库和一个从库。</li>
+<li>从库会为每个主库创建一个复制通道。</li>
+<li>从库必须使用基于表（TABLE-based）的存储库。
+<ul>
+<li>多源复制与基于文件（FILE-based）的存储库不兼容。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>不尝试检测或解决冲突
+<ul>
+<li>若需要此功能，由应用程序负责处理。</li>
+</ul>
+</li>
+<li>支持以下场景：
+<ul>
+<li>将多个服务器备份到单个服务器</li>
+<li>将多个服务器的数据整合到单个服务器</li>
+<li>合并表分片</li>
+</ul>
+</li>
+</ul>
+<h4 id="避免冲突avoiding-conflicts">避免冲突（Avoiding Conflicts）
+</h4><p>可通过不从多个主库复制同一个表来避免冲突。</p>
+<p>若需要将多个主库的同一个表复制到从库的单个表中，不同主库的行必须不重叠，且主库发出的任何更新操作必须限制在该主库对应的行范围内。</p>
+<ul>
+<li>可使用多列主键，其中一列用于标识主库。</li>
+<li>若使用基于语句的日志记录，所有 <code>UPDATE</code> 和 <code>DELETE</code> 语句必须包含针对标识主库的列的 <code>WHERE</code> 子句。</li>
+</ul>
+<h4 id="注意事项note">注意事项（Note）
+</h4><p>多源复制与自动定位（auto-positioning）兼容。</p>
+<h4 id="为基于-gtid-的主库配置多源复制configuring-multi-source-replication-for-a-gtid-based-master">为基于 GTID 的主库配置多源复制（Configuring Multi-Source Replication for a GTID-Based Master）
+</h4><ol>
+<li>
+<p>通过设置 <code>gtid_mode=ON</code>，在主库上启用基于 GTID（全局事务标识符 ）的事务。</p>
+</li>
+<li>
+<p>创建一个复制用户。</p>
+</li>
+<li>
+<p>验证从库是否使用基于表（TABLE-based）的复制存储库。</p>
+</li>
+<li>
+<p>执行<code>CHANGE MASTER TO...</code>语句，通过 <code>FOR CHANNEL &lt;channel&gt;</code>子句为一个通道添加新的主库。</p>
+<ul>
+<li>
+<p>示例：将主机名为<code>master1</code>、使用端口 3451 的新主库添加到通道<code>master-1</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">CHANGE</span><span class="w"> </span><span class="n">MASTER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">MASTER_HOST</span><span class="o">=</span><span class="s1">&#39;master1&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">MASTER_PORT</span><span class="o">=</span><span class="mi">3451</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">MASTER_USER</span><span class="o">=</span><span class="s1">&#39;rpl&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">MASTER_PASSWORD</span><span class="o">=</span><span class="s1">&#39;pass&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">MASTER_AUTO_POSITION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FOR</span><span class="w"> </span><span class="n">CHANNEL</span><span class="w"> </span><span class="s1">&#39;master-1&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ol>
+<h4 id="为基于二进制日志的主库配置多源复制configuring-multi-source-replication-for-a-binary-log-based-master">为基于二进制日志的主库配置多源复制（Configuring Multi-Source Replication for a Binary Log Based Master）
+</h4><ol>
+<li>
+<p>通过 <code>--log-bin</code> 在主库上启用二进制日志记录。</p>
+</li>
+<li>
+<p>创建一个复制用户。</p>
+</li>
+<li>
+<p>记录当前的二进制日志文件和位置。</p>
+<ul>
+<li>即 <code>MASTER_LOG_FILE</code> 和 <code>MASTER_LOG_POSITION</code>。</li>
+</ul>
+</li>
+<li>
+<p>验证从库是否使用基于表（TABLE-based）的复制存储库。</p>
+</li>
+<li>
+<p>执行<code>CHANGE MASTER TO...</code>语句，通过<code>FOR CHANNEL &lt;channel&gt;</code></p>
+<p>子句为一个通道添加新的主库。</p>
+<ul>
+<li>
+<p>示例：将主机名为 <code>master1</code>、使用端口 3451 的新主库添加到通道<code>master-1</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">CHANGE</span><span class="w"> </span><span class="n">MASTER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">MASTER_HOST</span><span class="o">=</span><span class="s1">&#39;master1&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">MASTER_PORT</span><span class="o">=</span><span class="mi">3451</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">MASTER_USER</span><span class="o">=</span><span class="s1">&#39;rpl&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">MASTER_PASSWORD</span><span class="o">=</span><span class="s1">&#39;pass&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">MASTER_LOG_FILE</span><span class="o">=</span><span class="s1">&#39;master1-bin.000003&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">MASTER_LOG_POS</span><span class="o">=</span><span class="mi">719</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FOR</span><span class="w"> </span><span class="n">CHANNEL</span><span class="w"> </span><span class="s1">&#39;master-1&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ol>
+<h4 id="在多源复制拓扑中控制从库controlling-slaves-in-a-multi-source-replication-topology">在多源复制拓扑中控制从库（Controlling Slaves in a Multi-Source Replication Topology）
+</h4><ul>
+<li>
+<p>若你在从库上启用了多个复制通道，可使用 <code>FOR CHANNEL</code> 子句，针对特定通道执行 <code>START SLAVE</code>、<code>STOP SLAVE</code> 或 <code>RESET SLAVE</code> 操作。</p>
+</li>
+<li>
+<p>若不使用 <code>FOR CHANNEL</code> 子句，该语句会影响所有当前已配置的复制通道。</p>
+</li>
+<li>
+<p>示例：</p>
+<ul>
+<li>
+<p>启动<code>channel-1</code>上的复制：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">START</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">CHANNEL</span><span class="w"> </span><span class="s1">&#39;channel-1&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>停止<code>channel-1</code>上的复制：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">STOP</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">CHANNEL</span><span class="w"> </span><span class="s1">&#39;channel-1&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>重置所有已配置的通道：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">RESET</span><span class="w"> </span><span class="n">SLAVE</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<h2 id="克隆-mysql-数据">克隆 MySQL 数据
+</h2><h3 id="mysql克隆插件">MySQL克隆插件
+</h3><p>克隆 MySQL 服务器实例的数据。</p>
+<ul>
+<li><strong>克隆的数据</strong>：
+<ul>
+<li>包含 InnoDB 中存储数据的物理快照，涵盖模式（schemas）、表（tables）、表空间（tablespaces）以及数据字典元数据（data dictionary metadata ）。</li>
+<li>可用作数据目录来配置（provision）一个 MySQL 服务器。</li>
+</ul>
+</li>
+<li><strong>两种克隆方式</strong>：
+<ul>
+<li>本地克隆（Local cloning）
+<ul>
+<li>将数据克隆到一个目录。</li>
+</ul>
+</li>
+<li>远程克隆（Remote cloning）
+<ul>
+<li>从远程 MySQL 服务器实例克隆数据。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>MySQL 克隆插件自 MySQL 8.0.17 版本起可用</p>
+<h4 id="克隆克隆插件安装">克隆克隆插件安装
+</h4><p>插件必须安装在捐赠者（donor ）和接收者（recipient ）的 MySQL 服务器上。</p>
+<p>使用以下方法之一加载克隆插件：</p>
+<ul>
+<li>
+<p>在 MySQL 服务器启动时，使用 <code>plugin-load</code> 或 <code>plugin-load-add</code> 启动选项加载插件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="k">[mysqld]</span>
+</span></span><span class="line"><span class="cl"><span class="na">plugin-load-add</span><span class="o">=</span><span class="s">mysql_clone.so</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>将此内容添加到配置文件中，以便服务器每次重启时都会加载该插件。</li>
+</ul>
+</li>
+<li>
+<p>在运行时使用 <code>INSTALL PLUGIN</code> 语句加载插件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">INSTALL</span><span class="w"> </span><span class="n">PLUGIN</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">SONAME</span><span class="w"> </span><span class="s1">&#39;mysql_clone.so&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>这会将插件注册到 <code>mysql.plugins</code> 系统表中，以便在后续每次服务器重启时加载该插件。</li>
+</ul>
+</li>
+</ul>
+<p>插件库文件的基本名称是 <code>mysql_clone.so</code> 。文件后缀因平台而异（例如，Unix 及类 Unix 系统使用 <code>.so</code> ，Windows 系统使用 <code>.dll</code> ）。</p>
+<p>要验证插件是否安装成功，可查看 <code>INFORMATION_SCHEMA.PLUGINS</code> 表或使用 <code>SHOW PLUGINS</code> 语句。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">PLUGIN_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">PLUGIN_STATUS</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="k">FROM</span><span class="w"> </span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">PLUGINS</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="k">WHERE</span><span class="w"> </span><span class="n">PLUGIN_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;clone&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">-------------+---------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="n">PLUGIN_NAME</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PLUGIN_STATUS</span><span class="w"> </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">-------------+---------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="n">clone</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">ACTIVE</span><span class="w">        </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">-------------+---------------+
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="为用户授予权限granting-permissions-to-users">为用户授予权限（Granting Permissions to Users）
+</h4><p><strong>对于本地克隆（For local cloning）</strong>：
+执行克隆操作的用户需要 <code>BACKUP_ADMIN</code> 权限。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">GRANT</span><span class="w"> </span><span class="n">BACKUP_ADMIN</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;clone_user&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>对于远程克隆（For remote cloning）</strong>：</p>
+<ul>
+<li>
+<p>在接收者（recipient ）服务器中发起克隆操作的用户，需要 <code>CLONE_ADMIN</code> 权限（用于替换数据、在克隆操作期间阻塞 DDL，以及自动重启服务器 ）。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">GRANT</span><span class="w"> </span><span class="n">CLONE_ADMIN</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;clone_user&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>捐赠者（donor ）服务器中的用户账户，需要 <code>BACKUP_ADMIN</code> 权限（用于从捐赠者访问和传输数据，以及在克隆操作期间阻塞 DDL ）。此账户必须允许来自接收者服务器的连接。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">GRANT</span><span class="w"> </span><span class="n">BACKUP_ADMIN</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;donor_user&#39;</span><span class="o">@</span><span class="s1">&#39;recipient_host&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h4 id="克隆本地数据cloning-local-data">克隆本地数据（Cloning Local Data）
+</h4><ul>
+<li>
+<p>将本地 MySQL 数据目录中的数据克隆到同一主机上的另一个目录。</p>
+</li>
+<li>
+<p>使用带有 <code>LOCAL DATA DIRECTORY</code> 选项的 <code>CLONE</code> 语句：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CLONE</span><span class="w"> </span><span class="k">LOCAL</span><span class="w"> </span><span class="k">DATA</span><span class="w"> </span><span class="n">DIRECTORY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;/path/to/clone_dir&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>指定用于存储克隆数据的绝对目录。</li>
+<li>克隆目录（<code>clone_dir</code> ）必须不存在，但指定的路径（<code>/path/to</code> ）必须是已存在的路径。</li>
+</ul>
+</li>
+<li>
+<p>克隆的数据目录可用于配置（provision）一个 MySQL 服务器实例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">shell&gt; mysqld --datadir<span class="o">=</span>/path/to/clone_dir
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>你需要配置其他必需的设置，如监听端口和套接字文件。</li>
+</ul>
+</li>
+</ul>
+<p>本地克隆操作不支持克隆位于数据目录之外的用户创建的表或表空间。所有用户创建的 InnoDB 表和表空间、InnoDB 系统表空间、重做日志（redo logs ）和回滚表空间（undo tablespaces ）会被克隆到指定目录。</p>
+<h4 id="克隆远程数据cloning-remote-data">克隆远程数据（Cloning Remote Data）
+</h4><ul>
+<li>
+<p>将数据从远程 MySQL 服务器实例（捐赠者，donor）克隆到本地 MySQL 服务器实例（接收者，recipient）。</p>
+</li>
+<li>
+<p>将 <code>clone_valid_donor_list</code> 全局变量设置为捐赠者主机和端口的列表。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="k">GLOBAL</span><span class="w"> </span><span class="n">clone_valid_donor_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;donor_host:3306&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>需要 <code>SYSTEM_VARIABLES_ADMIN</code> 权限。</li>
+</ul>
+</li>
+<li>
+<p>在接收者服务器上，使用带有 <code>INSTANCE FROM</code> 选项的 <code>CLONE</code> 语句：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CLONE</span><span class="w"> </span><span class="n">INSTANCE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="s1">&#39;donor_user&#39;</span><span class="o">@</span><span class="s1">&#39;donor_host&#39;</span><span class="p">:</span><span class="mi">3306</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>指定捐赠者的用户账户、密码、捐赠者服务器和端口号。</li>
+<li>克隆操作会删除接收者数据目录中现有的数据，用克隆的数据替换它，然后自动重启服务器。</li>
+</ul>
+</li>
+</ul>
+<p><strong>远程克隆的条件</strong>：</p>
+<ul>
+<li>捐赠者和接收者的 MySQL 服务器实例必须运行在相同的操作系统和平台上。</li>
+<li>接收者必须有足够的磁盘空间存储克隆的数据。</li>
+<li>如果捐赠者 MySQL 服务器实例包含位于数据目录之外的表空间，克隆操作必须能够写入那些目录。</li>
+<li>捐赠者上激活的插件（包括任何加密插件），也必须在接收者上激活。</li>
+<li>捐赠者和接收者必须具有相同的 MySQL 服务器字符集和排序规则。</li>
+<li>捐赠者和接收者需要有相同的 <code>innodb_page_size</code> 和 <code>innodb_data_file_path</code> 设置。</li>
+<li>如果克隆加密数据或页压缩数据，捐赠者和接收者必须有相同的文件系统块大小。</li>
+<li>对于页压缩数据，接收者的文件系统必须支持稀疏文件，且在接收者上执行孔冲压（hole punching）时需支持该操作。</li>
+<li>如果克隆加密数据，需要安全连接。</li>
+<li>接收者上的 <code>clone_valid_donor_list</code> 设置必须包含捐赠者的主机地址。</li>
+<li>不能有其他克隆操作正在运行。</li>
+<li>捐赠者和接收者的 <code>max_allowed_packet</code> 值至少为 2MB。</li>
+</ul>
+<h3 id="用于复制的克隆cloning-for-replication">用于复制的克隆（Cloning for Replication）
+</h3><ul>
+<li>
+<p>克隆可用于配置（provision）一台复制从库服务器。</p>
+</li>
+<li>
+<p>克隆操作会从捐赠者（donor）提取复制坐标（replication coordinates）并传输到接收者（recipient）。</p>
+</li>
+<li>
+<p>对于基于二进制日志的复制，查询 <code>performance_schema.clone_status</code> 表以检查二进制日志位置，并将文件名和位置替换到 <code>CHANGE MASTER TO</code> 语句中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">BINLOG_FILE</span><span class="p">,</span><span class="w"> </span><span class="n">BINLOG_POSITION</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">performance_schema</span><span class="p">.</span><span class="n">clone_status</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CHANGE</span><span class="w"> </span><span class="n">MASTER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">MASTER_HOST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;donor_host&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="o">-&gt;</span><span class="w">     </span><span class="n">MASTER_LOG_FILE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;binlog_file&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">MASTER_LOG_POS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">binlog_position</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>对于 GTID 复制，执行带有 <code>MASTER_AUTO_POSITION=1</code> 的 <code>CHANGE MASTER TO</code> 语句：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CHANGE</span><span class="w"> </span><span class="n">MASTER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">MASTER_HOST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;master_host&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">MASTER_AUTO_POSITION</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="克隆插件的限制clone-plugin-limitations">克隆插件的限制（Clone Plugin Limitations）
+</h3><ul>
+<li>克隆操作期间，所有 DDL（数据定义语言）操作会被阻塞，但允许并发执行 DML（数据操作语言）操作。</li>
+<li>仅克隆 InnoDB 表的数据。其他存储引擎的表会被克隆为空表（无数据 ）。</li>
+<li>不克隆服务器配置。</li>
+<li>不克隆二进制日志。</li>
+<li>本地克隆不会克隆使用绝对路径创建的通用表空间。</li>
+<li>远程克隆不支持 X 协议端口。</li>
+<li>无法通过 MySQL Router 连接到捐赠者（donor）MySQL 服务器实例。</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/mysql-13-%E9%80%9A%E8%BF%87-innodb-%E9%9B%86%E7%BE%A4%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-13-通过 InnoDB 集群实现高可用性</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-12-管理复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-10-执行备份</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-09-备份策略</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-08-优化查询性能</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

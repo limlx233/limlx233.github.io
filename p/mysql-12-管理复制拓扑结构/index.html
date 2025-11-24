@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="故障转移Failover\r基于日志坐标的故障转移（Failover with Log Coordinates）\r在二进制日志中，找到应用到每个从库的最新事件。 选择一个数据最新的从库作为新主库。 在新主库上确定日志坐标，使其与每个从库上最新应用的事件匹配。 在每个从库上执行正确的 CHANGE MASTER TO... 语句。 执行基于日志坐标的故障转移时的潜在问题（Potential Problems When Executing a Failover with Log Coordinates）\r执行故障转移时，若从库并非都为最新状态，复制拓扑可能出现不一致的风险：\n">
+<title>MySQL-12-管理复制拓扑结构</title>
+
+<link rel='canonical' href='http://localhost:1313/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-12-管理复制拓扑结构">
+<meta property='og:description' content="故障转移Failover\r基于日志坐标的故障转移（Failover with Log Coordinates）\r在二进制日志中，找到应用到每个从库的最新事件。 选择一个数据最新的从库作为新主库。 在新主库上确定日志坐标，使其与每个从库上最新应用的事件匹配。 在每个从库上执行正确的 CHANGE MASTER TO... 语句。 执行基于日志坐标的故障转移时的潜在问题（Potential Problems When Executing a Failover with Log Coordinates）\r执行故障转移时，若从库并非都为最新状态，复制拓扑可能出现不一致的风险：\n">
+<meta property='og:url' content='http://localhost:1313/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-30T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-08-30T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="MySQL-12-管理复制拓扑结构">
+<meta name="twitter:description" content="故障转移Failover\r基于日志坐标的故障转移（Failover with Log Coordinates）\r在二进制日志中，找到应用到每个从库的最新事件。 选择一个数据最新的从库作为新主库。 在新主库上确定日志坐标，使其与每个从库上最新应用的事件匹配。 在每个从库上执行正确的 CHANGE MASTER TO... 语句。 执行基于日志坐标的故障转移时的潜在问题（Potential Problems When Executing a Failover with Log Coordinates）\r执行故障转移时，若从库并非都为最新状态，复制拓扑可能出现不一致的风险：\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">好记性不如烂笔头</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#故障转移failover">故障转移Failover</a>
+      <ol>
+        <li><a href="#基于日志坐标的故障转移failover-with-log-coordinates">基于日志坐标的故障转移（Failover with Log Coordinates）</a>
+          <ol>
+            <li><a href="#执行基于日志坐标的故障转移时的潜在问题potential-problems-when-executing-a-failover-with-log-coordinates">执行基于日志坐标的故障转移时的潜在问题（Potential Problems When Executing a Failover with Log Coordinates）</a></li>
+          </ol>
+        </li>
+        <li><a href="#执行基于日志坐标的故障转移时规避问题的方法avoiding-problems-when-executing-a-failover-with-log-coordinates">执行基于日志坐标的故障转移时规避问题的方法（Avoiding Problems When Executing a Failover with Log Coordinates）</a></li>
+        <li><a href="#使用-gtid-的故障转移failover-with-gtids">使用 GTID 的故障转移（Failover with GTIDs）</a></li>
+      </ol>
+    </li>
+    <li><a href="#复制线程replication-threads">复制线程Replication threads</a>
+      <ol>
+        <li><a href="#复制线程replication-threads-1">复制线程（Replication Threads）</a></li>
+        <li><a href="#单线程从库single-threaded-slaves">单线程从库（Single-Threaded Slaves）</a></li>
+        <li><a href="#多线程从库multithreaded-slaves">多线程从库（Multithreaded Slaves）</a></li>
+        <li><a href="#控制从库线程controlling-slave-threads">控制从库线程（Controlling Slave Threads）</a></li>
+        <li><a href="#重置从库resetting-the-slave">重置从库（Resetting the Slave）</a></li>
+      </ol>
+    </li>
+    <li><a href="#监控复制monitoring-replication">监控复制Monitoring replication</a>
+      <ol>
+        <li><a href="#监控复制monitoring-replication-1">监控复制（Monitoring Replication）</a></li>
+        <li><a href="#从库线程状态slave-thread-status">从库线程状态（Slave Thread Status）</a></li>
+        <li><a href="#主库日志坐标master-log-coordinates">主库日志坐标（Master Log Coordinates）</a></li>
+        <li><a href="#中继日志坐标relay-log-coordinates">中继日志坐标（Relay Log Coordinates）</a></li>
+        <li><a href="#复制从库-io-线程状态replication-slave-io-thread-states">复制从库 I/O 线程状态（Replication Slave I/O Thread States）</a></li>
+        <li><a href="#复制从库-sql-线程状态">复制从库 SQL 线程状态</a></li>
+        <li><a href="#使用性能模式监控复制monitoring-replication-by-using-performance-schema">使用性能模式监控复制（Monitoring Replication by Using Performance Schema）</a></li>
+      </ol>
+    </li>
+    <li><a href="#复制故障排查troubleshooting-replication">复制故障排查Troubleshooting replication</a>
+      <ol>
+        <li><a href="#mysql-复制故障排查troubleshooting-mysql-replication">MySQL 复制故障排查（Troubleshooting MySQL Replication）</a>
+          <ol>
+            <li><a href="#检查错误日志">检查错误日志</a></li>
+            <li><a href="#检查错误日志examining-the-error-log">检查错误日志（Examining the Error Log）</a></li>
+            <li><a href="#show-slave-status-错误详情">SHOW SLAVE STATUS 错误详情</a></li>
+            <li><a href="#检查-io-线程状态">检查 I/O 线程状态</a></li>
+            <li><a href="#监控多源复制">监控多源复制</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql/" style="background-color: ; color: #fff;">
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">MySQL-12-管理复制拓扑结构</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-08-30</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="故障转移failover">故障转移Failover
+</h2><h3 id="基于日志坐标的故障转移failover-with-log-coordinates">基于日志坐标的故障转移（Failover with Log Coordinates）
+</h3><ol>
+<li>在二进制日志中，找到应用到每个从库的最新事件。</li>
+<li>选择一个数据最新的从库作为新主库。</li>
+<li>在新主库上确定日志坐标，使其与每个从库上最新应用的事件匹配。</li>
+<li>在每个从库上执行正确的 <code>CHANGE MASTER TO...</code> 语句。</li>
+</ol>
+<h4 id="执行基于日志坐标的故障转移时的潜在问题potential-problems-when-executing-a-failover-with-log-coordinates">执行基于日志坐标的故障转移时的潜在问题（Potential Problems When Executing a Failover with Log Coordinates）
+</h4><p>执行故障转移时，若从库并非都为最新状态，复制拓扑可能出现不一致的风险：</p>
+<ul>
+<li>若新主库落后于某个从库（即该从库已应用新主库日志末尾的事件 ），则该从库会重复应用那些事件。</li>
+<li>若新主库领先于某个从库（即新主库的二进制日志包含该从库尚未应用的事件 ），则该从库会跳过那些事件。</li>
+</ul>
+<h3 id="执行基于日志坐标的故障转移时规避问题的方法avoiding-problems-when-executing-a-failover-with-log-coordinates">执行基于日志坐标的故障转移时规避问题的方法（Avoiding Problems When Executing a Failover with Log Coordinates）
+</h3><ul>
+<li>
+<p>让 SQL 线程应用中继日志（relay log）中的所有事件。</p>
+</li>
+<li>
+<p>选择一个数据最新的从库作为新主库。</p>
+</li>
+<li>
+<p>在新主库上找到与每个从库最新事件匹配的日志坐标。</p>
+</li>
+<li>
+<p>若部分从库比其他从库落后更多，在<code>CHANGE MASTER TO...</code></p>
+<p>语句中为不同从库提供的日志坐标会各不相同。</p>
+<ul>
+<li>不能简单地在新主库上执行 <code>SHOW MASTER STATUS</code> 来获取（通用的坐标 ）。</li>
+<li>相反，必须检查二进制日志以找到正确的坐标。</li>
+</ul>
+</li>
+<li>
+<p>在有多个主库接收客户端更新的环形拓扑中，找到数据最新的从库并确定正确的日志坐标会非常困难。</p>
+<ul>
+<li>考虑使用全局事务标识符（GTIDs）。</li>
+</ul>
+</li>
+</ul>
+<p>在有多个主库接收客户端更新的环形拓扑中，找到数据最新的从库并确定正确的日志坐标会非常困难，因为每个从库应用操作的顺序与其他从库不同。为避免这种困难，可使用全局事务标识符（GTIDs）。</p>
+<h3 id="使用-gtid-的故障转移failover-with-gtids">使用 GTID 的故障转移（Failover with GTIDs）
+</h3><p>当使用 GTID 时，环形拓扑中的故障转移会变得简单：</p>
+<ul>
+<li>在故障主库的从库上，通过执行一条 <code>CHANGE MASTER TO</code> 语句即可绕过故障主库。</li>
+<li>拓扑中的每个服务器会根据事务的 GTID 是否已见过，来决定忽略或应用从其他服务器复制来的事务。</li>
+</ul>
+<p>非环形拓扑中的故障转移也同样简单：</p>
+<ul>
+<li>临时将新主库配置为一个数据最新的从库的从库，直到新主库追上（数据进度 ）。</li>
+<li>在故障主库的从库上，执行 <code>CHANGE MASTER TO</code> 语句，从新主库复制数据。</li>
+</ul>
+<p>尽管 GTID 可防止源自单个服务器的事件重复，但无法防止源自不同服务器的冲突操作。故障转移后将应用程序重新连接到服务器时，必须小心，避免引入此类冲突。</p>
+<h2 id="复制线程replication-threads">复制线程Replication threads
+</h2><h3 id="复制线程replication-threads-1">复制线程（Replication Threads）
+</h3><p>当从库连接到主库时：</p>
+<ul>
+<li>主库会创建一个 <strong>Binlog dump 线程</strong>
+<ul>
+<li>从二进制日志中读取事件，并将其发送给从库的 I/O 线程。</li>
+</ul>
+</li>
+<li>从库默认会创建两个线程：
+<ul>
+<li>从库 I/O 线程
+<ul>
+<li>从主库的 Binlog dump 线程读取事件，并将其写入从库的中继日志（relay log）。</li>
+</ul>
+</li>
+<li>从库 SQL（或 “应用” ）线程
+<ul>
+<li>在单线程从库上，应用中继日志中的事件；</li>
+<li>在多线程从库上，将中继日志事件分配给工作线程（worker threads）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="单线程从库single-threaded-slaves">单线程从库（Single-Threaded Slaves）
+</h3><ul>
+<li>从库默认是单线程的。
+<ul>
+<li>每个从库使用单个 SQL 线程来处理中继日志。</li>
+<li>优点是，当通过单线程复制时，单个数据库内的数据可保证一致。</li>
+</ul>
+</li>
+<li>单线程从库可能导致从库延迟（即从库落后于主库 ）：
+<ul>
+<li>若主库有多个客户端连接，可并行应用变更，但主库会在其二进制日志中序列化所有事件（按顺序记录 ）。</li>
+<li>从库在单个线程中按顺序执行这些事件，在高负载环境或从库硬件性能不足时，这可能成为瓶颈。</li>
+</ul>
+</li>
+</ul>
+<h3 id="多线程从库multithreaded-slaves">多线程从库（Multithreaded Slaves）
+</h3><ul>
+<li>
+<p>使用多线程从库来减少从库延迟。</p>
+</li>
+<li>
+<p>将 <code>slave_parallel_workers</code> 变量设置为大于 0 的值，以创建对应数量的工作线程。</p>
+<ul>
+<li>当有多个工作线程时，从库的 SQL 线程不直接应用事件，而是将任务委托给工作线程。</li>
+</ul>
+</li>
+<li>
+<p>设置 <code>slave_parallel_type</code> 变量以指定并行化策略。</p>
+<ul>
+<li>
+<p><strong>DATABASE（默认）</strong>：更新不同数据库的事务会并行应用。</p>
+</li>
+<li>
+<p>LOGICAL_CLOCK</p>
+<p>：属于主库上同一二进制日志组提交的事务，会在从库上并行应用。</p>
+<ul>
+<li>主库可通过 <code>binlog_transaction_dependency_tracking</code> 变量配置二进制日志，以记录提交时间戳或写集合。</li>
+<li>将 <code>slave_preserve_commit_order</code> 变量设置为 <code>ON</code> 以保留提交顺序。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>补充说明</strong>：</p>
+<ul>
+<li>“DATABASE” 策略仅在数据被分区到多个数据库、且主库上这些数据库被独立且并发更新时适用。必须不存在跨数据库约束，否则从库上可能违反这些约束。</li>
+<li>“LOGICAL_CLOCK” 策略使用提交时间戳或写集合来确定哪些事务可并行应用。依赖信息由主库生成。与提交时间戳相比，写集合可提供更高级别的并行性。启用 <code>slave_preserve_commit_order</code> 后，执行线程会在提交前等待所有之前的事务提交。在此模式下，多线程从库永远不会进入主库未曾处于的状态。</li>
+</ul>
+<h3 id="控制从库线程controlling-slave-threads">控制从库线程（Controlling Slave Threads）
+</h3><ul>
+<li>
+<p>启动或停止从库上的 I/O 线程和 SQL 线程：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">START</span><span class="w"> </span><span class="n">SLAVE</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">STOP</span><span class="w"> </span><span class="n">SLAVE</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>单独控制线程：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">START</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="n">IO_THREAD</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">STOP</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="n">SQL_THREAD</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>在多线程从库中，无法单独控制 SQL 工作线程，因为这些线程由 SQL 线程管理。</li>
+</ul>
+</li>
+<li>
+<p>启动线程直到满足指定条件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">START</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="k">UNTIL</span><span class="w"> </span><span class="n">SQL_AFTER_MTS_GAPS</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">START</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="n">SQL_THREAD</span><span class="w"> </span><span class="k">UNTIL</span><span class="w"> </span><span class="n">SQL_BEFORE_GTIDS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;0ed18583-47fd-11e2-92f3-0019b94b7e7:338&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>断开从库与主库的连接：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">RESET</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="p">[</span><span class="k">ALL</span><span class="p">]</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="重置从库resetting-the-slave">重置从库（Resetting the Slave）
+</h3><p>通过执行 <code>RESET SLAVE</code> 命令，断开从库与主库的连接，以实现干净的重启：</p>
+<ul>
+<li>清空 <code>master.info</code> 和 <code>relay.log</code> 存储库</li>
+<li>删除所有中继日志（relay logs）</li>
+<li>启动一个新的中继日志文件</li>
+<li>将 <code>CHANGE MASTER TO</code> 语句中指定的任何 <code>MASTER_DELAY</code> 重置为 0</li>
+<li>保留连接参数，因此无需执行<code>CHANGE MASTER TO</code>即可重启从库
+<ul>
+<li>执行 <code>RESET SLAVE ALL</code> 以重置连接参数</li>
+</ul>
+</li>
+<li>不会更改 <code>gtid_executed</code>、<code>gtid_purged</code> 的值，也不会更改 <code>mysql.gtid_executed</code> 表</li>
+</ul>
+<h2 id="监控复制monitoring-replication">监控复制Monitoring replication
+</h2><h3 id="监控复制monitoring-replication-1">监控复制（Monitoring Replication）
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SHOW</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="n">STATUS</span><span class="err">\</span><span class="k">G</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">***************************</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="o">***************************</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">           </span><span class="n">Slave_IO_State</span><span class="p">:</span><span class="w"> </span><span class="n">Queueing</span><span class="w"> </span><span class="n">master</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">relay</span><span class="w"> </span><span class="n">log</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">               </span><span class="n">Master_Log_File</span><span class="p">:</span><span class="w"> </span><span class="n">mysql</span><span class="o">-</span><span class="n">bin</span><span class="p">.</span><span class="mi">000005</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">           </span><span class="n">Read_Master_Log_Pos</span><span class="p">:</span><span class="w"> </span><span class="mi">79</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">Relay_Log_File</span><span class="p">:</span><span class="w"> </span><span class="n">slave</span><span class="o">-</span><span class="n">relay</span><span class="o">-</span><span class="n">bin</span><span class="p">.</span><span class="mi">000005</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                 </span><span class="n">Relay_Log_Pos</span><span class="p">:</span><span class="w"> </span><span class="mi">548</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">         </span><span class="n">Relay_Master_Log_File</span><span class="p">:</span><span class="w"> </span><span class="n">mysql</span><span class="o">-</span><span class="n">bin</span><span class="p">.</span><span class="mi">000004</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="n">Slave_IO_Running</span><span class="p">:</span><span class="w"> </span><span class="n">Yes</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">             </span><span class="n">Slave_SQL_Running</span><span class="p">:</span><span class="w"> </span><span class="n">Yes</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">               </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Exec_Master_Log_Pos</span><span class="p">:</span><span class="w"> </span><span class="mi">3769</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">               </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Seconds_Behind_Master</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>有关 <code>SHOW SLAVE STATUS</code> 语句返回的所有字段的描述，请参见 <a class="link" href="https://dev.mysql.com/doc/refman/en/show-slave-status.html"  target="_blank" rel="noopener"
+    >https://dev.mysql.com/doc/refman/en/show-slave-status.html</a>。</p>
+<h3 id="从库线程状态slave-thread-status">从库线程状态（Slave Thread Status）
+</h3><ul>
+<li><code>Slave_IO_Running</code> 和 <code>Slave_SQL_Running</code> 列分别显示从库 I/O 线程和 SQL 线程的状态。</li>
+<li>每列的可能取值如下：
+<ul>
+<li><code>Yes</code>：线程当前正在运行。</li>
+<li><code>No</code>：线程未在运行。</li>
+<li><code>Connecting</code>：线程正在运行，但尚未连接到主库。</li>
+</ul>
+</li>
+</ul>
+<h3 id="主库日志坐标master-log-coordinates">主库日志坐标（Master Log Coordinates）
+</h3><p><code>Master_Log_File</code> 和 <code>Read_Master_Log_Pos</code> 列标识了 I/O 线程已传输的主库二进制日志中最新事件的坐标。</p>
+<ul>
+<li>将主库日志坐标与在主库上执行 <code>SHOW MASTER STATUS</code> 时显示的坐标进行比较。</li>
+<li>如果 <code>Master_Log_File</code> 和 <code>Read_Master_Log_Pos</code> 的值远落后于主库上的值，则表明主库和从库之间的事件网络传输存在延迟。</li>
+</ul>
+<h3 id="中继日志坐标relay-log-coordinates">中继日志坐标（Relay Log Coordinates）
+</h3><ul>
+<li>
+<p><code>Relay_Log_File</code> 和 <code>Relay_Log_Pos</code> 列标识了 SQL 线程已执行的从库中继日志中最新事件的坐标。</p>
+</li>
+<li>
+<p><code>Relay_Master_Log_File</code>和<code>Exec_Master_Log_Pos</code>列对应主库二进制日志中的坐标。</p>
+<ul>
+<li>
+<p>如果这些列的输出远落后于代表 I/O 线程坐标的<code>Master_Log_File</code>和</p>
+<p><code>Read_Master_Log_Pos</code> 列：</p>
+<ul>
+<li>说明是 SQL 线程存在延迟，而非 I/O 线程</li>
+<li>日志事件复制速度快于执行速度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><code>Relay_Log_Space</code> 列指定所有中继日志文件的总组合大小。</p>
+</li>
+<li>
+<p><code>Seconds_Behind_Master</code> 列存储最新中继日志事件与当前服务器时间的秒数差，用于识别从库延迟。</p>
+</li>
+<li>
+<p><code>SQL_Delay</code> 指定从库必须落后于主库的秒数，该值在 <code>CHANGE MASTER TO</code> 命令中配置。</p>
+</li>
+</ul>
+<p><strong>补充说明</strong>：</p>
+<ul>
+<li><strong><code>Exec_Master_Log_Pos</code></strong>：在多线程从库上，<code>Exec_Master_Log_Pos</code> 包含任何未提交事务之前最后一个点的位置。这不一定与中继日志中最新的日志位置相同，因为多线程从库可能以与二进制日志中不同的顺序在不同数据库上执行事务。</li>
+<li><strong><code>Seconds_Behind_Master</code></strong>：该列提供 SQL 线程执行的中继日志中最新事件的时间戳（主库上的时间 ）与从库机器实际时间的秒数差。这种延迟通常发生在主库并行处理大量事件，而从库必须串行处理时，或者从库硬件在高流量期间无法处理主库能处理的事件量时。如果从库未连接到主库，该列为 <code>NULL</code>。大型事务或长时间执行的操作（如更新无主键的大表 ）可能导致该值增加。
+注意：该列不显示 I/O 线程的延迟或主库事件网络传输的延迟。</li>
+</ul>
+<h3 id="复制从库-io-线程状态replication-slave-io-thread-states">复制从库 I/O 线程状态（Replication Slave I/O Thread States）
+</h3><p>在 <code>SHOW PROCESSLIST</code> 输出的 <code>State</code> 列中，最常见的 I/O 线程状态如下：</p>
+<ul>
+<li>
+<p><strong>Connecting to master</strong></p>
+<ul>
+<li>线程正在尝试连接到主库。</li>
+</ul>
+</li>
+<li>
+<p><strong>Waiting for master to send event</strong></p>
+<ul>
+<li>从库已连接，正在等待二进制日志事件。</li>
+<li>如果主库空闲，该状态可能会持续很长时间。</li>
+<li>在 <code>slave_read_timeout</code> 秒后超时，并尝试重新连接。</li>
+</ul>
+</li>
+<li>
+<p><strong>Queuing master event to the relay log</strong></p>
+<ul>
+<li>线程已读取一个事件，正在将其复制到中继日志，以便由 SQL 线程处理。</li>
+</ul>
+</li>
+<li>
+<p><strong>Waiting to reconnect after a failed binlog dump request</strong>（因二进制日志转储请求失败，等待重新连接 ）</p>
+<ul>
+<li>二进制日志转储请求因断开连接而失败。</li>
+<li>线程进入此状态，期间会休眠并定期尝试重新连接。</li>
+<li>可通过 <code>CHANGE MASTER TO</code> 的 <code>MASTER_CONNECT_RETRY</code> 选项指定重试间隔。</li>
+</ul>
+</li>
+<li>
+<p><strong>Reconnecting after a failed binlog dump request</strong>（二进制日志转储请求失败后，正在重新连接 ）</p>
+<ul>
+<li>线程正在尝试重新连接到主库。</li>
+</ul>
+</li>
+<li>
+<p><strong>Waiting to reconnect after a failed master event read</strong>（因读取主库事件失败，等待重新连接 ）</p>
+<ul>
+<li>读取过程中发生断开连接。线程会休眠指定秒数后，尝试重新连接。</li>
+<li>默认是 60 秒。</li>
+<li>可通过 <code>CHANGE MASTER TO</code> 的 <code>MASTER_CONNECT_RETRY</code> 选项指定秒数。</li>
+</ul>
+</li>
+<li>
+<p><strong>Reconnecting after a failed master event read</strong>（因读取主库事件失败，正在重新连接 ）</p>
+<ul>
+<li>线程正在尝试重新连接到主库。</li>
+<li>线程重新连接后，状态会变为 <code>Waiting for master to send event</code>（等待主库发送事件 ）。</li>
+</ul>
+</li>
+<li>
+<p><strong>Waiting for the slave SQL thread to free enough relay log space</strong>（等待从库 SQL 线程释放足够的中继日志空间 ）</p>
+<ul>
+<li>中继日志的总大小超过了 <code>relay_log_space_limit</code> 的值（仅当该值非零时生效；值为 0 表示中继日志大小无限制 ）。</li>
+<li>I/O 线程会等待，直到 SQL 线程通过处理中继日志内容并删除，释放出足够空间。</li>
+</ul>
+</li>
+</ul>
+<h3 id="复制从库-sql-线程状态">复制从库 SQL 线程状态
+</h3><p>最常见的 SQL 线程状态如下：</p>
+<ul>
+<li>
+<p><strong>等待中继日志中的下一个事件</strong></p>
+<ul>
+<li>是 “从中继日志读取事件” 之前的初始状态。</li>
+</ul>
+</li>
+<li>
+<p><strong>从中继日志读取事件</strong></p>
+<ul>
+<li>线程已从中继日志中读取一个可处理的事件。</li>
+</ul>
+</li>
+<li>
+<p><strong>创建临时文件（追加）</strong></p>
+<ul>
+<li>在重放 <code>LOAD DATA INFILE</code> 语句前的状态。</li>
+<li>线程正在执行 <code>LOAD DATA</code> 语句，会将数据追加到一个临时文件中，从库后续会从该文件读取行数据。</li>
+</ul>
+</li>
+<li>
+<p><strong>从库已读取所有中继日志；等待更多更新</strong></p>
+<ul>
+<li>线程已处理完中继日志文件中的所有事件。当前正在等待 I/O 线程向中继日志写入新事件。</li>
+</ul>
+</li>
+<li>
+<p><strong>等待至主库执行事件后的 … 秒</strong></p>
+<ul>
+<li>SQL 线程已读取一个事件，但在等待从库延迟（配置的延迟时间 ）结束。</li>
+<li>可通过 <code>CHANGE MASTER TO</code> 语句的 <code>MASTER_DELAY</code> 选项设置延迟。</li>
+</ul>
+</li>
+<li>
+<p><strong>等待协调器分配事件</strong></p>
+<ul>
+<li>仅出现在多线程从库的工作线程中。</li>
+<li>一个工作线程正在等待协调 SQL 线程将任务分配到工作队列。</li>
+</ul>
+</li>
+</ul>
+<h3 id="使用性能模式监控复制monitoring-replication-by-using-performance-schema">使用性能模式监控复制（Monitoring Replication by Using Performance Schema）
+</h3><p>性能模式（Performance Schema）包含 <code>replication_*</code> 表，这些表在 <code>SHOW SLAVE STATUS</code> 提供的信息基础上进行了增强，使你能够：</p>
+<ul>
+<li>对想要显示的信息进行更精细的控制</li>
+<li>获取更完善的诊断信息
+<ul>
+<li><code>SHOW SLAVE STATUS</code> 仅报告最新的协调器线程和工作线程错误。</li>
+<li>可获取每个工作线程处理的最后一个事务的详细信息。</li>
+</ul>
+</li>
+<li>将诊断信息持久化到表或视图中</li>
+<li>以编程方式访问复制指标</li>
+</ul>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211146962.png" alt="image-20250721114624278" style="zoom:67%;" />
+<h2 id="复制故障排查troubleshooting-replication">复制故障排查Troubleshooting replication
+</h2><h3 id="mysql-复制故障排查troubleshooting-mysql-replication">MySQL 复制故障排查（Troubleshooting MySQL Replication）
+</h3><ul>
+<li><strong>查看错误日志</strong>
+<ul>
+<li>错误日志可提供足够信息，帮助你识别并修正复制中的问题。</li>
+</ul>
+</li>
+<li><strong>在主库执行 <code>SHOW MASTER STATUS</code> 语句</strong>
+<ul>
+<li>若 <code>Position</code> 值非零，说明主库已启用日志记录。</li>
+</ul>
+</li>
+<li><strong>验证主库和从库是否均有唯一的非零服务器 ID（<code>server_id</code>）</strong>
+<ul>
+<li>主库和从库的 <code>server_id</code> 必须不同。</li>
+</ul>
+</li>
+<li><strong>在从库执行 <code>SHOW SLAVE STATUS</code> 命令，或查询性能模式（Performance Schema）中的复制表</strong>
+<ul>
+<li>当从库正常工作时，<code>Slave_IO_Running</code> 和 <code>Slave_SQL_Running</code> 会显示 <code>Yes</code>。</li>
+<li><code>Last_IO_Error</code> 和 <code>Last_SQL_Error</code> 会显示 I/O 线程和 SQL 线程最近的错误消息。</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意</strong>：如果你无法使用主库上的有效账号登录从库，可能是因为你在主库上通过 <code>CREATE USER</code> 或 <code>GRANT</code> 创建了用户账号，该账号通过 <code>mysql.user</code> 表复制到从库，但复制过程未刷新权限。可在从库上，通过其他账号使用 <code>mysqladmin flush-privileges</code> 命令，或执行 <code>FLUSH PRIVILEGES</code> 来解决。</p>
+<ul>
+<li>在主库和从库执行 <code>SHOW PROCESSLIST</code> 命令
+<ul>
+<li>检查 Binlog dump 线程、I/O 线程和 SQL 线程的状态。</li>
+</ul>
+</li>
+<li>对于突然停止工作的从库，检查最近复制的语句
+<ul>
+<li>若因约束问题或其他错误导致操作失败，SQL 线程会停止。
+<ul>
+<li>错误日志会包含导致 SQL 线程停止的事件。</li>
+</ul>
+</li>
+<li>查阅已知的复制限制。
+<ul>
+<li>参考：http://dev.mysql.com/doc/mysql/en/replication-features.html</li>
+</ul>
+</li>
+<li>验证从库数据未被直接修改（即未通过复制以外的方式修改 ）。</li>
+</ul>
+</li>
+</ul>
+<h4 id="检查错误日志">检查错误日志
+</h4><h4 id="检查错误日志examining-the-error-log">检查错误日志（Examining the Error Log）
+</h4><ul>
+<li>
+<p>错误日志存储了复制开始的相关信息，以及复制过程中发生的任何错误信息。</p>
+</li>
+<li>
+<p>始终优先检查错误日志。</p>
+</li>
+<li>
+<p>以下示例显示了复制成功启动，但在复制从库上已存在的用户时随后失败：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">date-and-time 95 [System] [MY-010562] [Repl] Slave I/O thread for channel &#39;&#39;: 
+</span></span><span class="line"><span class="cl">connected to master &#39;repl@10.0.0.23:3306&#39;, replication started in log &#39;binlog.000005&#39; 
+</span></span><span class="line"><span class="cl">at position 1384  
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">date-and-time 96 [ERROR] [MY-010594] [Repl] Slave SQL for channel &#39;&#39;: Error &#39;Operation 
+</span></span><span class="line"><span class="cl">CREATE USER failed for user &#39;caching_sha2_password&#39; as ...&#39; Error: &#39;CREATE USER 
+</span></span><span class="line"><span class="cl">&#39;user&#39;@&#39;%&#39; IDENTIFIED WITH &#39;caching_sha2_password&#39; AS &#39;database&#39;: &#39; . Query: MY-001396 
+</span></span><span class="line"><span class="cl">date-and-time 96 [Warning] [MY-010584] [Repl] Slaves: Operation CREATE USER failed for 
+</span></span><span class="line"><span class="cl">&#39;user&#39;@&#39;%&#39; (Error code: MY-001396)  
+</span></span><span class="line"><span class="cl">date-and-time 96 [ERROR] [MY-010586] [Repl] Error running query, slave SQL thread 
+</span></span><span class="line"><span class="cl">aborted. Fix the problem, and restart the slave SQL thread with &#34;SLAVE START&#34;. We 
+</span></span><span class="line"><span class="cl">stopped at log &#39;binlog.000006&#39; position 235  
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>以下序列显示了从库 I/O 线程读取主库二进制日志时失败的情况：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">date-and-time 1421 [System] [MY-010562] [Repl] Slave I/O thread for channel &#39;&#39;: 
+</span></span><span class="line"><span class="cl">connected to master &#39;repl@10.0.0.23:3306&#39;, replication started in log &#39;binlog.000007&#39; 
+</span></span><span class="line"><span class="cl">at position 200  
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">date-and-time 1421 [ERROR] [MY-010557] [Repl] Error reading packet from server for 
+</span></span><span class="line"><span class="cl">channel &#39;&#39;: bogus data in log event; the first event &#39;binlog.000007&#39; at 200, the last 
+</span></span><span class="line"><span class="cl">event read from &#39;./binlog.000007&#39; at 124, the last byte read from &#39;./binlog.000007&#39; at 
+</span></span><span class="line"><span class="cl">219. (server_errno=1236)  
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">date-and-time 1421 [ERROR] [MY-013114] [Repl] Slave I/O for channel &#39;&#39;: Got fatal 
+</span></span><span class="line"><span class="cl">error 1236 from master when reading data from binary log: &#39;bogus data in log event; 
+</span></span><span class="line"><span class="cl">the first event &#39;binlog.000007&#39; at 200, the last event read from &#39;./binlog.000007&#39; at 
+</span></span><span class="line"><span class="cl">124, the last byte read from &#39;./binlog.000007&#39; at 219.&#39;, Error_code: MY-013114  
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h4 id="show-slave-status-错误详情">SHOW SLAVE STATUS 错误详情
+</h4><ul>
+<li>Last_IO_Error（最后 I/O 线程错误）、Last_SQL_Error（最后 SQL 线程错误）：
+<ul>
+<li>分别是导致 I/O 线程或 SQL 线程停止的最近一次错误的错误消息。</li>
+<li>在正常复制期间，这些字段为空。</li>
+<li>如果发生错误并导致这些字段中出现消息，该错误消息也会出现在错误日志中。</li>
+</ul>
+</li>
+<li>Last_IO_Errno（最后 I/O 线程错误号）、Last_SQL_Errno（最后 SQL 线程错误号）：
+<ul>
+<li>分别是与导致 I/O 线程或 SQL 线程停止的最近一次错误相关联的错误编号。</li>
+<li>在正常复制期间，这些字段包含数字 0 。</li>
+</ul>
+</li>
+<li>Last_IO_Error_Timestamp（最后 I/O 线程错误时间戳）、Last_SQL_Error_Timestamp（最后 SQL 线程错误时间戳）：
+<ul>
+<li>分别是导致 I/O 线程或 SQL 线程停止的最近一次错误的时间戳。</li>
+<li>在正常复制期间，这些字段为空</li>
+</ul>
+</li>
+</ul>
+<h4 id="检查-io-线程状态">检查 I/O 线程状态
+</h4><p>如果从服务器（slave）正在运行，执行 <code>SHOW PROCESSLIST</code> 来检查连接到主服务器（master）的 I/O 线程状态：</p>
+<ul>
+<li>验证在主服务器上用于复制的用户的权限</li>
+<li>验证主服务器的主机名和端口是否正确</li>
+<li>验证在主服务器或从服务器上网络功能未被禁用（通过 <code>--skip-networking</code> 选项 ）</li>
+<li>尝试对主服务器执行 ping 操作，以验证从服务器能够连接到主服务器</li>
+</ul>
+<h4 id="监控多源复制">监控多源复制
+</h4><ul>
+<li>执行 <code>SHOW SLAVE STATUS FOR CHANNEL &lt;channel name&gt;</code>（显示指定通道的从库状态 ）。</li>
+<li>或者，查询性能模式（Performance Schema）的 <code>replication_*</code>表，指定通道名称。
+<ul>
+<li><strong>说明</strong>：<code>CHANNEL_NAME</code> 字段存在于每个性能模式复制表中。</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">replication_connection_status</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">CHANNEL_NAME</span><span class="o">=</span><span class="s1">&#39;master1&#39;</span><span class="err">\</span><span class="k">G</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">***************************</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="o">***************************</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">CHANNEL_NAME</span><span class="p">:</span><span class="w"> </span><span class="n">master1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">GROUP_NAME</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">SOURCE_UUID</span><span class="p">:</span><span class="w"> </span><span class="mi">046</span><span class="n">e41f8</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a223</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">11</span><span class="n">e4</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a975</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">0811960</span><span class="n">cc264</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">THREAD_ID</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">SERVICE_STATE</span><span class="p">:</span><span class="w"> </span><span class="k">ON</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">COUNT_RECEIVED_HEARTBEATS</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">LAST_HEARTBEAT_TIMESTAMP</span><span class="p">:</span><span class="w"> </span><span class="mi">0000</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">RECEIVED_TRANSACTION_SET</span><span class="p">:</span><span class="w"> </span><span class="mi">046</span><span class="n">e41f8</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a223</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">11</span><span class="n">e4</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a975</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">0811960</span><span class="n">cc264</span><span class="p">:</span><span class="mi">4</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">37</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">LAST_ERROR_NUMBER</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">LAST_ERROR_MESSAGE</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">LAST_ERROR_TIMESTAMP</span><span class="p">:</span><span class="w"> </span><span class="mi">0000</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>上述示例演示了查询性能模式的 <code>replication_connection_status</code> 表，以监控在复制通道 <code>master1</code> 上，处理从服务器（slave server ）到主服务器（master server ）连接的 I/O 线程的状态。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/mysql-13-%E9%80%9A%E8%BF%87-innodb-%E9%9B%86%E7%BE%A4%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-13-通过 InnoDB 集群实现高可用性</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-11-配置复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-10-执行备份</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-09-备份策略</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-08-优化查询性能</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

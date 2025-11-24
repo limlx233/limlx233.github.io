@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="[TOC]\n目标\n安装MySQL服务器和客户端程序 认识安装过程中的文件和文件夹 执行 MySQLserver 的初始化操作 启动和停止MySQL 升级到MySQL 8.0 安装MySQL 安装步骤 确定你的平台是否受支持。 查看：https://www.mysql.com/support/supportedplatforms/database.html 选择一种发布版本。 预打包的二进制文件 原生格式，例如，适用于 Linux 的 RPM 包、适用于 OS X 的 PKG 包、适用于 Windows 的 MySQL 安装程序 通用格式，例如，ZIP 归档文件或压缩的 tar 文件 源代码 下载该发布版本。 安装该发布版本。 执行任何所需的安装后配置。 一般来说，应选择二进制发布版本。只有你想查看非常新的功能并测试新代码时，才选择源代码发布版本。\n">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言\r从原始数据中抽取出有价值信息的这个过程我们就称之为数据分析，它是数据科学的重要组成部分\n需要掌握技能：\n数据思维 统计思维 分析方法 分析模型 业务知识 挖掘算法 分析工具 Excel SQL Python BI 工作流程：结合业务完成监控数据、发现异常、深挖原因、探索趋势等\n">
 <title></title>
 
 <link rel='canonical' href='http://localhost:1313/p/'>
 
-<link rel="stylesheet" href="/scss/style.min.e47845efdf201e9ad59b2ca9789760c9ef5c7593900565acc1765aea3f3b2641.css"><meta property='og:title' content="">
-<meta property='og:description' content="[TOC]\n目标\n安装MySQL服务器和客户端程序 认识安装过程中的文件和文件夹 执行 MySQLserver 的初始化操作 启动和停止MySQL 升级到MySQL 8.0 安装MySQL 安装步骤 确定你的平台是否受支持。 查看：https://www.mysql.com/support/supportedplatforms/database.html 选择一种发布版本。 预打包的二进制文件 原生格式，例如，适用于 Linux 的 RPM 包、适用于 OS X 的 PKG 包、适用于 Windows 的 MySQL 安装程序 通用格式，例如，ZIP 归档文件或压缩的 tar 文件 源代码 下载该发布版本。 安装该发布版本。 执行任何所需的安装后配置。 一般来说，应选择二进制发布版本。只有你想查看非常新的功能并测试新代码时，才选择源代码发布版本。\n">
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="">
+<meta property='og:description' content="前言\r从原始数据中抽取出有价值信息的这个过程我们就称之为数据分析，它是数据科学的重要组成部分\n需要掌握技能：\n数据思维 统计思维 分析方法 分析模型 业务知识 挖掘算法 分析工具 Excel SQL Python BI 工作流程：结合业务完成监控数据、发现异常、深挖原因、探索趋势等\n">
 <meta property='og:url' content='http://localhost:1313/p/'>
 <meta property='og:site_name' content='Penna_a'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' />
 <meta name="twitter:title" content="">
-<meta name="twitter:description" content="[TOC]\n目标\n安装MySQL服务器和客户端程序 认识安装过程中的文件和文件夹 执行 MySQLserver 的初始化操作 启动和停止MySQL 升级到MySQL 8.0 安装MySQL 安装步骤 确定你的平台是否受支持。 查看：https://www.mysql.com/support/supportedplatforms/database.html 选择一种发布版本。 预打包的二进制文件 原生格式，例如，适用于 Linux 的 RPM 包、适用于 OS X 的 PKG 包、适用于 Windows 的 MySQL 安装程序 通用格式，例如，ZIP 归档文件或压缩的 tar 文件 源代码 下载该发布版本。 安装该发布版本。 执行任何所需的安装后配置。 一般来说，应选择二进制发布版本。只有你想查看非常新的功能并测试新代码时，才选择源代码发布版本。\n">
+<meta name="twitter:description" content="前言\r从原始数据中抽取出有价值信息的这个过程我们就称之为数据分析，它是数据科学的重要组成部分\n需要掌握技能：\n数据思维 统计思维 分析方法 分析模型 业务知识 挖掘算法 分析工具 Excel SQL Python BI 工作流程：结合业务完成监控数据、发现异常、深挖原因、探索趋势等\n">
     <link rel="shortcut icon" href="/pen.svg" />
 
     </head>
@@ -275,93 +275,144 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#安装mysql">安装MySQL</a>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#关于统计">关于统计</a>
       <ol>
-        <li><a href="#安装步骤">安装步骤</a>
+        <li><a href="#概述">概述</a></li>
+        <li><a href="#基本概念">基本概念</a>
           <ol>
-            <li><a href="#从下载的软件包安装-mysqlinstalling-mysql-from-downloaded-packages">从下载的软件包安装 MySQL（Installing MySQL from Downloaded Packages）</a></li>
-          </ol>
-        </li>
-        <li><a href="#linux-的-mysql-rpm-安装文件">Linux 的 MySQL RPM 安装文件</a>
-          <ol>
-            <li><a href="#可用的-rpm-包available-rpms">可用的 RPM 包（Available RPMs）</a></li>
-            <li><a href="#mysql-rpm-安装流程mysql-rpm-installation-process">MySQL RPM 安装流程（MySQL RPM Installation Process）</a></li>
-            <li><a href="#mysql-deb-安装mysql-deb-installation">MySQL DEB 安装（MySQL DEB Installation）</a></li>
-            <li><a href="#特定于-linux-发行版的软件仓库linux-distributionspecific-repositories">特定于 Linux 发行版的软件仓库（Linux Distribution–Specific Repositories）</a></li>
-            <li><a href="#使用包管理器安装-mysqlinstalling-mysql-by-using-a-package-manager">使用包管理器安装 MySQL（Installing MySQL by Using a Package Manager）</a></li>
-            <li><a href="#添加-apt-仓库">添加 APT 仓库</a></li>
-            <li><a href="#手动配置-apt-仓库">手动配置 APT 仓库</a></li>
-          </ol>
-        </li>
-        <li><a href="#windows中安装mysql">Windows中安装MySQL</a>
-          <ol>
-            <li><a href="#在-windows-上安装-mysql">在 Windows 上安装 MySQL</a></li>
-            <li><a href="#在-windows-系统中安装-mysql-服务">在 Windows 系统中安装 MySQL 服务</a></li>
-            <li><a href="#从源代码安装-mysql">从源代码安装 MySQL</a></li>
-            <li><a href="#从二进制归档文件安装-mysql">从二进制归档文件安装 MySQL</a></li>
-          </ol>
-        </li>
-        <li><a href="#使用-docker-部署-mysql-服务器">使用 Docker 部署 MySQL 服务器</a></li>
-      </ol>
-    </li>
-    <li><a href="#安装文件及路径">安装文件及路径</a>
-      <ol>
-        <li><a href="#linux-mysql-server-安装目录">linux MySQL Server 安装目录</a>
-          <ol>
-            <li><a href="#数据目录data-directory">数据目录（Data Directory）</a></li>
-            <li><a href="#基础目录base-directory">基础目录（Base Directory）</a></li>
-            <li><a href="#其他目录other-directories">其他目录（Other Directories）</a></li>
-          </ol>
-        </li>
-        <li><a href="#windows-mysql-server-安装路径">Windows MySQL Server 安装路径</a>
-          <ol>
-            <li><a href="#program-files-目录">“Program Files” 目录</a></li>
-            <li><a href="#programdata-目录">“ProgramData” 目录</a></li>
-            <li><a href="#配置文件">配置文件</a></li>
-          </ol>
-        </li>
-        <li><a href="#mysql-programs">MySQL Programs</a>
-          <ol>
-            <li><a href="#mysqldmysql-服务器进程mysqld-mysql-server-process">mysqld：MySQL 服务器进程（mysqld: MySQL Server Process）</a></li>
-            <li><a href="#安装程序installation-programs">安装程序（Installation Programs）</a></li>
-            <li><a href="#实用程序utility-programs">实用程序（Utility Programs）</a></li>
-            <li><a href="#命令行客户端程序command-line-client-programs">命令行客户端程序（Command-Line Client Programs）</a></li>
+            <li><a href="#总体和样本">总体和样本</a></li>
+            <li><a href="#参数和统计量">参数和统计量</a></li>
           </ol>
         </li>
       </ol>
     </li>
-    <li><a href="#初始化配置">初始化配置</a>
+    <li><a href="#解读数据">解读数据</a>
       <ol>
-        <li>
+        <li><a href="#数据类型与变量">数据类型与变量</a>
           <ol>
-            <li><a href="#配置强制访问控制configuring-mandatory-access-control">配置强制访问控制（Configuring Mandatory Access Control）</a></li>
+            <li><a href="#定性数据">定性数据</a></li>
+            <li><a href="#定量数据">定量数据</a></li>
           </ol>
         </li>
-        <li><a href="#更改-root-密码">更改 <code>root</code> 密码</a>
+        <li><a href="#数据来源与收集方法">数据来源与收集方法</a>
           <ol>
-            <li><a href="#修改-root-密码changing-the-root-password">修改 root 密码（Changing the root Password）</a></li>
-          </ol>
-        </li>
-        <li><a href="#启动和关闭mysql">启动和关闭MySQL</a>
-          <ol>
-            <li><a href="#使用-mysqladmin-停止-mysqlstopping-mysql-with-mysqladmin">使用 mysqladmin 停止 MySQL（Stopping MySQL with mysqladmin）</a></li>
-            <li><a href="#mysql-服务文件mysql-service-files">MySQL 服务文件（MySQL Service Files）</a></li>
-            <li><a href="#在-windows-上启动和停止-mysqlmysql-notifier">在 Windows 上启动和停止 MySQL：MySQL Notifier</a></li>
+            <li><a href="#数据来源">数据来源</a></li>
+            <li><a href="#收集方法">收集方法</a></li>
+            <li><a href="#抽样方法">抽样方法</a></li>
           </ol>
         </li>
       </ol>
     </li>
-    <li><a href="#升级mysql">升级MySQL</a>
+    <li><a href="#数据描述">数据描述</a>
       <ol>
-        <li><a href="#阅读发行说明reading-release-notes">阅读发行说明（Reading Release Notes）</a>
+        <li><a href="#数据可视化展示">数据可视化展示</a>
           <ol>
-            <li><a href="#搜索特定变更searching-for-specific-changes">搜索特定变更（Searching for Specific Changes）</a></li>
-            <li><a href="#mysql-shell-升级检查工具mysql-shell-upgrade-checker-utility">MySQL Shell 升级检查工具（MySQL Shell Upgrade Checker Utility）</a></li>
-            <li><a href="#使用原地升级方法using-in-place-upgrade-method">使用原地升级方法（Using In-Place Upgrade Method）</a></li>
-            <li><a href="#使用逻辑升级方法using-logical-upgrade-method">使用逻辑升级方法（Using Logical Upgrade Method）</a></li>
-            <li><a href="#mysql_upgrade">mysql_upgrade</a></li>
+            <li><a href="#定性数据-1">定性数据</a></li>
+            <li><a href="#定量数据-1">定量数据</a></li>
           </ol>
         </li>
+        <li><a href="#统计量描述">统计量描述</a>
+          <ol>
+            <li><a href="#集中趋势度量">集中趋势度量</a></li>
+            <li><a href="#离散程度度量">离散程度度量</a></li>
+          </ol>
+        </li>
+        <li><a href="#分布形态度量">分布形态度量</a>
+          <ol>
+            <li><a href="#偏度">偏度</a></li>
+            <li><a href="#峰度">峰度</a></li>
+          </ol>
+        </li>
+        <li><a href="#数据分布特征与应用">数据分布特征与应用</a>
+          <ol>
+            <li><a href="#分布类型与识别">分布类型与识别</a></li>
+            <li><a href="#统计表涉及规范">统计表涉及规范</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#随机和概率">随机和概率</a>
+      <ol>
+        <li><a href="#基本概念-1">基本概念</a></li>
+        <li><a href="#概率">概率</a>
+          <ol>
+            <li><a href="#古典概型">古典概型</a></li>
+            <li><a href="#复合事件">复合事件</a></li>
+            <li><a href="#条件概率">条件概率</a></li>
+            <li><a href="#全概率公式">全概率公式</a></li>
+            <li><a href="#贝叶斯公式">贝叶斯公式</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#随机变量及其分布">随机变量及其分布</a>
+      <ol>
+        <li><a href="#随机变量">随机变量</a></li>
+        <li><a href="#随机变量的分布">随机变量的分布</a>
+          <ol>
+            <li><a href="#离散型随机变量分布">离散型随机变量分布</a></li>
+            <li><a href="#连续型随机变量分布">连续型随机变量分布</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#假设检验">假设检验</a>
+      <ol>
+        <li><a href="#基本原理">基本原理</a>
+          <ol>
+            <li><a href="#基本思想">基本思想</a></li>
+          </ol>
+        </li>
+        <li><a href="#实施步骤">实施步骤</a></li>
+      </ol>
+    </li>
+    <li><a href="#参数估计">参数估计</a>
+      <ol>
+        <li><a href="#参数估计的方法">参数估计的方法</a>
+          <ol>
+            <li><a href="#点估计">点估计</a></li>
+            <li><a href="#区间估计">区间估计</a></li>
+            <li><a href="#贝叶斯估计">贝叶斯估计</a></li>
+            <li><a href="#对比">对比</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#方差分析">方差分析</a>
+      <ol>
+        <li><a href="#应用示例">应用示例</a></li>
+        <li><a href="#基本思路">基本思路</a>
+          <ol>
+            <li><a href="#定性分析">定性分析</a></li>
+            <li><a href="#定量分析">定量分析</a></li>
+            <li><a href="#单因素方差分析">单因素方差分析</a></li>
+            <li><a href="#双因素方差分析">双因素方差分析</a></li>
+          </ol>
+        </li>
+        <li><a href="#实施细节">实施细节</a>
+          <ol>
+            <li><a href="#前提条件">前提条件</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#回归分析">回归分析</a>
+      <ol>
+        <li><a href="#变量间的关系">变量间的关系</a>
+          <ol>
+            <li><a href="#函数关系">函数关系</a></li>
+            <li><a href="#相关关系">相关关系</a></li>
+            <li><a href="#拟合优度和显著性">拟合优度和显著性</a></li>
+            <li><a href="#残差的检验">残差的检验</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#时间序列分析">时间序列分析</a>
+      <ol>
+        <li><a href="#时间序列">时间序列</a></li>
+        <li><a href="#常见的时间序列模型">常见的时间序列模型</a></li>
       </ol>
     </li>
   </ol>
@@ -402,1693 +453,1577 @@
     <section class="article-content">
     
     
-    <p>[TOC]</p>
-<p>目标</p>
-<ul>
-<li>安装MySQL服务器和客户端程序</li>
-<li>认识安装过程中的文件和文件夹</li>
-<li>执行 MySQLserver 的初始化操作</li>
-<li>启动和停止MySQL</li>
-<li>升级到MySQL 8.0</li>
-</ul>
-<h2 id="安装mysql">安装MySQL
-</h2><h3 id="安装步骤">安装步骤
-</h3><ol>
-<li>确定你的平台是否受支持。
-<ul>
-<li>查看：https://www.mysql.com/support/supportedplatforms/database.html</li>
-</ul>
-</li>
-<li>选择一种发布版本。
-<ul>
-<li>预打包的二进制文件
-<ul>
-<li>原生格式，例如，适用于 Linux 的 RPM 包、适用于 OS X 的 PKG 包、适用于 Windows 的 MySQL 安装程序</li>
-<li>通用格式，例如，ZIP 归档文件或压缩的 tar 文件</li>
-</ul>
-</li>
-<li>源代码</li>
-</ul>
-</li>
-<li>下载该发布版本。</li>
-<li>安装该发布版本。</li>
-<li>执行任何所需的安装后配置。</li>
-</ol>
-<p>一般来说，应选择二进制发布版本。只有你想查看非常新的功能并测试新代码时，才选择源代码发布版本。</p>
-<h4 id="从下载的软件包安装-mysqlinstalling-mysql-from-downloaded-packages">从下载的软件包安装 MySQL（Installing MySQL from Downloaded Packages）
-</h4><ul>
-<li>
-<p>下载 MySQL Linux 软件包后，使用以下命令进行安装：</p>
-<ul>
-<li>
-<p>在 RPM 系统上：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">rpm -ivh packagename.rpm
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>在 APT 系统上：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">dpkg -i packagename.deb
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-</li>
-<li>
-<p>安装软件包时，必须识别并解决依赖关系。</p>
-<ul>
-<li>安装 MySQL 软件包前，先安装所有依赖项。
-<ul>
-<li>例如，MySQL 依赖于 <code>libaio</code> 库。若未安装该库，数据目录初始化及后续服务器启动步骤会失败。</li>
-</ul>
-</li>
-<li>按正确顺序安装 MySQL 软件包。
-<ul>
-<li>例如，安装 <code>client</code> 或 <code>server</code> 软件包前，先安装 <code>libs</code> 软件包。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="安装依赖项installing-dependencies">安装依赖项（Installing Dependencies）
-</h5><p>在可通过网络访问软件仓库或连接了文件系统的 RPM 机器上，你可以使用包管理器解决依赖问题。</p>
-<p>如果你在无法访问软件仓库的机器上安装，必须手动解决安装 MySQL 软件包时发现的所有未满足的依赖项。为此，你需要搜索与你所安装的 Linux 系统适配的软件仓库，找到包含相关软件包的 RPM 或 DEB 文件。</p>
-<p><strong>注意</strong>：如需了解关于使用包管理器的信息，请参阅本课程后续的 “使用包管理器安装 MySQL（Installing MySQL by Using a Package Manager）” 部分。</p>
-<h3 id="linux-的-mysql-rpm-安装文件">Linux 的 MySQL RPM 安装文件
-</h3><h4 id="可用的-rpm-包available-rpms">可用的 RPM 包（Available RPMs）
-</h4><p>Oracle 提供两种类型的 MySQL RPM 包：</p>
-<ul>
-<li><strong>独立于发行版（Distribution-independent）</strong>：应能在所有支持 RPM 包且使用 glibc 2.12 的 Linux 版本上运行。</li>
-<li><strong>特定于发行版（Distribution-specific）</strong>：针对特定的 Linux 平台，例如 Oracle Linux 7。</li>
-</ul>
-<p>MySQL 的 RPM 安装通常会拆分为不同的软件包。你可以单独下载这些软件包，也可以将它们打包成一个归档文件下载。</p>
-<ul>
-<li><strong>Server</strong>：数据库服务器及相关工具</li>
-<li><strong>Common</strong>：服务器和客户端库的通用文件</li>
-<li><strong>Client</strong>：MySQL 客户端应用程序和工具</li>
-<li><strong>Devel</strong>：用于 MySQL 数据库客户端应用程序的开发头文件和库</li>
-<li><strong>Embedded-compat</strong>：作为嵌入式库的 MySQL 服务器，与使用版本 18 库的应用程序兼容</li>
-<li><strong>Libs</strong>：MySQL 数据库客户端应用程序的共享库</li>
-<li><strong>Libs-compat</strong>：用于早期 MySQL 安装的共享兼容库</li>
-<li><strong>Test</strong>：MySQL 服务器的测试套件</li>
-<li><strong>Router</strong>：在 InnoDB 集群中提供透明路由的轻量级中间件</li>
-<li><strong>Backup</strong>：MySQL 企业级备份（仅商业版本）</li>
-</ul>
-<p><strong>对于标准安装，必须至少安装 <code>common</code>、<code>server</code> 和 <code>client</code> 软件包</strong>。</p>
-<h4 id="mysql-rpm-安装流程mysql-rpm-installation-process">MySQL RPM 安装流程（MySQL RPM Installation Process）
-</h4><ul>
-<li>
-<p>RPM 安装会执行以下任务：</p>
-<ul>
-<li>将 RPM 文件提取到其默认位置。</li>
-<li>注册 SysV 初始化脚本或 systemd 启动脚本。</li>
-<li>在操作系统中创建<code>mysql</code>用户和用户组。
-<ul>
-<li>MySQL 服务器进程以 <code>mysql</code> 用户身份运行。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>首次使用</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">service start mysqld
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>或</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">systemctl start mysqld
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>启动服务时，MySQL 会：</p>
-<ul>
-<li>创建数据目录和默认的<code>my.cnf</code>文件。
-<ul>
-<li>这些文件归 <code>mysql</code> 用户和用户组所有。</li>
-</ul>
-</li>
-<li>创建默认的 <code>root@localhost</code> 账户。</li>
-<li>为<code>root</code>账户设置随机临时密码，并将该密码写入错误日志文件（<code>/var/log/mysqld.log</code>）。
-<ul>
-<li>使用 MySQL 前，必须修改该密码。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="mysql-文件位置mysql-file-locations">MySQL 文件位置（MySQL File Locations）
-</h5><p>RPM 安装程序会将 <code>basedir</code>（基础目录 ）设置为 <code>/usr</code>，且未提供将 MySQL 安装到文件系统其他位置的选项。如果你想在同一系统上安装多个版本的 MySQL，这可能会引发问题。</p>
-<p>若要安装到其他位置，请使用通用二进制包。注意，RPM 安装程序还会设置 <code>mysql</code> 用户和用户组、Linux 服务及其他配置，而这些在通过通用二进制包安装时必须手动完成。</p>
-<h5 id="oracle-rpm-与非-oracle-rpmoracle-rpms-and-non-oracle-rpms">Oracle RPM 与非 Oracle RPM（Oracle RPMs and Non-Oracle RPMs）
-</h5><p>一些 Linux 发行版会提供它们自己构建的 MySQL RPM 包。本幻灯片中的步骤反映的是 Oracle RPM 包的安装流程。由于这种行为是内置于 RPM 包的，其他发行版的安装流程可能会有所不同。</p>
-<h5 id="启动-mysql-服务starting-the-mysql-service">启动 MySQL 服务（Starting the MySQL Service）
-</h5><p>MySQL 服务不会自动启动。在使用 MySQL 前，你必须自行启动服务：</p>
-<ul>
-<li><code>service mysqld start</code></li>
-<li>在运行 systemd 的 Linux 发行版上，使用 <code>systemctl start mysqld</code></li>
-</ul>
-<p>在运行 systemd 的 Linux 版本中，<code>service</code> 命令会映射到等效的 <code>systemctl</code> 命令</p>
-<h4 id="mysql-deb-安装mysql-deb-installation">MySQL DEB 安装（MySQL DEB Installation）
-</h4><ul>
-<li>
-<p>DEB 软件包适用于 APT Linux 系统，可单独下载或打包下载。</p>
-</li>
-<li>
-<p>若要进行标准安装，请按指定顺序安装以下软件包。</p>
+    <h2 id="前言">前言
+</h2><p><strong>从原始数据中抽取出有价值信息</strong>的这个过程我们就称之为<strong>数据分析</strong>，它是数据科学的重要组成部分</p>
+<p>需要掌握技能：</p>
 <ol>
-<li>
-<p>数据库通用文件包</p>
+<li>数据思维
+<ul>
+<li>统计思维</li>
+<li>分析方法</li>
+<li>分析模型</li>
+<li>业务知识</li>
+<li>挖掘算法</li>
+</ul>
 </li>
-<li>
-<p>客户端包</p>
+<li>分析工具
+<ul>
+<li>Excel</li>
+<li>SQL</li>
+<li>Python</li>
+<li>BI</li>
+</ul>
 </li>
-<li>
-<p>客户端元包</p>
-</li>
-<li>
-<p>服务器包</p>
-</li>
-<li>
-<p>服务器元包</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo dpkg -i mysql-<span class="o">({</span>common,community-client,client,community-server,server<span class="o">})</span>_*.deb
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
 </ol>
-</li>
-<li>
-<p>安装服务器包时，<code>dpkg</code>会提供一个配置界面：</p>
+<p>工作流程：结合业务完成<strong>监控数据</strong>、<strong>发现异常</strong>、<strong>深挖原因</strong>、<strong>探索趋势</strong>等</p>
+<p>资深的数据分析师还要参与指标体系的建设和维护，需要跨部门参与产品的迭代优化、埋点和算法的设计和落地、各种运营数据的复盘等</p>
+<p>工具只是达成目标的手段，<strong>数据思维才是最硬核的东西</strong>，从实际业务问题出发到最终<strong>发现数据中的商业价值</strong>是终极目标</p>
+<h2 id="关于统计">关于统计
+</h2><h3 id="概述">概述
+</h3><p><strong>从数学角度研究不确定性，寻找随机性背后规律</strong>的人是赌徒而不是数学家</p>
+<p><strong>大数定理</strong></p>
 <ul>
-<li>为 <code>root</code> 账户选择密码。</li>
-<li>指明是否要安装测试数据库。</li>
+<li><strong>在一个随机事件中，随着试验次数的增加，事件发生的频率越趋近于一个稳定值</strong></li>
 </ul>
-</li>
+<p><strong>统计学</strong></p>
+<ul>
+<li><strong>收集、处理、分析、解释数据并从中得出结论的科学</strong></li>
 </ul>
-<h5 id="deb-安装前步骤deb-pre-installation-step">DEB 安装前步骤（DEB Pre-installation Step）
-</h5><p>MySQL 8.0 不允许在服务器初始化后修改 <code>lower_case_table_names</code> 变量。DEB 安装会在安装过程中自动初始化 MySQL 服务器。如果你想启用 <code>lower_case_table_names</code> 设置，需要在开始安装前使用 <code>debconf-set-selection</code> 工具配置该选项。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">shell&gt; sudo debconf-set-selections <span class="o">&lt;&lt;&lt;</span> <span class="s2">&#34;mysql-server mysql-server/lowercase-table-names select Enabled&#34;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h5 id="deb-与-rpm-软件包差异deb-and-rpm-package-differences">DEB 与 RPM 软件包：差异（DEB and RPM Package: Differences）
-</h5><p>DEB 软件包的组件组织方式与 RPM 软件包类似。差异包括以下几点：</p>
+<p>统计学分类</p>
 <ul>
-<li>没有 DEB 源码包。你可以直接通过 <code>.tar.gz</code> 文件获取源代码。</li>
-<li>没有等效的 <code>libs-compat</code> 包。该包的用途特定于基于 RPM 的发行版。</li>
-<li><code>dpkg</code> 安装过程默认是交互式的。安装软件包时，它会显示一个基于 Curses 的界面，用于设置幻灯片中所示的选项。使用 <code>dpkg-preconfigure</code> 命令在安装前设置这些配置选项时，也会看到该界面，此时安装界面不会显示。如果你将 <code>DEBIAN_FRONTEND</code> 环境变量设置为 <code>noninteractive</code>，则不会显示 Curses 界面，且 <code>root</code> 密码会保持为空。</li>
-</ul>
-<h4 id="特定于-linux-发行版的软件仓库linux-distributionspecific-repositories">特定于 Linux 发行版的软件仓库（Linux Distribution–Specific Repositories）
-</h4><p>许多 Linux 发行版会维护它们自己的软件包仓库。</p>
+<li>描述统计
 <ul>
-<li>托管在网络上或本地文件系统中。</li>
-<li>可通过包管理器进行访问：
-<ul>
-<li>仓库网址在每台主机的包管理器配置中指定。</li>
-<li>你也可以手动下载单个软件包。</li>
+<li>描绘和总结观察量基本情况的统计方法</li>
+<li>集中趋势、离散程度、分布规律、相关性</li>
 </ul>
 </li>
-<li>包含软件包及其依赖项。</li>
-<li>可通过额外的软件仓库补充，这些额外仓库包含标准软件包仓库中没有的软件：
+<li>推断统计
 <ul>
-<li>你可以将这些额外的软件仓库添加到每台主机的包管理器配置中。</li>
+<li>如何根据样本数据特征推断总体数据特征</li>
+<li>在无法获得全量数据的情况下，推断统计就是最为行之有效的方法</li>
 </ul>
 </li>
-<li>示例：<code>http://public-yum.oracle.com/</code> 包含 Oracle Linux 软件包。</li>
-</ul>
-<h5 id="本地软件仓库local-repositories">本地软件仓库（Local Repositories）
-</h5><p>当你从 CD 或 DVD 安装 Linux 时，安装介质可能包含一个精选软件包的仓库，安装程序会在安装过程中使用该仓库。你可以从这样的仓库安装软件包，而无需连接到互联网。</p>
-<h4 id="使用包管理器安装-mysqlinstalling-mysql-by-using-a-package-manager">使用包管理器安装 MySQL（Installing MySQL by Using a Package Manager）
-</h4><ul>
-<li>
-<p>在基于 RPM 的系统（包括 Oracle Linux、Red Hat、Fedora 和 CentOS ）上，使用 <code>yum install</code>：</p>
+<li>贝叶斯统计
 <ul>
-<li>
-<p>示例：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">yum install mysql-community-server
-</span></span><span class="line"><span class="cl">yum install mysql-workbench
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<li>基础是贝叶斯定理</li>
+<li>简单的说就是在获得数据（证据）之后，先前凭借经验和直觉得出的先验概率是可以改变的</li>
+<li>重新计算后的概率我们称之为后验概率</li>
 </ul>
 </li>
-<li>
-<p>在基于 APT 的系统（包括 Ubuntu 和 Debian ）上，使用 <code>apt-get install</code>：</p>
+</ul>
+<h3 id="基本概念">基本概念
+</h3><h4 id="总体和样本">总体和样本
+</h4><h5 id="总体population">总体(population)
+</h5><ul>
+<li>无限总体
 <ul>
-<li>
-<p>示例：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">apt-get install mysql-community-server
-</span></span><span class="line"><span class="cl">apt-get install mysql-workbench
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<li>每抽取一个单位并不影响下一次的抽样结果</li>
+<li>因此每次抽取可以看做是独立的</li>
 </ul>
 </li>
-<li>
-<p>安装 <code>mysql-community-server</code> 软件包时，也会安装服务器所需组件的软件包。</p>
+<li>有限总体
+<ul>
+<li>每抽取一个样本后，总体的对象数量就会减少一个</li>
+<li>前一次抽样会对本次抽样产生影响，每次抽取并不是独立的</li>
+</ul>
 </li>
 </ul>
-<h5 id="依赖项dependencies">依赖项（Dependencies）
-</h5><p>如果包管理器能够通过网络或从文件系统访问其软件仓库，它们会自动检测并安装依赖项。例如，<code>mysql-community-server</code> 软件包依赖于多个其他软件包，包括：</p>
-<ul>
-<li><code>mysql-community-client</code>：客户端软件</li>
-<li><code>mysql-community-common</code>：供客户端和服务器使用的通用错误消息和字符集</li>
-<li><code>mysql-community-libs</code>：共享客户端库</li>
+<h5 id="样本sample">样本(sample)
+</h5><ul>
+<li>总体中抽取一部分元素构成的集合</li>
+<li>够成样本的元素的数量称为样本容量</li>
 </ul>
-<p>当你安装 <code>mysql-community-server</code> 时，如果系统上不存在这些依赖项，包管理器会找到并安装这些软件包及其可能有的依赖项。</p>
-<h5 id="软件仓库维护者repository-maintainers">软件仓库维护者（Repository Maintainers）
-</h5><p>在某些发行版中，<code>mysql-server</code> 是一个虚拟软件包，其本身不包含任何软件，而是将特定版本的 <code>mysql-community-server</code> 或其他软件作为依赖项。当你安装这样的虚拟软件包时，包管理器会安装其所有依赖项，包括定义版本的 MySQL 软件包。</p>
-<p>由于此软件包通常由发行版维护者而非 Oracle 维护，它无法反映 MySQL 软件的最新变化。</p>
-<h5 id="添加-yum-软件仓库adding-a-yum-repository">添加 Yum 软件仓库（Adding a Yum Repository）
+<h4 id="参数和统计量">参数和统计量
+</h4><h5 id="参数parameter">参数（parameter)
+</h5><ul>
+<li>描述总体特征的概括性数字度量
+<ul>
+<li>例如：总体均值通常用 μ 表示，总体标准差通常用 σ 表示</li>
+</ul>
+</li>
+<li>无法获得全体对象的情况下，总体参数通常是一个<strong>未知的常量</strong>
+<ul>
+<li>如此才需要抽样，通过样本计算出统计量</li>
+<li>来估计总体参数的值</li>
+</ul>
+</li>
+</ul>
+<h5 id="统计量statistic">统计量（statistic）
+</h5><ul>
+<li>描述样本特征的概括性数字度量</li>
+<li>根据样本数据计算得出</li>
+<li>由于抽样是随机的，因此统计量的值并不确定</li>
+<li>它是一个以样本作为其自变量的函数，其本质就是一个<strong>随机变量</strong></li>
+<li>例如：样本均值通常用 $\bar{x}$  表示，样本标准差通常用 s</li>
+</ul>
+<h2 id="解读数据">解读数据
+</h2><p>统计的本质</p>
+<ul>
+<li>从原始的数据中找出重要的有用的信息</li>
+</ul>
+<p>指标</p>
+<ul>
+<li>具备业务意义的统计数据</li>
+</ul>
+<p>描述性统计</p>
+<ul>
+<li>运用分类、制表、绘图、概括性计算等操作来描述数据的各项特征</li>
+<li>通常是针对所有数据而不是部分数据</li>
+<li>主要包括数据的频数分析、集中趋势分析、离散程度分析以及一些基本统计图表的绘制</li>
+</ul>
+<h3 id="数据类型与变量">数据类型与变量
+</h3><h4 id="定性数据">定性数据
+</h4><p>反映属性特征，无数值含义</p>
+<ol>
+<li>分类变量：无序类别，仅用于区分事物，不可数学运算 如 性别</li>
+<li>顺序变量：有序类别，可比较大小但无法计算差异 如教育程度</li>
+</ol>
+<p>图表展示：饼图（比例分别）、条形图（类别频数）、环形图（多变量结构比较）</p>
+<h4 id="定量数据">定量数据
+</h4><p>数值型数据，具有明确的数学含义，可计算绝对差和相对差。（如 身高、收入）</p>
+<ol>
+<li>连续型</li>
+<li>离散型</li>
+</ol>
+<p>通过表格能更清晰区分二者的核心差异：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>对比维度</th>
+          <th>离散型数据</th>
+          <th>连续型数据</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>取值特征</td>
+          <td>有限 / 可列的孤立值，有间隔</td>
+          <td>区间内任意值，无间隔、可无限细分</td>
+      </tr>
+      <tr>
+          <td>数据来源</td>
+          <td>计数（数出来）</td>
+          <td>测量（测出来）</td>
+      </tr>
+      <tr>
+          <td>能否取小数</td>
+          <td>通常不能（除非是比例换算，如 “人均 2.3 个”）</td>
+          <td>能（且可无限细分，如 170.123cm）</td>
+      </tr>
+      <tr>
+          <td>典型例子</td>
+          <td>人数、订单数、错题数</td>
+          <td>身高、体重、温度、分数</td>
+      </tr>
+      <tr>
+          <td>描述统计核心指标</td>
+          <td>频数、频率、中位数、众数</td>
+          <td>均值、标准差、方差、四分位数间距</td>
+      </tr>
+      <tr>
+          <td>对应分布</td>
+          <td>二项分布、泊松分布等</td>
+          <td>正态分布、t 分布、F 分布等</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>图表展示：直方图（分布形态）、折线图（趋势）、散点图（变量关系）</p>
+<h3 id="数据来源与收集方法">数据来源与收集方法
+</h3><h4 id="数据来源">数据来源
+</h4><h5 id="直接来源">直接来源
+</h5><ul>
+<li>原始数据，通过统计调查（观测数据）或实验法(实验数据)获取</li>
+</ul>
+<h5 id="间接来源">间接来源
+</h5><ul>
+<li>次级数据，如公开出版物（年鉴、数据库），要<strong>注意适用性与时效性</strong></li>
+</ul>
+<h4 id="收集方法">收集方法
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>方法</th>
+          <th>特点</th>
+          <th>适用场景</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>普查</td>
+          <td>全面调查，耗时耗力但数据详尽</td>
+          <td>国情国力调查、重大基础数据收集</td>
+      </tr>
+      <tr>
+          <td>抽样调查</td>
+          <td>按随机原则抽取样本，用样本推断总体（抽样误差可控）</td>
+          <td>大规模社会调查</td>
+      </tr>
+      <tr>
+          <td>重点调查</td>
+          <td>选取关键单位</td>
+          <td>快速掌握总体基本情况</td>
+      </tr>
+      <tr>
+          <td>典型调查</td>
+          <td>主管选择代表性单位</td>
+          <td>深入案例分析，需结合其他方法验证</td>
+      </tr>
+      <tr>
+          <td>统计报表</td>
+          <td>按统一格式定期上报</td>
+          <td>常规数据监测</td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="抽样方法">抽样方法
+</h4><h5 id="概率抽样">概率抽样
+</h5><ul>
+<li>简单随机抽样（等概率）</li>
+<li>分层抽样 （按层分组）</li>
+<li>整群抽样（按群组抽取）</li>
+<li>系统抽样（等距抽样）</li>
+<li>多阶段抽样</li>
+</ul>
+<h5 id="非概率抽样">非概率抽样
 </h5><ul>
 <li>
-<p>从 <code>http://dev.mysql.com/downloads/repo/yum/</code> 下载 Yum 软件仓库的 RPM 文件。</p>
+<p><strong>随意抽样、志愿者抽样、判断抽样、重点调查、典型调查</strong></p>
+</li>
+<li>
+<p>方便抽样（就近选取）</p>
+</li>
+<li>
+<p>配额抽样（预设比例）</p>
+</li>
+<li>
+<p>适用于 探索性 研究</p>
+</li>
+</ul>
+<h5 id="抽样误差-vs-非抽样误差">抽样误差 vs 非抽样误差
+</h5><p>抽样误差</p>
 <ul>
-<li>为你的发行版选择正确的 RPM 文件。</li>
-<li>示例：适用于 Red Hat Enterprise Linux 7 / Oracle Linux 7（架构独立）的 RPM 包名为 <code>mysql80-community-release-el7-3.noarch.rpm</code>。</li>
+<li>由随机性引起，可通过增大样本量降低</li>
+</ul>
+<p>非抽样误差</p>
+<ul>
+<li>无回答偏差</li>
+<li>测量错误</li>
+<li>需优化涉及避免</li>
+</ul>
+<h5 id="数据分组原则">数据分组原则
+</h5><ul>
+<li>定量数据分组遵循 &ldquo;上限不在内&rdquo;</li>
+<li>组距 需区分总体性质差异</li>
+</ul>
+<h2 id="数据描述">数据描述
+</h2><h3 id="数据可视化展示">数据可视化展示
+</h3><h4 id="定性数据-1">定性数据
+</h4><h5 id="频数分布表">频数分布表
+</h5><ul>
+<li>列出所有类别并统计频数（次数）</li>
+<li>确保 穷尽性 （所有类别覆盖）和 互斥性 （类别不重叠）</li>
+</ul>
+<h5 id="饼图">饼图
+</h5><ul>
+<li>展示各类别占比</li>
+</ul>
+<h5 id="条形图">条形图
+</h5><ul>
+<li>比较类别频数高低</li>
+<li>纵轴为频数</li>
+<li>横轴为类别</li>
+</ul>
+<h5 id="环形图">环形图
+</h5><ul>
+<li>比较多个变量的结构差异（如不同年费消费支出构成）</li>
+</ul>
+<h4 id="定量数据-1">定量数据
+</h4><h5 id="频数分布表-1">频数分布表
+</h5><ul>
+<li>
+<p>等距分组： 数据均匀分布时</p>
+</li>
+<li>
+<p>不等距分组：数据差异大时</p>
+</li>
+<li>
+<p>组数通常 5~15组 遵循不重不漏的原则</p>
+</li>
+<li>
+<p>相邻两组上下限重叠</p>
+<ul>
+<li>上限不在内</li>
 </ul>
 </li>
 <li>
-<p>使用 <code>yum localinstall</code> 命令安装该文件，例如：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">yum localinstall mysql80-community-release-el7-3.noarch.rpm
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>上述命令会将 MySQL Yum 软件仓库添加到主机的 Yum 配置中。</li>
-</ul>
-</li>
-<li>
-<p>启用或禁用特定版本。</p>
+<p>组距确定</p>
 <ul>
-<li>MySQL 8.0 默认启用。其他版本默认禁用。</li>
-</ul>
-</li>
-<li>
-<p>运行 <code>yum install packagename</code> 从新仓库安装软件包。</p>
-</li>
-</ul>
-<h5 id="软件仓库配置repository-configuration">软件仓库配置（Repository Configuration）
-</h5><p>安装仓库 RPM 文件时，它会在 <code>/etc/yum.repos.d/</code> 中创建两个文件：</p>
-<ul>
-<li><code>mysql-community.repo</code>：包含 MySQL 社区版的仓库元数据。</li>
-<li><code>mysql-community-source.repo</code>：包含 MySQL 源代码的仓库元数据。</li>
-</ul>
-<p>默认配置启用 MySQL 最新的通用可用（GA）版本以及 MySQL 工具。之前的 GA 版本会被禁用，尚未通用可用的开发版本也会被禁用。</p>
-<h5 id="配置-yum-仓库版本">配置 Yum 仓库版本
-</h5><p>通过编辑 <code>/etc/yum.repos.d/mysql-community-repo</code> 文件，启用或禁用特定版本：</p>
-<ul>
-<li>默认情况下，最新的正式发布（GA）版本是启用的。</li>
-<li>以下摘录显示 MySQL 5.7 仓库处于禁用状态：</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># 启用以使用 MySQL 5.7
-</span></span><span class="line"><span class="cl">[mysql57-community]
-</span></span><span class="line"><span class="cl">name=MySQL 5.7 Community Server
-</span></span><span class="line"><span class="cl">baseurl=http://repo.mysql.com/yum/mysql-5.7-community/el/7/\$basearch/
-</span></span><span class="line"><span class="cl">enabled=0
-</span></span><span class="line"><span class="cl">gpgcheck=1
-</span></span><span class="line"><span class="cl">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>将 <code>enabled</code> 的值改为 <code>enabled=1</code>，以启用 mysql57-community 仓库。</p>
-<ul>
-<li>要启用 MySQL 5.7 仓库，修改 <code>enabled</code> 设置的值，使其为 <code>enabled=1</code> 。</li>
-<li>使用相同的方法启用开发版本。</li>
-</ul>
-<h5 id="从仓库安装-mysql">从仓库安装 MySQL
-</h5><p>当你安装仓库 RPM 文件时，<code>yum install</code> 命令会自动从最合适的仓库获取软件包。官方 MySQL 仓库通常比发行版自带仓库有更新的版本，因此 <code>yum</code> 会优先安装官方软件包，因为它们的仓库中有最新版本。</p>
-<p>类似地，如果你在安装新仓库后执行 <code>yum upgrade</code> 命令来升级机器上的所有软件包，软件包管理器会自动升级之前从其自带仓库安装的任何旧版本的 MySQL，并将其替换为新的官方版本。</p>
-<h4 id="添加-apt-仓库">添加 APT 仓库
-</h4><ol>
-<li>从http://dev.mysql.com/downloads/repo/apt/ 下载 APT 仓库的 DEB 文件。
-<ul>
-<li>支持的发行版：
-<ul>
-<li>Debian 版本 9</li>
-<li>Ubuntu LTS 版本 16.04、18.04 和 18.10</li>
+<li>组中值计算 （下限+上限）/ 2 ，开口组用相邻组距推算</li>
 </ul>
 </li>
 </ul>
-</li>
-<li>使用 <code>dpkg</code> 命令安装该文件：</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">dpkg -i mysql-apt-config_0.8.12-1_all.deb
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>上述命令会将 MySQL APT 仓库添加到主机的 APT 配置中。</p>
-<ol start="3">
-<li>配置仓库版本。</li>
-<li>运行 <code>apt-get update</code> 来刷新仓库元数据。</li>
-<li>运行 <code>apt-get install packagename</code> 从新仓库安装软件包。</li>
-</ol>
-<h5 id="仓库配置">仓库配置
-</h5><p>当你安装 <code>mysql-apt-config</code> 软件包时，<code>dpkg</code> 会打开一个交互式窗口，你可以从中选择仓库版本。将在后续展示展示。</p>
-<p>要使用此界面重新配置仓库，你可以重新安装 <code>mysql-apt-config</code> 软件包，或者使用以下命令重新配置：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">dpkg-reconfigure mysql-apt-config
-</span></span></code></pre></td></tr></table>
-</div>
-</div><img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211709555.png" alt="image-20250721170936342" style="zoom:67%;" />
-<h5 id="dpkg-配置界面">dpkg 配置界面
-</h5><p>该界面的第一页显示了仓库配置中可用的产品：</p>
-<ul>
-<li>MySQL 服务器和集群</li>
-<li>MySQL 工具和连接器</li>
-<li>MySQL 预览包</li>
+<h5 id="直方图">直方图
+</h5><ul>
+<li>展示连续数据分布，横轴为组限，纵轴为频数</li>
 </ul>
-<p>它还提供了一个 “确定（OK）” 选项，用于保存更改并退出该界面。</p>
-<h4 id="手动配置-apt-仓库">手动配置 APT 仓库
-</h4><p>通过编辑 <code>/etc/apt/sources.list.d/mysql.list</code> 文件，启用或禁用特定仓库：</p>
-<ul>
-<li>执行上一张幻灯片中的步骤后，会得到以下配置：</li>
+<h5 id="折线图">折线图
+</h5><ul>
+<li>描述趋势变化</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">### 此文件由以下条目自动配置 ###
-</span></span><span class="line"><span class="cl"># 你可以修改下面的条目，但其他修改可能会丢失。
-</span></span><span class="line"><span class="cl"># 以 root 身份使用命令 &#39;dpkg-reconfigure mysql-apt-config&#39; 进行修改。
-</span></span><span class="line"><span class="cl">deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-apt-config
-</span></span><span class="line"><span class="cl">deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-8.0
-</span></span><span class="line"><span class="cl">#deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-tools-preview
-</span></span><span class="line"><span class="cl">deb-src http://repo.mysql.com/apt/ubuntu/ bionic mysql-8.0
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>以 <code>#</code> 符号开头注释的行，表示对应的仓库已禁用 。</p>
-<ul>
-<li>要启用或禁用特定产品仓库，分别取消注释或添加注释其对应的行即可。</li>
+<h5 id="箱线图">箱线图
+</h5><ul>
+<li>基于五数概括（最小值、Q1、中位数、Q3、最大值）</li>
+<li>识别异常值（超出Q3 + 1.5 IQR 或 Q1 - 1.5 IQR）</li>
 </ul>
-<p>如注释所示，如果重新安装或重新配置 <code>mysql-apt-config</code> 软件包，对 <code>mysql.list</code> 文件的手动修改不会保留；软件包配置界面会提示你进行想要的配置更改，然后重新写入该文件 。</p>
-<h3 id="windows中安装mysql">Windows中安装MySQL
-</h3><h4 id="在-windows-上安装-mysql">在 Windows 上安装 MySQL
-</h4><ul>
-<li><strong>MySQL 安装程序</strong>：
-<ul>
-<li>以 <code>.msi</code> 可执行文件形式发布</li>
-<li>引导你通过配置向导创建运行 MySQL 所需的文件夹和配置</li>
+<h5 id="茎叶图">茎叶图
+</h5><ul>
+<li>保留原始数据的原始展示分布形态</li>
 </ul>
-</li>
-<li><strong>免安装归档包</strong>：
-<ul>
-<li>以 <code>.zip</code> 文件形式发布</li>
-<li>必须解包并移动到所需的安装位置</li>
-<li>必须手动配置以创建运行 MySQL 所需的文件夹和配置</li>
-</ul>
-</li>
-</ul>
-<h5 id="包含的产品">包含的产品
-</h5><p>Windows 发行版包含 MySQL 数据库服务器，以及以下产品：</p>
-<ul>
-<li>MySQL Workbench（数据库设计建模工具 ）</li>
-<li>MySQL Notifier（状态通知工具 ）</li>
-<li>MySQL for Excel（Excel 集成插件 ）</li>
-<li>MySQL Enterprise Backup（仅商业版，企业级备份工具 ）</li>
-<li>MySQL for Visual Studio（Visual Studio 集成插件 ）</li>
-<li>MySQL Shell（交互式操作终端 ）</li>
-<li>MySQL Router（路由代理工具 ）</li>
-<li>MySQL Connectors（.Net/ Python / ODBC / Java / C++ 等语言连接器 ）</li>
-<li>示例、用例和文档</li>
-</ul>
-<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211721443.png" alt="image-20250721172150734" style="zoom:67%;" />
-<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211722122.png" alt="image-20250721172228987" style="zoom:67%;" />
-<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211722055.png" alt="image-20250721172247924" style="zoom:67%;" />
-<h4 id="在-windows-系统中安装-mysql-服务">在 Windows 系统中安装 MySQL 服务
-</h4><ul>
-<li>
-<p>使用 MySQL 安装程序：</p>
-<ul>
-<li>使用提供的服务名称，或选择其他名称。</li>
-</ul>
-</li>
-<li>
-<p>安装后通过命令行操作：</p>
-<ul>
-<li>
-<p>手动安装服务：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">mysqld.exe --install servicename --defaults-file=&#34;C:\my.ini&#34;
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>移除已安装的服务：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">mysqld.exe --remove servicename
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-</li>
-<li>
-<p>通过 “服务” 控制面板应用查看已安装的服务：</p>
-<ul>
-<li>
-<p>从命令行启动（服务面板）：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">services.msc
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-</li>
-<li>
-<p><strong>设置服务为自动或手动启动，并指定用于启动服务的 Windows 账户</strong>。</p>
-</li>
-</ul>
-<h5 id="windows-服务相关说明">Windows 服务相关说明
-</h5><p>每个 Windows 服务用于控制一个程序，实现程序的启动和停止。创建服务时，必须确保服务管理器能访问程序路径。你可能需要提供 <code>mysqld.exe</code> 可执行文件的完整路径。</p>
-<p><strong>示例</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">C:\mysql80\bin\mysqld.exe --install servicename ...
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>除了使用 <code>--install</code> 选项，你也可以用 Windows 的 <code>sc</code> 命令行程序将 MySQL 安装为 Windows 服务。</p>
-<p><strong>示例</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">sc create servicename start=auto DisplayName=MySQL binPath=C:\mysql80\bin\mysqld.exe
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>如果因 MySQL 安装路径包含空格（比如使用默认安装程序路径，包含 “MySQL Server 8.0” 这类文本 ），导致服务启动出现问题，可使用短路径名称，或在 <code>binPath</code> 参数两侧添加双引号来安装服务。</p>
-<h4 id="从源代码安装-mysql">从源代码安装 MySQL
-</h4><p>在以下情况时，从源代码构建 MySQL：</p>
-<ul>
-<li>配置内置选项
-<ul>
-<li>示例：
-<ul>
-<li>在生产服务器上，针对清晰明确的使用场景，禁用未使用的功能以优化性能</li>
-<li>启用额外的调试功能</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>在没有预编译二进制文件的平台上运行 MySQL</strong></li>
-<li><strong>向 MySQL 添加你自己的修改（或社区补丁 ）</strong></li>
-</ul>
-<h5 id="编译-mysql">编译 MySQL
-</h5><p>如果预编译发行版中缺少你需要的功能（比如完整的调试支持 ），可从源代码编译 MySQL。要打造运行时占用更少内存的服务器，你可能需要禁用不必要的特性。例如，你可能需要禁用可选的存储引擎，或者仅编译应用所需的字符集。</p>
-<p>编译 MySQL 的要求与编译一般 C++ 程序类似：</p>
-<ul>
-<li>CMake</li>
-<li>make</li>
-<li>GCC 5.3（Linux 系统 ）或其他符合 ANSI 标准的 C++ 编译器</li>
-</ul>
-<p>在 Oracle Linux 7 上，需启用软件集合（Software Collections ）来安装编译 MySQL 软件所需的工具。</p>
-<p>根据编译类型以及获取源代码的方式，还存在其他要求。</p>
-<p><strong>注意</strong>：如需详细了解从源代码安装 MySQL 的内容，请参阅 <a class="link" href="https://dev.mysql.com/doc/mysql/en/source-installation.html"  target="_blank" rel="noopener"
-    >https://dev.mysql.com/doc/mysql/en/source-installation.html</a> 。</p>
-<h4 id="从二进制归档文件安装-mysql">从二进制归档文件安装 MySQL
-</h4><p>若不通过包管理器安装，必须手动执行一些配置步骤。</p>
+<h3 id="统计量描述">统计量描述
+</h3><h4 id="集中趋势度量">集中趋势度量
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>指标</th>
+          <th>计算方式</th>
+          <th>适用数据类型</th>
+          <th>特点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>均值</td>
+          <td>所有数值之和 / 样本量</td>
+          <td>数值型数据</td>
+          <td>受极端值影响大，对称分布适用</td>
+      </tr>
+      <tr>
+          <td>中位数</td>
+          <td>数据排序后中间位置的值（n为偶数时取平均）</td>
+          <td>顺序数据、数值型数据</td>
+          <td>不受极端值影响，偏态分布首选</td>
+      </tr>
+      <tr>
+          <td>众数</td>
+          <td>出现频数最高的值</td>
+          <td>所有类型的数据</td>
+          <td>可有多峰，适用于分类数据</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>算术平均值的性质：</p>
 <ol>
-<li>创建 <code>mysql</code> 用户和用户组。</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># groupadd mysql
-</span></span><span class="line"><span class="cl"># useradd -r -g mysql -s /bin/false mysql
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol start="2">
-<li>以 <code>mysql</code> 用户身份登录时，将归档文件解压到合适的目录。或者，在解压后，更改已解压归档文件的所属权为 <code>mysql</code>。</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># mkdir /usr/local/mysql-8.0.x/
-</span></span><span class="line"><span class="cl"># chown mysql:mysql /usr/local/mysql-8.0.x/
-</span></span><span class="line"><span class="cl"># cd /usr/local/mysql-8.0.x/
-</span></span><span class="line"><span class="cl"># tar xf ~/mysql-8.0.x-linux-glibc2.12-x86_64.tar.gz
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h5 id="mysql-用户">mysql 用户
-</h5><p>你可以使用不同于 <code>mysql</code> 的操作系统用户名和用户组名。为简单起见，这些说明遵循与安装包中相同的约定，安装包在安装过程中会创建 <code>mysql</code> 用户和用户组。</p>
-<p>如果你使用不同的用户名和用户组名，要确保 MySQL 服务器进程以该用户名运行，且该用户对 MySQL 数据文件、日志文件和 PID 文件拥有所属权。</p>
-<p>尽管可以以 <code>root</code> 用户身份运行 <code>mysqld</code> 进程，但不建议这样做。与其他操作系统服务一样，MySQL 可执行用户授权的操作。如果此类服务（或与之通信的应用程序 ）遭到破坏，攻击者会受到该用户所受限制的约束。</p>
-<h5 id="安装目录">安装目录
-</h5><p>可以将归档文件解压到任何你具有写入权限的目录。MySQL 服务器使用 <code>basedir</code> 选项来确定安装目录的位置。</p>
-<ol start="3">
-<li>创建初始配置文件</li>
-</ol>
+<li>离均差（变量的每个观测值与均值的差异）之和等于0</li>
+<li>离均差平方和最小
 <ul>
-<li>将 <code>my-default.cnf</code> 复制到 <code>/etc/my.cnf</code>。</li>
-<li>编辑 <code>datadir</code> 配置项，使其指向数据目录。</li>
-<li>编辑 <code>basedir</code> 配置项，使其指向安装目录。</li>
-<li>编辑其他所需配置：
+<li>几何平均值
 <ul>
-<li>日志文件设置</li>
-<li>TCP 端口</li>
+<li>计算不同渠道的平均转化率、不同客群的平均留存率、不同品类的平均付费率</li>
+<li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508200919567.png" alt="image-20250820091923401" style="zoom:67%;" />
+</li>
+<li>Excel中计算公式 <code>GEOMEAN</code></li>
+</ul>
+</li>
+<li>调和平均值
+<ul>
+<li>处理速率或比率问题，平均速度、平均工作时间、单位成本，机器学习中的 F1 评分，准确率和召回的调和平均数</li>
+<li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508200920010.png" alt="image-20250820092045938" style="zoom:67%;" />
+</li>
+<li>Excel中计算公式 <code>HARMEAN</code></li>
 </ul>
 </li>
 </ul>
-<ol start="4">
-<li>初始化数据目录并记录生成的临时密码</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># bin/mysqld --initialize --user=mysql  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol start="5">
-<li>启动 MySQL 服务器</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># bin/mysqld_safe --user=mysql &amp;  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol start="6">
-<li>使用临时密码连接到 MySQL 服务器</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># mysql -u root -p  
-</span></span><span class="line"><span class="cl">Enter password: （输入随机生成的密码 ）  
-</span></span><span class="line"><span class="cl">...  
-</span></span><span class="line"><span class="cl">mysql&gt;  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol start="7">
-<li>修改 root 用户密码</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">mysql&gt; ALTER USER USER() IDENTIFIED BY &#39;new password&#39;;  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol start="8">
-<li>（可选 ）填充时区表</li>
-</ol>
-<ul>
-<li>示例：</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql -p  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h5 id="时区表说明">时区表说明
-</h5><p>当你创建新的数据库目录时，MySQL 会创建时区表，但不会填充数据。你可通过以下任一方式填充：</p>
-<ul>
-<li>执行 <code>mysql_tzinfo_to_sql</code> 工具，基于系统时区数据库文件生成 <code>INSERT</code> 语句。若系统有 <code>zoneinfo</code> 文件（让 MySQL 与时区相关系统工具保持一致 ），选此方式。</li>
-<li>从 <a class="link" href="http://dev.mysql.com/downloads/timezones.html"  target="_blank" rel="noopener"
-    >http://dev.mysql.com/downloads/timezones.html</a> 下载包含 <code>INSERT</code> 语句的脚本。若系统本身没有时区信息，选此方式。</li>
-</ul>
-<p>MySQL 利用时区信息处理时区敏感函数和数据类型（如 <code>NOW()</code>、<code>TIMESTAMP</code> ），以及计算特殊时间（如夏令时转换时出现的非法日期和时间 ）。</p>
-<h3 id="使用-docker-部署-mysql-服务器">使用 Docker 部署 MySQL 服务器
-</h3><p>你需要先在主机上安装 Docker 引擎和客户端。</p>
-<ol>
-<li>
-<p>下载 MySQL 服务器 Docker 镜像</p>
-<ul>
-<li><strong>使用 MySQL 社区版镜像</strong>：登录到 Docker Hub，使用 <code>docker</code> 命令拉取镜像：</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># docker pull mysql/mysql-server
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li><strong>使用 MySQL 企业版镜像</strong>：登录到 My Oracle Support，下载 MySQL 商业服务器 Docker 镜像；使用 <code>docker</code> 命令加载镜像：</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># docker load -i mysql-enterprise-server-version.tar
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p><strong>列出所有已下载的镜像</strong></p>
 </li>
 </ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># docker images
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol start="3">
-<li>创建 MySQL 服务器 Docker 容器</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># docker run --name=mysql1 -d mysql/mysql-server  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol start="4">
-<li>查看 MySQL 服务器日志</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># docker logs mysql1  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li><strong>提取生成的临时密码</strong>：</li>
+<h4 id="离散程度度量">离散程度度量
+</h4><p>衡量数据的&quot;波动范围&quot;</p>
+<h5 id="极差">极差
+</h5><ul>
+<li>最大值-最小值</li>
+<li>易受异常值影响</li>
+<li>极差越大 离散程度越大</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># docker logs mysql1 2&gt;&amp;1 | grep GENERATED  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol start="5">
-<li>从容器内部连接到 MySQL 服务器</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl"># docker exec -it mysql1 mysql -uroot -p  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>输入临时密码</li>
-<li>修改 root 用户密码：</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">mysql&gt; ALTER USER USER() IDENTIFIED BY &#39;new password&#39;;  
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>运行命令</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run --name<span class="o">=</span>container_name -d image_name:tag
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="安装文件及路径">安装文件及路径
-</h2><h3 id="linux-mysql-server-安装目录">linux MySQL Server 安装目录
-</h3><img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507231656155.png" alt="image-20250723165628953" style="zoom:80%;" />
-<h4 id="数据目录data-directory">数据目录（Data Directory）
-</h4><ul>
-<li><code>/var/lib/mysql</code> 是服务器存储数据库的位置。当你（或安装过程）运行 <code>mysqld --initialize</code> 时，会配置该目录。InnoDB 日志文件、回滚表空间和系统表空间都位于此目录中。它还包含每个数据库对应的子目录，其中包括 <code>mysql</code> 目录（该目录包含系统表，包括授权表 ）。MySQL 8.0 使用 InnoDB 存储引擎，将数据字典存储在 <code>mysql.ibd</code> 表空间中。</li>
-</ul>
-<h4 id="基础目录base-directory">基础目录（Base Directory）
-</h4><ul>
-<li><code>/usr/sbin</code> 包含主要的服务器可执行文件 <code>mysqld</code>。</li>
-<li><code>/usr/bin</code> 包含客户端程序和脚本，如 <code>mysql</code>、<code>my_print_defaults</code>、<code>mysqladmin</code>、<code>mysqlcheck</code> 和 <code>mysqlimport</code>。</li>
-</ul>
-<h4 id="其他目录other-directories">其他目录（Other Directories）
-</h4><ul>
-<li><code>/var/lib/mysql-files</code> 在 <code>secure_file_priv</code> 变量中配置，用于存储导入和导出的数据文件。</li>
-<li><code>/var/lib/mysql-keyring</code> 分配用于存储密钥环文件。</li>
-<li><code>/etc</code> 和 <code>/var/log</code> 是 Linux 系统存放配置文件和日志文件的标准目录。MySQL 服务器进程（<code>mysqld</code> ）会读取 <code>/etc/my.cnf</code> 文件。</li>
-<li>systemd 启动脚本存储在 systemd 的默认目录中。</li>
-</ul>
-<h3 id="windows-mysql-server-安装路径">Windows MySQL Server 安装路径
-</h3><img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507231659475.png" alt="image-20250723165943329" style="zoom:80%;" />
-<p>默认情况下，MySQL 安装在 <code>C:\Program Files\MySQL\MySQL Server [版本号]</code> 目录中。例如，安装程序会将 MySQL 8.0 放置在 <code>C:\Program Files\MySQL\MySQL Server 8.0</code> 目录。</p>
-<h4 id="program-files-目录">“Program Files” 目录
-</h4><p><code>bin\</code> 目录包含 MySQL 服务器和客户端程序。Windows 版 MySQL 发行包包含多个程序，可在 <code>bin</code> 目录中找到：</p>
+<h5 id="方差与标准差">方差与标准差
+</h5><ul>
+<li>方差
 <ul>
-<li><code>mysqld.exe</code>：服务器可执行文件</li>
-<li>客户端程序，如 <code>mysql.exe</code> 和 <code>mysqladmin.exe</code>（列于标题为 “命令行客户端程序” 的幻灯片中 ）</li>
+<li>各数值与均值离差平方的平均值</li>
+<li>方差越小，数据越稳定、波动越平滑、数据整体比较集中</li>
 </ul>
-<p>其他目录用于存放头文件、库文件和支持文件。</p>
-<h4 id="programdata-目录">“ProgramData” 目录
-</h4><p><code>Data\</code> 是服务器存储数据库和日志文件的位置。该目录已预先配置好，可直接使用。例如，此目录包含一个 <code>mysql</code> 子目录（包含授权表 ）。</p>
-<p><code>Uploads\</code> 在 <code>secure_file_priv</code> 变量中配置，用于存储导入和导出的数据文件。</p>
-<h4 id="配置文件">配置文件
-</h4><p><code>my.ini</code> 配置选项文件指定了安装目录的位置，以及其他可选设置。</p>
-<h3 id="mysql-programs">MySQL Programs
+</li>
+<li>标准差
+<ul>
+<li>方差的平方根</li>
+</ul>
+</li>
+</ul>
+<h5 id="四分位距-iqr">四分位距 IQR
+</h5><ul>
+<li>Q3~Q1, 反映中间 50% 数据的离散性</li>
+<li>如 IQR = 10 说明主体数据集中</li>
+<li>其大小反映了中位数对一组数据的代表程度</li>
+</ul>
+<h5 id="变异系数-cv">变异系数 CV
+</h5><ul>
+<li>
+<p>又称离散系数、变差系数</p>
+</li>
+<li>
+<p>一组数据离散程度的一种归一化量度</p>
+</li>
+<li>
+<p>变异系数只在平均值不为零时有意义，而且一般适用于平均值大于零的情况</p>
+</li>
+<li>
+<p>变异系数也被称为标准离差率或单位风险</p>
+</li>
+<li>
+<p>变异系数没有量纲，因此在比较两组量纲不同或均值不同的数据时，它比标准差更具参考性</p>
+</li>
+<li>
+<p>标准差 / 均值</p>
+<ul>
+<li>通过 “相对离散程度” 替代标准差（绝对离散程度）</li>
+<li>决了 “不同量纲、不同均值数据无法直接用标准差比较” 的问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="分布形态度量">分布形态度量
+</h3><h4 id="偏度">偏度
+</h4><ul>
+<li>偏度系数（SK）&lt; 0 , 左偏（负偏）：均值&lt;中位数，众数位于右侧</li>
+<li>偏度系数（SK）&gt; 0 , 右偏（正偏）：均值&gt;中位数，众数位于左侧</li>
+</ul>
+<h4 id="峰度">峰度
+</h4><ul>
+<li>
+<p>基于原始峰度</p>
+</li>
+<li>
+<p>峰度 &gt; 3：尖峰分布 极端值多</p>
+</li>
+<li>
+<p>峰度 &lt; 3：平峰分布 数据分散 如均匀分布</p>
+</li>
+<li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508191502037.png" alt="image-20250819150241656" style="zoom:67%;" />
+</li>
+<li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508191503651.png" alt="image-20250819150309562" style="zoom:67%;" />
+</li>
+<li>
+<p>实际应用中，更多用<strong>超额峰度</strong>（以 0 为基准）</p>
+<ul>
+<li>尖峰（极端值多）：超额峰度 \(> 0\)（或原始峰度 \(> 3\)）</li>
+<li>平峰（极端值少）：超额峰度 \(< 0\)（或原始峰度 \(< 3\)）</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据分布特征与应用">数据分布特征与应用
+</h3><h4 id="分布类型与识别">分布类型与识别
+</h4><h5 id="正态分布">正态分布
+</h5><ul>
+<li>对称钟形曲线</li>
+<li>均值=中位数=众数</li>
+</ul>
+<h5 id="偏态分布">偏态分布
+</h5><ul>
+<li>左偏：数据集中在右侧，左侧拖尾，如 疾病发病年龄</li>
+<li>右偏：数据集中在左侧，右侧拖尾，如 收入分布</li>
+</ul>
+<h5 id="检验方法">检验方法
+</h5><p>Q-Q图</p>
+<ul>
+<li>散点是否沿直线分布</li>
+</ul>
+<p>Shapiro-Wilk检验</p>
+<ul>
+<li>小样本 【n &lt; 50（或 n &lt; 30）】</li>
+<li>p&gt;0.05 视为正态</li>
+</ul>
+<p>Kolmogorov-Smirnov检验</p>
+<ul>
+<li>大样本</li>
+<li>p&gt;0.05 视为正态</li>
+</ul>
+<h4 id="统计表涉及规范">统计表涉及规范
+</h4><h5 id="五要素">五要素
+</h5><ul>
+<li>表头</li>
+<li>行标题</li>
+<li>列标题</li>
+<li>数字资料</li>
+<li>表外附加（数据来源、注释）</li>
+</ul>
+<h5 id="原则">原则
+</h5><ul>
+<li>左右不封口   类似于 “三线表”</li>
+<li>分类清晰</li>
+<li>避免冗余</li>
+</ul>
+<h2 id="随机和概率">随机和概率
+</h2><h3 id="基本概念-1">基本概念
 </h3><ul>
-<li><strong>服务器程序（Server programs）</strong>：
-<ul>
-<li><code>mysqld</code> 服务器进程</li>
-<li>服务工具、启动程序</li>
-</ul>
-</li>
-<li><strong>安装程序（Installation programs）</strong>：
-<ul>
-<li>执行初始安装配置过程部分步骤的程序</li>
-</ul>
-</li>
-<li><strong>实用程序（Utility programs）</strong>：
-<ul>
-<li>无需连接到服务器即可执行某些功能的 MySQL 程序</li>
-</ul>
-</li>
-<li><strong>客户端程序（Client programs）</strong>：
-<ul>
-<li>连接到服务器的程序</li>
-</ul>
-</li>
-</ul>
-<h4 id="mysqldmysql-服务器进程mysqld-mysql-server-process">mysqld：MySQL 服务器进程（mysqld: MySQL Server Process）
-</h4><ul>
 <li>
-<p>由某一个服务器辅助程序自动启动</p>
+<p>在一定条件下，对某事物或现象进行的观察或实验叫做<strong>试验</strong>（<em>trails</em>），试验的结果叫做<strong>事件</strong>（<em>event</em>）</p>
+</li>
+<li>
+<p>随机事件（<em>random event</em>）：在一定条件下可能发生也可能不发生的事件，即结果具有偶然性的事件，通常用大写字母 A、B 、C 等来表示。</p>
+</li>
+<li>
+<p>必然事件（<em>certain event</em>）和不可能事件（<em>impossible event</em>）</p>
 <ul>
-<li>包括操作系统的启动脚本</li>
+<li>必然事件是在一定条件下每次试验一定出现的事件；</li>
+<li>不可能事件是在一定条件下每次试验一定不出现的事件。</li>
 </ul>
 </li>
 <li>
-<p>可手动启动以调试 MySQL 服务器配置</p>
-<ul>
-<li>
-<p>默认情况下，错误消息会输出到终端，而非错误日志。</p>
+<p>基本事件（<em>elementary event</em>）：如果一个事件不能拆分为两个或更多的事件，则将该事件称为基本事件或简单事件。在一次试验中，只能观察到一个且仅有一个基本事件。</p>
 </li>
 <li>
-<p>示例：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ mysqld --user<span class="o">=</span>mysql --datadir<span class="o">=</span>/var/lib/mysql --socket<span class="o">=</span>/tmp/mysql.sock
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-</li>
-</ul>
-<h4 id="安装程序installation-programs">安装程序（Installation Programs）
-</h4><ul>
-<li><strong><code>mysql_secure_installation</code></strong>：
+<p><strong>样本空间</strong>（<em>sample space</em>）：一个试验中所有的基本事件（一切可能的结果）组成的集合，通常记为Ω 。</p>
 <ul>
-<li>用于启用初始安全配置的安全程序。</li>
-</ul>
-</li>
-<li><strong><code>mysql_tzinfo_to_sql</code></strong>：
-<ul>
-<li>用于创建包含主机时区信息的 SQL 脚本的实用程序。</li>
-</ul>
-</li>
-<li><strong><code>mysql_upgrade</code></strong>：
-<ul>
-<li>用于验证数据库内容并确保其与当前 MySQL 版本兼容的程序。</li>
-<li>自 MySQL Server 8.0.16 起已弃用，因为这些任务现在会在服务器启动时自动执行。</li>
-</ul>
-</li>
-</ul>
-<p><code>mysql_secure_installation</code> 可通过以下方式提升 MySQL 安装的安全性：</p>
-<ul>
-<li>你可以为 root 账户设置密码。</li>
-<li>你可以移除可从本地主机外部访问的 root 账户。</li>
-<li>你可以移除匿名用户账户。</li>
-<li>你可以移除 <code>test</code> 数据库（默认情况下，所有用户，甚至匿名用户都可访问该数据库 ），以及移除允许任何人访问名称以 <code>test_</code> 开头的数据库的权限。</li>
-</ul>
-<p>MySQL 8.0 安装默认已处理大部分此类问题。因此，可能无需运行 <code>mysql_secure_installation</code>。</p>
-<h4 id="实用程序utility-programs">实用程序（Utility Programs）
-</h4><ul>
-<li><strong><code>mysql_config_editor</code></strong>
-<ul>
-<li>管理登录路径，简化命令行客户端与 MySQL 服务器的连接方式。</li>
-</ul>
-</li>
-<li><strong><code>mysqlbinlog</code></strong>
-<ul>
-<li>读取并回放二进制日志的内容。</li>
-</ul>
-</li>
-<li><strong><code>mysqldumpslow</code></strong>
-<ul>
-<li>读取并汇总慢查询日志的内容。</li>
-</ul>
-</li>
-<li><strong><code>mysql_ssl_rsa_setup</code></strong>
-<ul>
-<li>创建 TLS 密钥和证书。</li>
-</ul>
-</li>
-<li><strong><code>ibd2sdi</code></strong>
-<ul>
-<li>从 InnoDB 表空间文件中提取序列化字典信息（SDI）。</li>
-</ul>
-</li>
-</ul>
-<h5 id="mysql_config_editor">mysql_config_editor
-</h5><p>使用 <code>mysql_config_editor</code> 创建加密的选项文件。</p>
-<ul>
-<li>
-<p>将用户、密码和主机选项存储在专用的选项文件中：</p>
-<ul>
-<li>当前用户主目录下的 <code>.mylogin.cnf</code> 文件</li>
-<li>要指定其他文件名，设置 <code>MYSQL_TEST_LOGIN_FILE</code> 环境变量。</li>
+<li>抛一枚硬币的样本空间： Ω = {正，反}；</li>
+<li>抛两枚硬币的样本空间： Ω = {（正，正）, （正，反）, （反，正）, （反,反）}；</li>
+<li>掷一颗色子的样本空间： Ω = {1，2，3，4，5，6}。</li>
 </ul>
 </li>
 <li>
-<p><code>.mylogin.cnf</code> 文件包含登录路径。</p>
+<p><strong>随机试验</strong>（<em>random trials</em>）：在相同条件下对某种随机事件进行观测的试验。随机试验满足三个特点：</p>
 <ul>
-<li>
-<p>它们类似于选项组。</p>
-</li>
-<li>
-<p>每个登录路径包含单个身份的认证信息。</p>
-</li>
-<li>
-<p>客户端使用<code>--login-path</code>（或<code>-l</code>）命令行选项引用登录路径：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mysql --login-path=admin</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>保护该文件不被其他用户读取。任何能够读取该文件的人都可以使用这些凭据，并能够获取明文密码。</p>
-</li>
+<li>可以在相同条件下重复的进行。</li>
+<li>每次试验的结果不止一个，事先可以明确指出全部可能的结果。</li>
+<li>重复试验的结果以随机的方式出现（事先不确定会出现哪个结果）</li>
 </ul>
 </li>
 </ul>
-<h6 id="隐藏已保存的密码obscuring-saved-passwords">隐藏已保存的密码（Obscuring Saved Passwords）
-</h6><p>不建议以 <code>mysql -uroot -ppassword</code> 的形式在命令行指定密码。为方便起见，你可以将密码放在 <code>[client]</code> 选项组中，但密码是以明文形式存储的，任何对选项文件有读取权限的人都可以轻松看到。</p>
-<p><code>mysql_config_editor</code> 实用程序使你能够将认证凭据存储在名为 <code>.mylogin.cnf</code> 的加密登录文件中。在 Linux 和 UNIX 上，该文件位置是当前用户的主目录；在 Windows 上，是 <code>%APPDATA%\MySQL</code> 目录。之后，MySQL 客户端程序可以读取该文件以获取连接 MySQL 服务器的方法。加密方法是可逆的，因此你不能假定凭据对任何拥有该文件读取权限的人都是安全的。相反，此功能让你更易于避免在命令行或 MySQL 配置文件中使用明文凭据。</p>
-<h5 id="mylogincnf-格式mylogincnf-format">.mylogin.cnf 格式（.mylogin.cnf Format）
-</h5><ul>
-<li>
-<p>解密后的 <code>.mylogin.cnf</code> 文件由选项组构成。</p>
-<ul>
-<li>与其他选项文件类似</li>
-</ul>
-</li>
-<li>
-<p><code>.mylogin.cnf</code> 中的每个选项组都是一个登录路径。</p>
-<ul>
-<li>一组值，指示服务器主机以及用于向该服务器进行认证的凭据</li>
-<li>仅允许有限的一组选项（<code>user</code>、<code>password</code> 和 <code>host</code> ）</li>
-</ul>
-</li>
-<li>
-<p>示例：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="k">[admin]</span>
-</span></span><span class="line"><span class="cl"><span class="na">user</span> <span class="o">=</span> <span class="s">root</span>
-</span></span><span class="line"><span class="cl"><span class="na">password</span> <span class="o">=</span> <span class="s">oracle</span>
-</span></span><span class="line"><span class="cl"><span class="na">host</span> <span class="o">=</span> <span class="s">127.0.0.1</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-<p>如果你尝试在文本编辑器中读取 <code>.mylogin.cnf</code> 文件，它会以加密形式显示。你可以使用 <code>print</code> 命令查看登录路径，具体将在下一张幻灯片中展示。</p>
-<p><strong>注意</strong>：使用带 <code>-s</code> 选项的 <code>my_print_defaults</code> 实用程序可以明文显示密码。</p>
-<h5 id="登录路径login-paths">登录路径（Login Paths）
-</h5><ul>
-<li>
-<p><strong>创建登录路径</strong>：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysql_config_editor <span class="nb">set</span> 
-</span></span><span class="line"><span class="cl">  --login-path<span class="o">=</span>login-path 
-</span></span><span class="line"><span class="cl">  --user<span class="o">=</span>username 
-</span></span><span class="line"><span class="cl">  --password --host<span class="o">=</span>hostname
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p><strong>明文查看单个登录路径</strong>：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysql_config_editor print 
-</span></span><span class="line"><span class="cl">  --login-path<span class="o">=</span>login-path
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p><strong>明文查看所有登录路径</strong>：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysql_config_editor print --all
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p><strong>移除登录路径</strong>：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysql_config_editor remove 
-</span></span><span class="line"><span class="cl">  --login-path<span class="o">=</span>login-path
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>默认登录路径名称是 <code>[client]</code>。所有标准客户端都会读取它。</p>
-</li>
-</ul>
-<p>如果调用 <code>mysql_config_editor</code> 时未使用 <code>--login-path</code> 选项，它会使用 <code>[client]</code> 登录路径。所有标准客户端默认使用此登录路径。</p>
-<p>例如，以下命令创建一个供所有标准客户端使用的 <code>[client]</code> 登录路径：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mysql_config_editor set --user=root --password</span>
-</span></span><span class="line"><span class="cl">Enter password: oracle
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>在未指定更多命令行参数或选项文件的情况下调用标准客户端，会导致其读取 <code>.mylogin.cnf</code> 文件中的 <code>[client]</code> 登录路径，以及任何选项文件中的 <code>[client]</code> 选项组。例如，执行上述命令后，调用 <code>mysql</code> 客户端的输出如下：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mysql</span>
-</span></span><span class="line"><span class="cl">Welcome to the MySQL monitor.  Commands end with <span class="p">;</span> or <span class="se">\g</span>.
-</span></span><span class="line"><span class="cl">...
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h4 id="命令行客户端程序command-line-client-programs">命令行客户端程序（Command-Line Client Programs）
-</h4><ul>
-<li><strong><code>mysql</code></strong>：MySQL 命令行客户端</li>
-<li><strong><code>mysqladmin</code></strong>：用于监控、管理和关闭 MySQL 的实用程序</li>
-<li><strong><code>mysqldump</code>/<code>mysqlpump</code></strong>：备份实用程序，可创建用于恢复数据库结构和内容的 SQL 脚本</li>
-<li><strong><code>mysqlimport</code></strong>：用于导入分隔数据文件内容的实用程序</li>
-<li><strong><code>mysqlslap</code></strong>：负载模拟客户端</li>
-<li><strong><code>mysqlshow</code></strong>：用于显示数据库对象元数据的实用程序</li>
-<li><strong><code>mysqlcheck</code></strong>：用于检查和优化表的实用程序</li>
-<li><strong><code>mysqlsh</code></strong>：MySQL Shell 是适用于 MySQL 服务器的高级命令行客户端和代码编辑器</li>
-</ul>
-<p>MySQL Shell 必须单独安装。</p>
-<p>MySQL Workbench 是一个图形化客户端程序，需单独安装。</p>
-<h5 id="启动命令行客户端程序launching-command-line-client-programs">启动命令行客户端程序（Launching Command-Line Client Programs）
-</h5><ul>
-<li>客户端支持许多通用选项：
-<ul>
-<li>认证和连接选项
-<ul>
-<li>示例：<code>--user</code>、<code>--password</code>、<code>--host</code>、<code>--socket</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>部分选项是特定客户端独有的：
-<ul>
-<li><code>mysqladmin</code>的示例选项：
-<ul>
-<li><code>--relative</code></li>
-<li><code>--sleep</code></li>
-</ul>
-</li>
-<li><code>mysqlcheck</code>的示例选项：
-<ul>
-<li><code>--analyze</code></li>
-<li><code>--check</code></li>
-<li><code>--check-upgrade</code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="初始化配置">初始化配置
-</h2><h4 id="配置强制访问控制configuring-mandatory-access-control">配置强制访问控制（Configuring Mandatory Access Control）
-</h4><p>一些平台会实施强制访问控制（MAC）系统，其具备以下特点：</p>
-<ul>
-<li>阻止服务访问未授权的资源（如文件或端口 ）
-<ul>
-<li>默认配置包含对常见服务（包括 MySQL ）的默认文件和端口访问权限。</li>
-</ul>
-</li>
-<li>可配置为启用特定的非默认访问权限</li>
-<li>可完全禁用</li>
-<li>包含以下系统：
-<ul>
-<li>Linux MAC 系统：
-<ul>
-<li>SELinux：适用于 Oracle Linux、Red Hat Enterprise Linux、Fedora、CentOS</li>
-<li>AppArmor：适用于 SUSE、Ubuntu</li>
-</ul>
-</li>
-<li>Oracle Solaris 扩展策略</li>
-</ul>
-</li>
-</ul>
-<p><strong>默认 MAC 配置（Default MAC Configuration）</strong></p>
-<p>由于 MySQL 在许多平台上是常用服务，常见的 MAC 系统默认会允许 <code>mysqld</code> 服务器进程访问默认的 MySQL TCP 端口、默认数据目录和日志位置。一般来说，除非你想启用非默认配置（例如，如果你更改了数据目录或 TCP 端口号 ），否则无需修改 MAC 配置。</p>
-<h5 id="selinux-示例selinux-example">SELinux 示例（SELinux Example）
-</h5><ul>
-<li>
-<p><strong>添加新的端口映射</strong>：</p>
-<ul>
-<li>
-<p>将一系列 TCP 端口（33060（X 协议）、33061（组复制）和 33062（管理端口） ）设置为<code>mysqld_port_t</code>类型，以便 MySQL 可以使用它们：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># semanage port -a -t mysqld_port_t -p tcp 33060-33062</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-</li>
-<li>
-<p><strong>添加新的文件上下文类型映射</strong>：</p>
-<ul>
-<li>
-<p>将<code>/datadir</code>目录及其内容设置为<code>mysqld_db_t</code>类型，以便 MySQL 可以访问它们：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># semanage fcontext -a -t mysqld_db_t &#34;/datadir(/.*)?&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># restorecon -Rv /datadir</span>
-</span></span><span class="line"><span class="cl">restorecon reset /datadir context
-</span></span><span class="line"><span class="cl">unconfined_u:object_r:default_t:s0-
-</span></span><span class="line"><span class="cl">&gt;unconfined_u:object_r:mysqld_db_t:s0
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-</li>
-</ul>
-<h6 id="禁用-selinuxdisabling-selinux">禁用 SELinux（Disabling SELinux）
-</h6><p>你可以通过将 SELinux 设置为宽容模式（permissive mode），临时禁用其阻止效果。要执行此操作，运行以下命令：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">setenforce <span class="m">0</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>在宽容模式下，SELinux 会将未授权访问记录到其日志文件中（默认在 <code>/var/log/audit/audit.log</code> ），但不会阻止此类访问。使用宽容模式排查你怀疑可能由 SELinux 配置导致的访问问题。当你重启系统或执行 <code>setenforce 1</code> 命令时，SELinux 会恢复执行其策略。</p>
-<p>要完全禁用 SELinux，需在 <code>/etc/selinux/config</code> 文件中将 SELinux 设置从 <code>enforcing</code> 改为 <code>disabled</code>，如下例所示：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="na">SELINUX</span><span class="o">=</span><span class="s">disabled</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h5 id="apparmor示例apparmor-example">AppArmor：示例（AppArmor: Example）
-</h5><ul>
-<li>
-<p>编辑 <code>/etc/apparmor.d/local/usr.sbin.mysqld</code> 文件，修改本机的 MySQL 策略。</p>
-<ul>
-<li>
-<p>将<code>/datadir</code>目录及其内容设置为可访问。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># /datadir/** rwk,</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-</li>
-<li>
-<p>重新加载 AppArmor 配置文件。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># service apparmor reload</span>
-</span></span><span class="line"><span class="cl">* Reloading AppArmor profiles
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>将 MySQL 策略设置为投诉模式（complain mode）。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># aa-complain /usr/sbin/mysqld</span>
-</span></span><span class="line"><span class="cl">Setting /usr/sbin/mysqld to complain mode.
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>将 MySQL 策略设置为强制模式（enforce mode）。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># aa-enforce /usr/sbin/mysqld</span>
-</span></span><span class="line"><span class="cl">Setting /usr/sbin/mysqld to enforce mode.
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-<h5 id="投诉模式与强制模式complain-and-enforce-modes">投诉模式与强制模式（Complain and Enforce Modes）
-</h5><p>AppArmor 与其他 MAC 系统类似，默认阻止未授权访问，这称为强制模式（enforce mode）。当你希望策略记录未授权访问但不阻止时，执行 <code>aa-complain</code> 命令，将特定可执行文件的策略改为投诉模式（complain mode）。</p>
-<h5 id="禁用-apparmordisabling-apparmor">禁用 AppArmor（Disabling AppArmor）
-</h5><p>AppArmor 作为服务运行。要禁用它，使用操作系统的服务管理功能禁用 <code>apparmor</code> 服务或启动脚本。例如，在使用 <code>systemd</code> 的系统上，执行以下命令：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">systemctl disable apparmor.service
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="更改-root-密码">更改 <code>root</code> 密码
-</h3><h4 id="修改-root-密码changing-the-root-password">修改 root 密码（Changing the root Password）
-</h4><ul>
-<li>
-<p>安装后修改 root 密码：</p>
-<ul>
-<li>RPM 安装会创建一个 root 账户，其初始密码是随机生成且已过期的，你必须在使用前修改它。
-<ul>
-<li>初始密码会写入服务器日志（通常在 <code>/var/log/mysql/mysqld.log</code> 中 ）</li>
-</ul>
-</li>
-<li>交互式 DEB 安装会提示设置初始 root 密码，后续无需再修改。</li>
-<li>其他维护者提供的安装包可能会通过其他方式创建初始 root 密码。</li>
-<li>当使用 <code>mysqld --initialize</code> 初始化 MySQL 时，会生成一个初始的随机过期密码。源码安装和归档包安装通常使用这种方式。</li>
-</ul>
-</li>
-<li>
-<p>使用初始密码登录到 MySQL，然后使用 <code>ALTER USER</code> 语句修改密码：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mysql --user=root --password</span>
-</span></span><span class="line"><span class="cl">Enter password: drVXqk9<span class="o">)</span>nn?t
-</span></span><span class="line"><span class="cl">mysql&gt; ALTER USER USER<span class="o">()</span> IDENTIFIED BY <span class="s1">&#39;neW%P4ss&#39;</span><span class="p">;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h5 id="使用-mysqladmin-修改-root-密码using-mysqladmin-to-change-the-root-password">使用 mysqladmin 修改 root 密码（Using mysqladmin to Change the root Password）
-</h5><p>使用 <code>mysqladmin</code> 客户端实用程序配合 <code>password</code> 命令来修改密码。</p>
-<ul>
-<li>
-<p>如果你未向 <code>password</code> 命令提供参数，<code>mysqladmin</code> 会提示你输入新密码：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mysqladmin --user=root --password password</span>
-</span></span><span class="line"><span class="cl">Enter password: drVXqk9<span class="o">)</span>nn?t
-</span></span><span class="line"><span class="cl">New password: neW%P4ss
-</span></span><span class="line"><span class="cl">Confirm new password: neW%P4ss
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>如果你在命令行中提供旧密码或新密码，<code>mysqladmin</code> 会显示警告：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mysqladmin --user=root --password password &#39;neW%P4ss&#39;</span>
-</span></span><span class="line"><span class="cl">Enter password: drVXqk9<span class="o">)</span>nn?t
-</span></span><span class="line"><span class="cl">mysqladmin: <span class="o">[</span>Warning<span class="o">]</span> Using a password on the <span class="nb">command</span> line interface can be insecure.
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-<h5 id="使用登录路径using-login-paths">使用登录路径（Using Login Paths）
-</h5><p>你可以在包括 <code>mysqladmin</code> 在内的许多 MySQL 客户端中使用登录路径。以下示例展示如何使用默认的 <code>[client]</code> 登录路径设置新密码：</p>
-<p><strong>前提</strong>：已用 <code>mysql_config_editor</code> 设置 <code>[client]</code> 登录路径（含旧密码 ）</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mysqladmin password</span>
-</span></span><span class="line"><span class="cl">New password: neW%P4ss
-</span></span><span class="line"><span class="cl">Confirm new password: neW%P4ss
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>请注意，使用此命令修改用户密码后，客户端登录路径不再包含正确的用户密码，因此你必须执行 <code>mysql_config_editor</code> 来设置新的用户密码。</p>
-</li>
-</ul>
-<h3 id="启动和关闭mysql">启动和关闭MySQL
+<h3 id="概率">概率
 </h3><ul>
-<li><strong>启动 MySQL 的方法</strong>：
-<ul>
-<li>直接运行 <code>mysqld</code> 二进制文件。</li>
-<li>运行 <code>mysqld_safe</code>。</li>
-<li>使用 Linux 服务管理器：
-<ul>
-<li>在 SysVinit 系统上，运行 <code>service mysqld start</code>。</li>
-<li>在 systemd 系统上，运行 <code>systemctl start mysqld</code>。</li>
+<li>对事件在试验中出现的可能性大小的一种度量</li>
+<li>事件 出现的可能性通常记为 P(A)</li>
+<li>是一个取值范围在0到1之间的值</li>
 </ul>
-</li>
-</ul>
-</li>
-<li><strong>停止 MySQL 的方法</strong>：
-<ul>
-<li>使用 <code>SIGTERM</code> 信号（<code>-15</code> ）终止 <code>mysqld</code> 二进制文件。如果 <code>mysqld_safe</code> 在运行，先终止它。</li>
-<li>使用 Linux 服务管理器：
-<ul>
-<li>在 SysVinit 系统上，运行 <code>service mysqld stop</code>。</li>
-<li>在 systemd 系统上，运行 <code>systemctl stop mysqld</code>。</li>
-</ul>
-</li>
-<li><code>mysqladmin shutdown</code></li>
-<li>SQL 的 <code>SHUTDOWN</code> 语句</li>
-</ul>
-</li>
-</ul>
-<p><strong>使用 kill 命令（Using kill）</strong></p>
-<p><code>service mysqld stop</code> 命令（或在 systemd 发行版上的 <code>systemctl stop mysqld</code> ）会向 <code>mysqld</code> 进程发送 UNIX <code>SIGTERM</code> 信号（<code>kill -15</code> ），进程将其解读为关闭服务器的指令。当你使用 <code>mysqladmin shutdown</code> 时，它会使用服务器协议命令向服务器发送 “关闭” 消息。在这两种情况下，服务器进程都会接收消息并执行相同的有序关闭流程。</p>
-<p>如果你发送 <code>SIGKILL</code> 信号（<code>kill -9</code> ），<code>mysqld</code> 会立即停止，不会执行有序关闭，就像拔掉机器电源线一样。这可能会导致数据损坏。如果 <code>mysqld_safe</code> 辅助程序在运行，它会将这种突然关闭检测为崩溃，并重新启动 <code>mysqld</code>。</p>
-<p><strong>SQL RESTART 语句（SQL RESTART statement）</strong></p>
-<p>MySQL 8.0 引入了 <code>RESTART</code> SQL 语句，用于停止并重启 MySQL 服务器。<code>RESTART</code> 需要一个监控进程（如 systemd、<code>mysqld_safe</code> 或 Windows 服务 ）在服务器以退出代码 16 关闭后启动 MySQL 服务器。</p>
-<h4 id="使用-mysqladmin-停止-mysqlstopping-mysql-with-mysqladmin">使用 mysqladmin 停止 MySQL（Stopping MySQL with mysqladmin）
+<h4 id="古典概型">古典概型
 </h4><ul>
 <li>
-<p><strong>使用 <code>[client]</code> 登录路径</strong>：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqladmin shutdown
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>试验的结果有限</p>
+</li>
 <li>
-<p><strong>使用 <code>[admin]</code> 登录路径</strong>：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqladmin --login-path<span class="o">=</span>admin shutdown
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>各个结果出现的可能性相同</p>
+</li>
 <li>
-<p><strong>在命令行提供凭据和服务器连接信息</strong>：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqladmin -u root -p -h dbhost -P <span class="m">3306</span> shutdown
-</span></span><span class="line"><span class="cl">Enter password: password
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+$$
+    P(A)= \frac{事件A所包含的基本事件的个数} {样本空间所包含的基本事件的个数}
+    $$</li>
 </ul>
-<h5 id="shutdown-权限shutdown-privilege">SHUTDOWN 权限（SHUTDOWN Privilege）
-</h5><p>一些 <code>mysqladmin</code> 命令仅对拥有所需权限的 MySQL 账户可用。例如，要关闭服务器，你必须使用具有 <code>SHUTDOWN</code> 权限的管理账户（如 <code>root</code> ）进行连接。</p>
-<h4 id="mysql-服务文件mysql-service-files">MySQL 服务文件（MySQL Service Files）
+<p>伯努利大数定理表明：当试验次数无限增加时，事件发生的频率会依概率收敛于其概率，即 $ \lim_{n \to \infty} P\left{ \left| \frac{n_A}{n} - p \right| &lt; \varepsilon \right} = 1 $。</p>
+<ul>
+<li><strong>只要实验次数足够多，事件的实际概率就会无限接近理论概率</strong></li>
+</ul>
+<h4 id="复合事件">复合事件
 </h4><ul>
 <li>
-<p>在 SysVinit 系统上，将 <code>mysql.server</code> 脚本复制到 <code>/etc/init.d/mysqld</code>。</p>
+<p>讨论两个或两个以上的事件的概率</p>
+</li>
+<li>
+<p>三种最常见的复合事件</p>
 <ul>
-<li>
-<p>部分软件包安装程序会自动创建此文件。</p>
-</li>
-<li>
-<p>使用 <code>start</code>、<code>stop</code> 或 <code>restart</code> 选项调用它。</p>
-</li>
-<li>
-<p>示例：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">service mysqld start
-</span></span><span class="line"><span class="cl">/etc/init.d/mysqld restart
-</span></span><span class="line"><span class="cl">support-files/mysql.server stop
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<li>设样本空间 Ω={ω}，事件 A、B 是 Ω 的子集。</li>
+<li>交事件（同时发生）：A∩B 或 AB</li>
+<li>并事件（至少发生一个）：A∪B</li>
+<li>补事件（不发生）：Ā = Ω\A</li>
 </ul>
 </li>
 <li>
-<p>如果你从为 systemd 发行版构建的 RPM 软件包安装 MySQL，或者手动配置了 systemd，使用 <code>systemctl</code> 命令：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">systemctl start mysqld
-</span></span><span class="line"><span class="cl">systemctl stop mysqld
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>这会使用 <code>mysqld.service</code> 文件，它是一个 systemd 服务单元配置文件。</li>
+<p>加法公式：P(A∪B)=P(A)+P(B)−P(AB)</p>
+</li>
+<li>
+<p>互斥事件：</p>
+<ul>
+<li>两个事件不能同时发生  A∩B = 0，P(AB) = 0</li>
+<li>P(A∪B)=P(A)+P(B)</li>
+</ul>
+</li>
+<li>
+<p>互补事件</p>
+<ul>
+<li>事件A的对立面称为事件A的互补事件Ā
+<ul>
+<li>P(Ā )  = 1- P(A)</li>
 </ul>
 </li>
 </ul>
-<h5 id="sysvinitupstart-和-systemd-发行版sysvinit-upstart-and-systemd-distributions">SysVinit、Upstart 和 systemd 发行版（SysVInit, Upstart, and systemd Distributions）
-</h5><p>SysVinit 是初始化 UNIX 服务的标准方法。许多 Linux 系统曾使用这种方法。近年来，Upstart 进程在许多发行版中取代了 SysVinit，模拟其功能。<code>mysql.server</code> 脚本在 SysVinit 和 Upstart 系统上的运行方式相同。</p>
-<p>一些 Linux 发行版的最新版本（包括 MySQL 支持的发行版 ）使用 systemd 作为替代的初始化进程。如果你从 RPM 或 APT 二进制包安装 MySQL，服务会自动配置。如果你使用通用 Linux 二进制包安装 MySQL，则必须自行配置 systemd 服务。</p>
-<p><strong>注意</strong>：你需在标题为 “配置 MySQL 服务（Configuring the MySQL Service）” 的实践内容中，配置 systemd 中的 <code>mysqld</code> 服务。</p>
-<h4 id="在-windows-上启动和停止-mysqlmysql-notifier">在 Windows 上启动和停止 MySQL：MySQL Notifier
+</li>
+</ul>
+<h4 id="条件概率">条件概率
 </h4><ul>
-<li>由 MySQL 安装程序安装</li>
-<li>自动注册本地计算机上的 MySQL 服务</li>
-<li>支持注册远程 MySQL 服务</li>
-<li>显示已注册服务器的运行状态
+<li>事件A在事件B发生的条件下发生的概率</li>
+<li>记作 P(A|B)</li>
+<li>P(A|B) = $\frac{P(A \cap B)}{P(B)}$（其中 \(P(B) > 0\)，若 B 不可能发生，条件概率无意义）</li>
+</ul>
+<h5 id="乘法公式与独立事件">乘法公式与独立事件
+</h5><ol>
+<li>乘法公式
 <ul>
-<li>在系统托盘显示</li>
-<li>可选：当已注册服务器状态变化，或 MySQL Notifier 检测到新的本地 MySQL 服务时发出通知</li>
+<li><em>P</em>(<em>A</em>∩<em>B</em>)=<em>P</em>(<em>A</em>∣<em>B</em>)×<em>P</em>(<em>B</em>)=<em>P</em>(<em>B</em>∣<em>A</em>)×<em>P</em>(<em>A</em>)</li>
 </ul>
 </li>
-<li>支持启动、重启和停止已注册的服务器</li>
-<li>启动已安装的 MySQL 应用程序：
+<li>独立事件的判定
 <ul>
-<li>MySQL Workbench</li>
-<li>MySQL Utilities</li>
-<li>MySQL Installer</li>
+<li>A和B满足 <strong>“B 的发生不影响 A 的概率”</strong>，反之亦然 则 A和B为独立事件</li>
+<li>P(A|B) = P(A)</li>
+<li>P(A∩B)=P(A)×P*(*B)  P(AB)=P(A)⋅P(B)</li>
+</ul>
+</li>
+</ol>
+<h4 id="全概率公式">全概率公式
+</h4><p>若事件组 $B_1, B_2, \dots, B_n$ 满足：</p>
+<ol>
+<li><strong>互斥性</strong>：任意两个事件不重叠，即 $B_i \cap B_j = \varnothing (i \neq j$，比如抽奖时 “选 A 箱” 和 “选 B 箱” 不可能同时发生 ）；</li>
+<li><strong>穷尽性</strong>：所有事件覆盖全部可能，即$B_1 \cup B_2 \cup \dots \cup B_n = \Omega$ ( $\Omega$ 是所有可能结果的集合，比如抽奖只有 A、B、C 箱，选完这三个就覆盖所有可能 )；</li>
+</ol>
+<p>则对任意事件 A，<strong>全概率公式</strong>为：$P(A) = \sum_{i=1}^n P(A|B_i) \cdot P(B_i)$</p>
+<h4 id="贝叶斯公式">贝叶斯公式
+</h4><ul>
+<li>P(A∣B)⋅P(B)=P(B∣A)⋅P(A)</li>
+<li><strong>A 和 B 同时发生的概率”，既可以理解成 “先发生 B、再在 B 的条件下发生 A”，也可以理解成 “先发生 A、再在 A 的条件下发生 B”</strong> ，两种路径的结果必然相等</li>
+</ul>
+<h2 id="随机变量及其分布">随机变量及其分布
+</h2><h3 id="随机变量">随机变量
+</h3><ul>
+<li>
+<p>在相同的条件下，如果每次试验可能出现这样或那样的结果</p>
+</li>
+<li>
+<p>对随机事件进行数量化，用X表示所有可能的事件，也就是说X可以有不同的取值</p>
+</li>
+<li>
+<p>P(X)表示 X 取不同的值时对应事件发生的概率</p>
+<ul>
+<li>P(X) 概率函数</li>
+<li>X 称为概率函数 P(X) 的随机变量</li>
+</ul>
+</li>
+<li>
+<p>离散型随机变量</p>
+<ul>
+<li>随机变量 X 的所有取值<strong>可以逐个列出</strong></li>
+</ul>
+</li>
+<li>
+<p>连续型随机变量</p>
+<ul>
+<li>随机变量 X 的所有取值<strong>不可以逐个列出</strong></li>
+</ul>
+</li>
+<li>
+<p>注意 如果离散型随机变量的取值非常庞大时，可近似看作连续型随机变量</p>
+</li>
+</ul>
+<h3 id="随机变量的分布">随机变量的分布
+</h3><ul>
+<li>&ldquo;分布&quot;明确了”每个取值（或取值区间）对应的概率是多少“</li>
+<li>离散型和连续型的分布形式不同</li>
+<li>核心是 概率的累加法则</li>
+</ul>
+<h4 id="离散型随机变量分布">离散型随机变量分布
+</h4><ul>
+<li>
+<p>核心工具 <strong>概率质量函数</strong></p>
+<ul>
+<li>记为 $P(X = x)$，</li>
+<li>直接定义 “随机变量取某个具体值 x 的概率”。</li>
+</ul>
+</li>
+<li>
+<h5 id="2个核心性质">2个核心性质
+</h5><ul>
+<li>非负性：
+<ul>
+<li>概率不能为负</li>
+</ul>
+</li>
+<li>归一性：
+<ul>
+<li>所有可能取值的概率之和为1</li>
 </ul>
 </li>
 </ul>
-<h2 id="升级mysql">升级MySQL
+</li>
+<li>
+<h5 id="常用离散分布">常用离散分布
+</h5><ul>
+<li>0-1分布（伯努利分布）
+<ul>
+<li>仅2个结果</li>
+<li>记为$X \sim Bernoulli(p)$</li>
+<li>$P(X=1)=p$，$P(X=0)=1-p$</li>
+</ul>
+</li>
+<li>二项分布
+<ul>
+<li>n 次独立的 0-1 试验中&quot;成功次数&quot;的分布</li>
+<li>记为 $X \sim B(n,p)$</li>
+</ul>
+</li>
+<li>泊松分布
+<ul>
+<li>描述 单位时间/空间内稀有事件的发生次数</li>
+<li>记为 $X \sim Poisson(\lambda)$
+<ul>
+<li>$\lambda$ 是 平均发生次数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="连续型随机变量分布">连续型随机变量分布
+</h4><ul>
+<li>
+<p>概率密度函数</p>
+<ul>
+<li>描述 区间概率</li>
+<li>记作 $f(x)$</li>
+</ul>
+</li>
+<li>
+<h5 id="概率密度函数核心性质">概率密度函数核心性质
+</h5><ul>
+<li>非负性：对于所有$x$, $f(x)≥0$ (密度不能为负)</li>
+<li>归一性：所有区间的概率总和为 1
+<ul>
+<li>$\int_{-\infty}^{+\infty} f(x)dx = 1$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h5 id="区间概率">区间概率
+</h5><ul>
+<li>随机变量 $X$ 落在区间 $[a,b]$内的概率</li>
+<li>$P(a≤X≤b)=\int_{a}^{b}f(x)dx$</li>
+</ul>
+</li>
+<li>
+<h5 id="常用连续分布">常用连续分布
+</h5><ul>
+<li>均匀分布
+<ul>
+<li>取值在$[a,b]$内 等概率分布</li>
+<li>记为 $X \sim U(a,b)$</li>
+<li>概率密度函数为：$f(x) = \frac{1}{b-a}  (a \leq x \leq b)$</li>
+</ul>
+</li>
+<li>正态分布（高斯分布）
+<ul>
+<li>记为 $X \sim N(\mu, \sigma^2)$
+<ul>
+<li>$\mu$（均值）：决定分布的 “中心位置</li>
+<li>$\sigma^2$（方差）：决定分布的 “离散程度”（\(\sigma\) 越小，曲线越尖）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>指数分布
+<ul>
+<li>连续型随机事件的间隔时间</li>
+<li>记为 $X \sim Exp(\lambda)$
+<ul>
+<li>$\lambda$ 是  平均发生率</li>
+</ul>
+</li>
+<li>例如：手机从满电到关机的使用时间</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="假设检验">假设检验
+</h2><h3 id="基本原理">基本原理
+</h3><p><strong>基于样本数据判断总体假设是否成立</strong></p>
+<h4 id="基本思想">基本思想
+</h4><ul>
+<li>
+<p>小概率反正法</p>
+<ul>
+<li>小概率事件再一次随机试验中几乎不可能发生</li>
+<li>小概率事件发生的概率 称之为 <strong>显著性水平</strong>
+<ul>
+<li>显著性水平记作 $\alpha$</li>
+<li>通常取 0.1  0.05  或 0.01</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>反证法</p>
+<ul>
+<li>先提出原假设（也称为 零假设或虚无假设 记作 $H_0$）</li>
+<li>然后用适当的统计方法 确定 原假设的可能性</li>
+<li>如果可能性非常小 则拒绝原假设
+<ul>
+<li>$\alpha$的值越小 拒绝原假设犯错误的概率就越小</li>
+</ul>
+</li>
+<li>转而去接收原假设的对立面  即 备择假设$H_1$</li>
+</ul>
+</li>
+<li>
+<p>适用假设检验产生两种类型的错误</p>
+<ol>
+<li>
+<p>拒真错误</p>
+<ul>
+<li>原假设为真 但是却被拒绝了</li>
+</ul>
+</li>
+<li>
+<p>采伪错误</p>
+<ul>
+<li>原假设为假 但是没有被被拒绝</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="实施步骤">实施步骤
+</h3><ul>
+<li>补充：中心极限定理（Central Limit Theorem, CLT）是统计学中最核心的定理之一，它揭示了 “大量独立随机变量的总和或均值，会趋近于正态分布” 的规律</li>
+</ul>
+<ol>
+<li>
+<p>提出原假设和备择假设</p>
+</li>
+<li>
+<p>选择检验方法与显著性水平（α）</p>
+</li>
+<li>
+<p>计算 检验统计量 与 P值</p>
+<ul>
+<li><strong>检验统计量</strong>：将样本数据转化为标准化数值（如t值、Z值）
+<ul>
+<li>反映“样本与H₀的偏离程度</li>
+</ul>
+</li>
+<li>P值
+<ul>
+<li>在H₀成立的前提下，</li>
+<li>“观测到当前样本（或更极端样本）”的概率</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>对比P值与α，做出决策 这是检验的核心判断规则</p>
+<ul>
+<li>两种结果
+<ul>
+<li><strong>P ≤ α</strong>：“小概率事件（H₀成立时观测到当前样本）发生
+<ul>
+<li><strong>拒绝原假设</strong>，<strong>接受备择假设</strong></li>
+</ul>
+</li>
+<li><strong>P &gt; α</strong>：“样本差异可由随机误差解释”
+<ul>
+<li>则<strong>不拒绝原假设</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>结合实际场景，解读结论</p>
+<ul>
+<li>若上述“差异”在教育场景中（如85分和80分）对学生能力影响极小，即使统计显著，实际意义也有限</li>
+</ul>
+</li>
+<li>
+<p>关键注意点：避免常见误区</p>
+<ol>
+<li><strong>P值≠效应大小</strong>：P值仅反映“差异是否由随机导致”，不代表“差异有多大”。例：两组平均分差0.1分，但样本量极大，也可能得到P&lt;0.05，但实际差异可忽略。</li>
+<li><strong>“不拒绝H₀”≠“接受H₀”</strong>：可能是样本量不足、效应微弱，而非“总体真的无差异”。</li>
+</ol>
+<p>综上，假设检验是“用概率说话”的工具，核心是通过反证法排除随机干扰，但其结论需结合统计逻辑与实际场景，不可盲目依赖P值。</p>
+</li>
+</ol>
+<p><strong>检验方法</strong>：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>场景</th>
+          <th>检验方法</th>
+          <th>统计量分布</th>
+          <th>适用条件</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>单样本均值（σ已知）</td>
+          <td>z检验</td>
+          <td>标准正态</td>
+          <td>大样本或正态总体+σ已知</td>
+      </tr>
+      <tr>
+          <td>单样本均值（σ未知）</td>
+          <td>t检验</td>
+          <td>t分布</td>
+          <td>正态总体或小样本</td>
+      </tr>
+      <tr>
+          <td>两独立样本均值</td>
+          <td>t检验</td>
+          <td>t分布</td>
+          <td>正态总体+方差齐性</td>
+      </tr>
+      <tr>
+          <td>配对样本均值</td>
+          <td>配对t检验</td>
+          <td>t分布</td>
+          <td>差值服从正态分布</td>
+      </tr>
+      <tr>
+          <td>单样本方差</td>
+          <td>χ²检验</td>
+          <td>χ²分布</td>
+          <td>正态总体</td>
+      </tr>
+      <tr>
+          <td>两样本方差</td>
+          <td>F检验</td>
+          <td>F分布</td>
+          <td>两正态总体</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="参数估计">参数估计
 </h2><ul>
-<li>最简易的升级是在同一版本系列内的小版本之间进行。
+<li>
+<p>是在抽样及抽样分布的基础上</p>
+</li>
+<li>
+<p>用样本统计量去估计总体的参数</p>
+</li>
+<li>
+<p>应用</p>
 <ul>
-<li>示例：从 8.0.xx 升级到 8.0.yy</li>
+<li>产品方面
+<ul>
+<li>评估 关键用户行为指标 （留存率、转化率）</li>
+<li>评估 A/B测试的效果</li>
 </ul>
 </li>
-<li>你可以从 MySQL 5.7 升级到 8.0
+<li>运营方面
 <ul>
-<li>仅支持在通用可用（GA）版本之间进行，且 MySQL 5.7.9 或更高版本</li>
-<li>Oracle 建议在升级到 MySQL 8.0 之前，先升级到最新的 5.7 GA 版本</li>
+<li>参数估计  优化活动配置和推荐策略</li>
+<li>评估 用户生命周期价值</li>
 </ul>
 </li>
-<li>留意版本之间的差异，这样你就能选择正确的升级方法（原地升级或逻辑升级 ），并避免兼容性问题。</li>
-<li>即便你要执行原地升级，也应事先备份数据。
+<li>市场方面
 <ul>
-<li>这样一来，若遇到问题，你就能回滚升级操作。</li>
-</ul>
-</li>
-</ul>
-<p><strong>降级（Downgrading）</strong></p>
-<p>从 MySQL 8.0 降级到 MySQL 5.7，或者从某一 MySQL 8.0 版本降级到之前的 MySQL 8.0 版本，是不被支持的。唯一受支持的替代方案是恢复升级前创建的备份。因此，在开始升级流程前备份数据至关重要。</p>
-<h3 id="阅读发行说明reading-release-notes">阅读发行说明（Reading Release Notes）
-</h3><p>在升级之前，查看当前版本与目标版本之间的变更内容：</p>
-<ul>
-<li>对于 MySQL 8.0，使用以下 URL：
-<ul>
-<li><a class="link" href="https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html"  target="_blank" rel="noopener"
-    >https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html</a></li>
-</ul>
-</li>
-<li>对于之前的版本，替换 URL 中的 8.0 。例如，MySQL 5.7：
-<ul>
-<li><a class="link" href="https://dev.mysql.com/doc/refman/5.7/en/upgrading-from-previous-series.html"  target="_blank" rel="noopener"
-    >https://dev.mysql.com/doc/refman/5.7/en/upgrading-from-previous-series.html</a></li>
-</ul>
-</li>
-<li>你可能需要查看小版本之间变更的发行说明。
-<ul>
-<li><a class="link" href="https://dev.mysql.com/doc/relnotes/mysql/8.0/en/index.html"  target="_blank" rel="noopener"
-    >https://dev.mysql.com/doc/relnotes/mysql/8.0/en/index.html</a></li>
-</ul>
-</li>
-<li>查找以下标题，这些标题表示你可能需要在升级前处理的变更：
-<ul>
-<li>已知问题（Known Issue）</li>
-<li>不兼容变更（Incompatible Change）</li>
-<li>新增或变更的功能（Functionality Added or Changed）</li>
-<li>重要变更（Important Change）</li>
+<li>制定广告投放策略</li>
+<li>建立模型时，对参数进行评估 上述参数估计的应用请举出具体的实例</li>
 </ul>
 </li>
 </ul>
-<h4 id="搜索特定变更searching-for-specific-changes">搜索特定变更（Searching for Specific Changes）
-</h4><p>如果你知道某个选项或其他功能发生了变更，但不知道变更发生在哪个版本，你可以使用文档页面上的搜索功能。</p>
-<p>或者，你可以在常用搜索引擎上搜索特定的发行说明，方法是包含 <code>site:</code> 修饰符，将搜索范围限定在 MySQL 发行说明网页。例如，要搜索 <code>authentication_string</code> 列的发行说明，在 Google 或 Bing 等常用搜索引擎中输入以下搜索条件：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">site:dev.mysql.com/doc/relnotes authentication_string
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h4 id="mysql-shell-升级检查工具mysql-shell-upgrade-checker-utility">MySQL Shell 升级检查工具（MySQL Shell Upgrade Checker Utility）
+</li>
+</ul>
+<h3 id="参数估计的方法">参数估计的方法
+</h3><h4 id="点估计">点估计
+</h4><p>单个样本统计量的值直接作为总体参数的估计值</p>
+<p>衡量一个样本统计量是不是总体参数的良好估计，有以下三个标准：</p>
+<ol>
+<li>无偏性: 估计的“无系统偏差”
+<ul>
+<li>判断估计量是否 “平均准确” 的基础标准</li>
+<li>核心是<strong>估计量的数学期望等于总体参数的真实值</strong>
+<ul>
+<li>估计量不会系统性地高估或低估总体参数</li>
+</ul>
+</li>
+<li>设总体参数为$\theta$（如总体均值$\mu$、总体方差$\sigma^2$用于估计$\theta$的样本统计量（估计量）为 $\hat{\theta}$
+（如样本均值$\bar{X}$、样本方差$S^2$）。
+若满足：$E(\hat{\theta}) = \theta
+$ 则称 $\hat{\theta}$ 是 $\theta$ 的<strong>无偏估计量</strong>；
+若$E(\hat{\theta}) \neq \theta$，则称$\hat{\theta}$存在<strong>偏差</strong>（偏差值为$B(\hat{\theta}) = E(\hat{\theta}) - \theta$）</li>
+</ul>
+</li>
+<li>有效性：估计的 ”最小波动“
+<ul>
+<li>一个参数存在多个无偏估计时
+<ul>
+<li>“有效性” 用于判断哪个估计量更优</li>
+</ul>
+</li>
+<li><strong>在所有无偏估计中，方差最小的估计量最有效</strong></li>
+<li><strong>克拉默 - 拉奥下界</strong>（Cramér-Rao Lower Bound, <strong>CRLB</strong>）
+<ul>
+<li>给出了无偏估计量方差的 “理论最小值”
+<ul>
+<li>某个无偏估计的方差等于 CRLB，则该估计量必为 MVUE(<strong>最小方差无偏估计</strong>)，是最优的无偏估计</li>
+</ul>
+</li>
+<li>对于正态总体$N(\mu, \sigma^2)$，总体均值$\mu$的 CRLB 为$\frac{\sigma^2}{n}$，而样本均值的方差恰好等于该下界，因此样本均值是$\mu$的 MVUE</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>一致性：估计的&quot;大样本收敛性&rdquo;
+<ul>
+<li><strong>随着样本量n增大，估计量 $\hat{\theta}$ 会越来越接近总体参数 $\theta$ 的真实值</strong></li>
+<li>即大样本下估计量的 “渐进准确性”</li>
+</ul>
+</li>
+</ol>
+<h5 id="实现方法">实现方法
+</h5><ul>
+<li>
+<p>矩估计</p>
+<ul>
+<li>利用 “样本矩” 与 “总体矩” 相等的原则推断总体参数
+<ul>
+<li>矩（Moment）是描述数据分布的 “数字特征”
+<ul>
+<li>一阶矩：均值（描述数据的集中趋势）；</li>
+<li>二阶矩：方差（描述数据的离散程度）；</li>
+<li>高阶矩：偏度（描述分布对称性）、峰度（描述分布陡峭程度）等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>步骤（以总体均值和方差为例）
+<ol>
+<li>定义总体矩：
+<ul>
+<li>总体一阶原点矩（均值）：$E(X) = μ$</li>
+<li>总体二阶中心矩（方差）：$E[(X - μ)^2] = σ²$</li>
+</ul>
+</li>
+<li>计算样本矩：
+<ul>
+<li>样本一阶原点矩（样本均值）：$(\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$（n 为样本量）</li>
+<li>样本二阶中心矩（样本方差）：$S_n^2 = \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2$
+<ul>
+<li>注：实际应用中常用修正样本方差$s^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2$，因S$_n^2$是 σ² 的有偏估计</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>令 “样本矩 = 总体矩”，解出参数估计值
+<ul>
+<li>$\hat{μ} = \bar{X}$（用样本均值估计总体均值）；</li>
+<li>$\hat{σ}^2 = S_n^2$（用样本二阶中心矩估计总体方差）</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>最大似然估计(MLE，maximum likelihood estimation) 也叫 极大似然估计</p>
+<ul>
+<li>
+<p>概率最大的事件最可能发生</p>
+<ul>
+<li><strong>选择使 “当前样本出现概率最大” 的参数值作为总体参数的估计值</strong></li>
+<li>似然函数
+<ul>
+<li>给定样本观测值$x_1,x_2,&hellip;,x_n$</li>
+<li>似然函数$L(θ|x_1,&hellip;,x_n)$表示 “参数为 θ 时，观测到该样本的概率
+<ul>
+<li>若总体是离散分布，似然函数 = 联合概率</li>
+<li>若为连续分布，似然函数 = 联合概率密度</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>抽样需要满足的重要前提条件</p>
+<ul>
+<li>所有的抽样都是独立同分布的</li>
+</ul>
+</li>
+<li>
+<p>利用已知的样本结果信息，反推最有可能（最大概率）导致这些样本结果出现的模型参数</p>
+</li>
+<li>
+<p>步骤（以正态总体 $X∼N(μ,σ^2) $为例）</p>
+<ol>
+<li>
+<p>写出总体的概率密度函数</p>
+<ul>
+<li>$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x - \mu)^2}{2\sigma^2}}$</li>
+</ul>
+</li>
+<li>
+<p>构造似然函数</p>
+<ul>
+<li>因样本独立同分布，联合密度 = 各样本密度乘积</li>
+<li>$L(\mu, \sigma^2 | x_1, \dots, x_n) = \prod_{i=1}^n f(x_i | \mu, \sigma^2) = (2\pi\sigma^2)^{-n/2} e^{-\frac{1}{2\sigma^2} \sum_{i=1}^n (x_i - \mu)^2}$</li>
+</ul>
+</li>
+<li>
+<p>简化计算</p>
+<ul>
+<li>对似然函数取自然对数
+<ul>
+<li>因对数是单调递增函数，最大化$\ln L$等价于最大化$L$</li>
+<li>取对数的作用：把“极小乘积”变成“可加的、可导的、数值稳定的”对数似然</li>
+</ul>
+</li>
+<li>得到<strong>对数似然函数</strong>
+<ul>
+<li>$ln L(\mu,\sigma^2) = -\frac{n}{2}\ln(2\pi) - \frac{n}{2}\ln\sigma^2 - \frac{1}{2\sigma^2}\sum_{i=1}^{n}(x_i - \mu)^2$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>求 对数似然函数 的最大值</p>
+<ul>
+<li>
+<p>对参数 μ 和 σ² 求偏导，令偏导数为 0，解方程组</p>
+<ul>
+<li>
+<p>对 μ 求偏导并令其为 0：$\frac{\partial \ln L}{\partial μ} = \frac{1}{σ²}\sum_{i=1}^n (x_i - μ) = 0 \implies \hat{μ} = \frac{1}{n}\sum_{i=1}^n x_i = \bar{x}$</p>
+</li>
+<li>
+<p>对 σ² 求偏导并令其为 0:</p>
+<p>$\frac{\partial \ln L}{\partial \sigma^2}
+= -\frac{n}{2\sigma^2} + \frac{1}{2\sigma^4}\sum_{i=1}^{n}(x_i-\mu)^2
+= 0\implies\quad\hat\sigma^2=\frac{1}{n}\sum_{i=1}^{n}(x_i-\mu)^2 = S^2$</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="区间估计">区间估计
+</h4><h5 id="定义">定义
+</h5><ul>
+<li>是通过样本数据构造一个区间$[L, U]$  (置信区间)
+<ul>
+<li>由样本计算的区间$[L, U]$，</li>
+<li>其中$L$为置信下限，$U$为置信上限</li>
+</ul>
+</li>
+<li>给出出该区间 “包含总体参数的概率（置信水平/置信度）
+<ul>
+<li>区间包含总体参数的概率</li>
+<li>置信度 = 1 -  显著性水平</li>
+</ul>
+</li>
+</ul>
+<h5 id="核心思想及步骤">核心思想及步骤
+</h5><ul>
+<li>利用估计量的抽样分布，结合置信水平，构造出包含总体参数的区间</li>
+<li>具体步骤：
+<ol>
+<li>选择合适的 点估计量
+<ul>
+<li>选 无偏、有效的点估计量</li>
+</ul>
+</li>
+<li>构造抽样分布
+<ul>
+<li>确定 点估计量的抽样分布</li>
+</ul>
+</li>
+<li>确定分位数
+<ul>
+<li>根据 置信水平 查抽样分布 的 分位数表</li>
+</ul>
+</li>
+<li>推导置信区间
+<ul>
+<li>不等式变形</li>
+<li>将 估计量的区间 转化为 总体参数 的区间</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="贝叶斯估计">贝叶斯估计
+</h4><ul>
+<li>思想：将参数视为随机变量，结合先验分布与数据得到后验分布，再取后验均值/中位数等作为估计</li>
+<li>步骤：
+<ol>
+<li>选择先验分布</li>
+<li>计算后验分布</li>
+<li>后验均值</li>
+<li>最小二乘法
+<ul>
+<li>最小化残差平方和，常用于回归模型</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="对比">对比
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>维度</th>
+          <th>点估计</th>
+          <th>区间估计</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>结果形式</td>
+          <td>单个数值（如\(\hat{μ}=175cm\)）</td>
+          <td>区间 + 置信水平（如 [173,177] cm, 95%）</td>
+      </tr>
+      <tr>
+          <td>核心优势</td>
+          <td>简洁、直观，便于后续计算</td>
+          <td>反映估计的不确定性，更具统计意义</td>
+      </tr>
+      <tr>
+          <td>核心劣势</td>
+          <td>无法量化不确定性</td>
+          <td>结果较复杂，需指定置信水平</td>
+      </tr>
+      <tr>
+          <td>适用场景</td>
+          <td>快速粗略估计、后续统计分析（如假设检验）的中间步骤</td>
+          <td>正式报告、决策制定（如产品质量控制、政策评估）</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="方差分析">方差分析
+</h2><h3 id="应用示例">应用示例
+</h3><ol>
+<li>同一个客群在实施某个策略前后的指标对比</li>
+<li>两个或多个客群对比同一指标，评估同一指标在不同客群上的差异</li>
+</ol>
+<h3 id="基本思路">基本思路
+</h3><ul>
+<li>判断数据的变化是不是某一因素导致</li>
+<li>用于两个及两个以上分组样本差异显著性检验的方法</li>
+<li>要检验的对象称为<strong>因素</strong>或<strong>因子</strong>（factor）</li>
+<li>因素的不同表现称为水平或处理（treatment）</li>
+<li>在每个因素水平下得到的样本数据称为观测值</li>
+<li>关心的是均值，但是判断均值之间是否存在差异时需要借助<strong>方差</strong></li>
+</ul>
+<h4 id="定性分析">定性分析
+</h4><ul>
+<li>组内误差
+<ul>
+<li>数据的差异是由个体差异导致的或者说是由抽样的随机性导致的</li>
+</ul>
+</li>
+<li>组间误差
+<ul>
+<li>组与组之间的差异有可能是随机因素导致的，也有可能是因素导致的</li>
+</ul>
+</li>
+<li>组间误差足够大，而组内误差又足够小时
+<ul>
+<li>可以认为因素和自变量之间存在显著差异</li>
+<li>也就是说因素和自变量之间存在某种关系</li>
+</ul>
+</li>
+</ul>
+<h4 id="定量分析">定量分析
+</h4><h5 id="组间误差-ssa">组间误差 (SSA)
+</h5><ul>
+<li>$SSA = \sum_{i \in G} n_i (\bar{Y}_i - \bar{Y})^2$</li>
+</ul>
+<h5 id="组内误差-sse">组内误差 (SSE)
+</h5><ul>
+<li>$SSE = \sum_{i \in G} \sum_{j \in O} (Y_{ij} - \bar{Y}_i)^2$</li>
+</ul>
+<h5 id="组间方差">组间方差
+</h5><ul>
+<li>$MSA = \frac{SSA}{k - 1} = \frac{\sum_{i \in G} n_i (\bar{Y}_i - \bar{Y})^2}{k - 1}$</li>
+</ul>
+<h5 id="组内方差">组内方差
+</h5><ul>
+<li>$MSE = \frac{SSE}{n - k} = \frac{\sum_{i \in G} \sum_{j \in O} (Y_{ij} - \bar{Y}_i)^2}{n - k}$</li>
+</ul>
+<p>将 MSA 和 MASE 进行对比，可以构造出 F 统计量，它服从自由度为 k-1和 n-k 的 F 分布</p>
+<ul>
+<li>$F = \frac{\text{MSA}}{\text{MSE}} \sim F(k - 1, n - k)$</li>
+</ul>
+<h4 id="单因素方差分析">单因素方差分析
+</h4><ul>
+<li>包含 1 个自变量(也称&quot;因素&quot;)</li>
+<li>且该自变量至少分为 2 个组别</li>
+<li>用于检验这 1 个因素的不同组别，对因变量的均值是否有显著影响</li>
+</ul>
+<h4 id="双因素方差分析">双因素方差分析
+</h4><ul>
+<li>包含 2 个自变量(因素A和因素B)</li>
+<li>用于同时检验
+<ul>
+<li>因素 A 的不同组别对因变量的影响（主效应 A）</li>
+<li>因素 B 的不同组别对因变量的影响（主效应 B）</li>
+<li>因素 A 和因素 B 的 “交互作用” 对因变量的影响（交互效应 A×B）</li>
+</ul>
+</li>
+<li>复杂多因素对因变量的共同影响</li>
+</ul>
+<h3 id="实施细节">实施细节
+</h3><h4 id="前提条件">前提条件
 </h4><ul>
 <li>
-<p><strong><code>util.checkForServerUpgrade()</code> 函数</strong>：</p>
+<p>差分析需要先判断样本是否满足：</p>
 <ul>
-<li>在 MySQL Shell 中可用</li>
-<li>让你能够验证 MySQL 服务器实例是否已准备好进行升级</li>
-<li>检查升级到 MySQL 8.0 时的兼容性错误和问题</li>
-<li>仅支持 MySQL Server 5.7 和 8.0 的通用可用（GA）版本</li>
-<li>如果你提供文件路径，会检查配置文件（<code>my.cnf</code> 或 <code>my.ini</code> ）</li>
+<li>每个分组中的每个值都必须来自同一个总体样本</li>
+<li>方差分析只能分析满足正态分布的指标
+<ul>
+<li>事实上，在产品运营中大部分指标都基本满足
+<ul>
+<li>几乎所有的转化率都近似正态分布：购买率、点击率、转化率、活跃率、留存率、复购率等；</li>
+<li>几乎所有的业务量都近似正态分布：客单价、每日新增用户数、渠道引流的流量等；</li>
+<li>几乎所有的用户画像指标都近似正态分布：年龄、城市、登录次数、使用时长等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>分析的样本必须是随机抽样得到</li>
 </ul>
 </li>
 <li>
-<p>MySQL Shell 的版本必须与你要升级到的 MySQL Server 版本相同或更高。</p>
+<p>如果方差分析得到的结论是组与组之间存在显著差异</p>
+<ul>
+<li>
+<p>需要进一步评估差异的大小</p>
 </li>
 <li>
-<p>以下示例检查一个 MySQL 服务器，以升级到 8.0.18 版本：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlsh --util checkForServerUpgrade user@localhost:3306 
-</span></span><span class="line"><span class="cl">  --target-version<span class="o">=</span>8.0.18 --config-path<span class="o">=</span>/etc/mysql/my.cnf
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-<h4 id="使用原地升级方法using-in-place-upgrade-method">使用原地升级方法（Using In-Place Upgrade Method）
-</h4><p>当你在同一版本系列内升级或从一个主要版本升级到下一个主要版本时，使用原地（物理）升级方法。</p>
+<p>用到指标 $R^2$</p>
 <ul>
-<li>停止 MySQL 服务器进程。</li>
-<li>使用文件复制备份当前数据库。（可选，但建议执行 ）</li>
-<li>用新版本替换 <code>mysqld</code> 二进制文件。</li>
-<li>使用新的二进制文件启动 MySQL 服务器进程。</li>
-<li>在 MySQL 8.0.16 之前，你必须运行 <code>mysql_upgrade</code>。在 MySQL 8.0.16 及更高版本中，服务器重启会自动执行所有升级任务。</li>
-</ul>
-<p>这是从 MySQL 5.7 升级到 8.0 的推荐方法。</p>
-<h4 id="使用逻辑升级方法using-logical-upgrade-method">使用逻辑升级方法（Using Logical Upgrade Method）
-</h4><p>当你要升级到一个或多个更高的主要版本时，使用逻辑（备份 / 恢复）升级方法。</p>
+<li>
+<p>$R^2=\frac{SSA}{SST}$</p>
 <ul>
-<li>使用 <code>mysqldump</code> 备份当前数据库。</li>
-<li>安装并初始化一个新的 MySQL 服务器。</li>
-<li>启动新的 MySQL 服务器。</li>
-<li>从转储文件恢复备份的数据库。
+<li>
+<p>$SST=SSA+SSE$</p>
 <ul>
-<li>由于新特性、变更特性、弃用特性或移除特性和功能带来的不兼容性，可能会导致错误。</li>
+<li>$SST$为总误差 ：组间误差与组内误差之和</li>
 </ul>
 </li>
-<li>在 MySQL 8.0.16 之前，你必须运行 <code>mysql_upgrade</code>。在 MySQL 8.0.16 及更高版本中，你必须关闭服务器并使用 <code>--upgrade=FORCE</code> 选项重启它，以执行剩余的升级任务。</li>
 </ul>
-<h5 id="使用-mysqldump-执行逻辑备份using-mysqldump-to-perform-a-logical-backup">使用 mysqldump 执行逻辑备份（Using mysqldump to Perform a Logical Backup）
-</h5><p>以下命令是升级过程中执行逻辑备份的推荐方式：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqldump --all-databases --routines --events --add-drop-table <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --lock-all-tables --flush-privileges<span class="o">=</span><span class="m">0</span> &gt; data-for-upgrade.sql
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>注意</strong>：使用 <code>mysqldump</code> 备份数据的流程在标题为 “执行备份（Performing Backups）” 的课程中有介绍。</p>
-<h5 id="其他方法other-methods">其他方法（Other Methods）
-</h5><p>如果你使用复制，可能需要执行滚动升级，即依次升级主机，而不同时关闭复制拓扑。</p>
-<p>你也可以通过在升级期间使用临时主机运行应用程序来减少停机时间，该临时主机在升级期间投入使用。</p>
-<h4 id="mysql_upgrade">mysql_upgrade
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="回归分析">回归分析
+</h2><p>假定因变量和自变量存在某种关系并且可以用适当的数学模型表达出来，然后可以借助模型根据给定的自变量来预测或解释因变量</p>
+<h3 id="变量间的关系">变量间的关系
+</h3><h4 id="函数关系">函数关系
+</h4><p>变量间的内在驱动逻辑</p>
+<p>变量y随着变量x 一起变化并且完全依赖于 x,$y=f(x)$</p>
+<h4 id="相关关系">相关关系
+</h4><p>变量间的伴随关系</p>
+<p>变量之间不是完全确定的关系，影响关系复杂</p>
+<ul>
+<li>
+<p>描述相关关系的常用工具是散点图</p>
+<ul>
+<li>通过散点图可以看出变量之间是否存在相关性以及相关性的强弱</li>
+</ul>
+</li>
+<li>
+<p>量化变量之间关系的强度，需要计算相关系数</p>
+<ul>
+<li>
+<p>总体相关系数</p>
+<ul>
+<li>$$
+            \rho = \frac{\mathrm{Cov}(X,Y)}{\sqrt{\mathrm{Var}(X)\cdot\mathrm{Var}(Y)}}
+            $$</li>
+</ul>
+</li>
+<li>
+<p>样本 Pearson 相关系数</p>
+<ul>
+<li>
+<p>$$
+r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}
+{\sqrt{\sum_{i=1}^{n}(x_i - \bar{x})^2 \cdot \sum_{i=1}^{n}(y_i - \bar{y})^2}}</p>
+<p>$$</p>
+</li>
+</ul>
+</li>
+<li>
+<p>当$r$的绝对值在 之间，$[0.6,1]$认为指标间是<strong>强相关</strong>，指标间的业务联系非常紧密。</p>
+</li>
+<li>
+<p>当$r$的绝对值在$[0.1,6]$ 之间，认为指标间是<strong>弱相关</strong>，指标间的业务联系不太紧密。</p>
+</li>
+<li>
+<p>当$r$的绝对值在$[0,0.1]$ 之间，认为指标间是<strong>无相关</strong>，指标间没有什么业务联系，也就是说当我们去运营指标 A 时，指标 B 不会产生相应的变化</p>
+<ul>
+<li>不相关并不代表是独立的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>注意 离群点会对相关系数产生较大的影响，计算时要进行剔除</p>
+</li>
+<li>
+<p>实际工作中，还需要关注相关关系的稳定性</p>
+</li>
+<li>
+<p>相关系数的显著性检验 通常使用 $t$检验</p>
+<ul>
+<li>
+<p>既适用小样本也适用于大样本</p>
+</li>
+<li>
+$$
+        t = \frac{r\sqrt{n-2}}{\sqrt{1-r^{2}}} \sim t(n-2)
+        $$</li>
+</ul>
+</li>
+<li>
+<p>注意</p>
+<ol>
+<li>相关关系不等同于因果关系，相关关系是伴随关系而不是因果关系</li>
+<li>强相关关系才具有业务价值，相关系数的绝对值在0.6以上</li>
+<li>相关关系的本质是 Y 的变化有多少能被 X 解释</li>
+<li>相关关系是不稳定的</li>
+</ol>
+</li>
+<li>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<h4 id="拟合优度和显著性">拟合优度和显著性
 </h4><ul>
-<li>检查数据库中的所有表，查看其与当前 MySQL 服务器版本是否存在不兼容性</li>
-<li>修复在存在潜在不兼容性的表中发现的任何问题</li>
-<li>升级系统表，以添加新版本中可用的任何新权限或功能</li>
-<li>用当前 MySQL 版本号标记所有已检查和修复的表</li>
-<li>MySQL 服务器 8.0.16 及更高版本不需要此工具。服务器会在启动期间执行所有升级流程。8.0.16 中引入了一个新选项 <code>--upgrade</code> 来控制升级过程。</li>
-</ul>
-<h5 id="版本versions">版本（Versions）
-</h5><p>在升级过程中，同一主机上可能同时存在多个版本的 <code>mysql_upgrade</code>。确保你执行正确版本的 <code>mysql_upgrade</code>，以便它能适配正确的 MySQL 目标版本。</p>
-<p><code>--upgrade</code> 选项有以下取值：</p>
+<li>
+<p>回归模型需要评价模型的拟合度和显著性，关系到能否通过回归模型做出可靠预测</p>
 <ul>
-<li><strong>AUTO（默认）</strong>：服务器会对发现的所有过时内容执行自动升级。</li>
-<li><strong>NONE</strong>：服务器在启动期间不执行任何自动升级步骤。</li>
-<li><strong>MINIMAL</strong>：如有必要，服务器会升级数据字典，但不会升级其他任何内容。</li>
-<li><strong>FORCE</strong>：如有必要，服务器会升级数据字典，并强制升级其他所有内容。</li>
+<li>
+<p>决定系数 $R^2$</p>
+<ul>
+<li>于度量因变量的变化中可由自变量解释部分所占的比例</li>
+<li>回归模型的解释力是否良好，值越接近1越好</li>
+</ul>
+</li>
+<li>
+$$
+        R^{2} = \frac{\mathrm{SSR}}{\mathrm{SST}} = \frac{\sum_{i=1}^{n}(\hat{y}_i - \bar{y})^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+        $$</li>
+<li>
+$$
+        R^{2} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}} = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+        $$<ul>
+<li>n 次观测值的总误差记为 SST,通常称之为总平方和（<em>total sum of squares</em>）
+<ul>
+<li>由两个部分构成</li>
+<li>SSE（残差平方和）</li>
+<li>回归平方和（<em>regression sum of squares</em>），记为 SSR</li>
+</ul>
+</li>
+<li>越接近<strong>1</strong>越好</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>回归方程的显著性进行检验</p>
+<ul>
+<li>$t$  检验（回归系数的检验）</li>
+<li>$F$ 检验（回归方程的检验）
+<ul>
+<li>告诉我们因变量的变化到底能不能通过自变量的变化进行解释</li>
+</ul>
+</li>
+<li>要关注$P$值，
+<ul>
+<li>如果$P$值小于0.05，说明模型以及模型的系数具备统计上的显著性</li>
+<li>如果$P$值小于0.01，说明模型是极其显著的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="残差的检验">残差的检验
+</h4><p>残差是因变量的观测值 $y_i$ 与  由回归方程求出的估计值 $\hat{y}_i$ 的差，它反映了通过回归方程预测 $y_i$ 时引起的误差。第 i 个观测值的残差可以表示为 $e_i = y_i-\hat{y}_i$</p>
+<ul>
+<li>
+<p>对残差进行标准化，得到标准化残差</p>
+<ul>
+<li>
+<p>$Z_{e_i} = \frac{e_i}{S_e}=\frac{y_i-\hat{y}_i}{S_e}$</p>
+<ul>
+<li>其中 $S_e$是残差的标准差</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="时间序列分析">时间序列分析
+</h2><h3 id="时间序列">时间序列
+</h3><ul>
+<li>
+<p>定义</p>
+<ul>
+<li>
+<p>同一现象在不同时间的相继观察值排列而成的序列</p>
+</li>
+<li>
+<p>一组按照时间顺序排列的数据点，常见于金融、运营、销售等领域</p>
+</li>
+</ul>
+</li>
+<li>
+<p>分类</p>
+<ul>
+<li>平稳序列
+<ul>
+<li>基本上不存在趋势的序列，即各个观察值在某个固定的水平上波动，不同的时间段波动程度不同，但并不存在某种规律</li>
+<li>特点就是均值、方差恒定，协方差不随时间变化（协方差只依赖于时间间隔，与具体的时间点无关）</li>
+</ul>
+</li>
+<li>非平稳序列
+<ul>
+<li>特点就是均值、方差恒定，协方差不随时间变化（协方差只依赖于时间间隔，与具体的时间点无关）</li>
+<li><strong>趋势</strong>（trend）：时间序列长期呈现出来的某种上升或下降的变动，可以是线性的也可以是非线性的</li>
+<li><strong>季节性</strong>（seasonality）：时间序列在一年内出现的周期性波动。商业活动中经常说的“销售旺季”、“旅游淡季”这类术语就是对季节性的描述</li>
+<li><strong>周期性</strong>（cyclicity）：时间序列中呈现出来的围绕长期趋势的波浪式或振荡式变动
+<ul>
+<li>周期性是无固定规律的，变动周期通常在一年以上且周期长度不一</li>
+<li>序列较短时不太容易发现周期性</li>
+</ul>
+</li>
+<li><strong>随机性</strong>或<strong>不规则波动</strong>（irregular variations）：时间序列中的偶然性因素，是时间序列中去除趋势、周期性和季节性之后剩下的部分</li>
+<li>按照四种成分对时间序列的影响方式不同，时间序列可以分解为
+<ul>
+<li>加法模型（additive model）</li>
+<li>乘法模型（multiplicative model）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="常见的时间序列模型">常见的时间序列模型
+</h3><ol>
+<li>移动平均（<strong>MA</strong>）模型：通过设置大小为 的移动窗口对窗口内的时间序列求平均作为预测值</li>
+<li>指数平滑模型：通过对过去的观察值加权平均进行预测的一种方法，指数平滑是加权平均的一种特殊形式，观察值的时间越久远，其权重就呈现指数下降。指数平滑模型有一次指数平滑、二次指数平滑、三次指数平滑等不同的方法</li>
+<li>自回归（<strong>AR</strong>）模型：预测值由该时间序列的过去值经过线性模型计算获得，一般记为 AR(p)，其中 p 表示阶数</li>
+<li><strong>ARMA</strong>：顾名思义，该模型是自回归（AR）和移动平均（MA）模型的结合，适用于平稳序列，一般记为 ARMA(p, q)，其中 p 表示 AR 的阶数，q 表示 MA 的阶数</li>
+<li><strong>ARIMA</strong>：通过差分操作将非平稳序列转化为平稳序列后建模，通过记为 ARIMA(p, d, q)，其中 p 表示 AR 阶数、d 表示差分次数、q 表示 MA 阶数</li>
+<li><strong>SARIMA</strong> / <strong>SARIMAX</strong> 模型：对于没有其它外部因素影响且无明显季节性的数据（例如股票的每日收盘价），ARIMA 是一种可行的解决方案，但是对于存在明显季节性规律或者需要引入额外解释变量（如促销、节假日、天气等）的时间序列，SARIMA 和 SARIMAX 是更好的选择。SARIMA 模型在 ARIMA 的基础上引入了季节性项和外部变量，其中季节性项有四个参数<code>(P, D, Q, s)</code>，分别代表季节性自回归阶数、季节性差分次数、季节性移动平均阶数和季节周期长度（例如：12 表示月度数据的一年周期）；而 SARIMAX 模型在 SARIMA 的基础上又引入了其他相关的解释变量来帮助预测</li>
+</ol>
+</li>
 </ul>
 
 </section>
@@ -2099,6 +2034,32 @@
 
     </footer>
 
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
 
     
 </article>
@@ -2238,7 +2199,7 @@
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
                 
                 >
-            </script><script type="text/javascript" src="/ts/main.fed6c5aa91159d8b8d425f1ca63e93896172c110e1dcbb6e99146c23118c4b40.js" defer></script>
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');

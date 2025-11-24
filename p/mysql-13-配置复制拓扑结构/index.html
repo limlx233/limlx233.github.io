@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="目标：\n描述 MySQL InnoDB 集群和组复制 例举 c 的典型用例 对比两种不同的部署模式 配置 MySQL InnoDB 集群 管理 MySQL InnoDB 集群 概述及架构\r什么是 MySQL InnoDB 集群\r为 MySQL 提供完整且可扩展的高可用性解决方案 易于配置和管理集群中的一组服务器实例 使用 MySQL Group Replication（MySQL 组复制 ）在组内所有服务器之间复制数据 AdminAPI 让您无需直接操作组复制。 您可通过 MySQL Shell（使用您选择的 Python 或 JavaScript 编程语言 ）使用 AdminAPI。 自动管理故障转移 如果组中的某台服务器出现故障，集群会自行重新配置。 该组至少需要三台服务器才能实现容错 使客户端能够透明地连接到该组 客户端通过 MySQL Router 连接到该组，无需了解组内各个实例的详细信息。 要使用 MySQL InnoDB Cluster，您必须下载并安装 MySQL Shell 和 MySQL Router 软件。\n">
+<title>MySQL-13-配置复制拓扑结构</title>
+
+<link rel='canonical' href='http://localhost:1313/p/mysql-13-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-13-配置复制拓扑结构">
+<meta property='og:description' content="目标：\n描述 MySQL InnoDB 集群和组复制 例举 c 的典型用例 对比两种不同的部署模式 配置 MySQL InnoDB 集群 管理 MySQL InnoDB 集群 概述及架构\r什么是 MySQL InnoDB 集群\r为 MySQL 提供完整且可扩展的高可用性解决方案 易于配置和管理集群中的一组服务器实例 使用 MySQL Group Replication（MySQL 组复制 ）在组内所有服务器之间复制数据 AdminAPI 让您无需直接操作组复制。 您可通过 MySQL Shell（使用您选择的 Python 或 JavaScript 编程语言 ）使用 AdminAPI。 自动管理故障转移 如果组中的某台服务器出现故障，集群会自行重新配置。 该组至少需要三台服务器才能实现容错 使客户端能够透明地连接到该组 客户端通过 MySQL Router 连接到该组，无需了解组内各个实例的详细信息。 要使用 MySQL InnoDB Cluster，您必须下载并安装 MySQL Shell 和 MySQL Router 软件。\n">
+<meta property='og:url' content='http://localhost:1313/p/mysql-13-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-29T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-08-29T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="MySQL-13-配置复制拓扑结构">
+<meta name="twitter:description" content="目标：\n描述 MySQL InnoDB 集群和组复制 例举 c 的典型用例 对比两种不同的部署模式 配置 MySQL InnoDB 集群 管理 MySQL InnoDB 集群 概述及架构\r什么是 MySQL InnoDB 集群\r为 MySQL 提供完整且可扩展的高可用性解决方案 易于配置和管理集群中的一组服务器实例 使用 MySQL Group Replication（MySQL 组复制 ）在组内所有服务器之间复制数据 AdminAPI 让您无需直接操作组复制。 您可通过 MySQL Shell（使用您选择的 Python 或 JavaScript 编程语言 ）使用 AdminAPI。 自动管理故障转移 如果组中的某台服务器出现故障，集群会自行重新配置。 该组至少需要三台服务器才能实现容错 使客户端能够透明地连接到该组 客户端通过 MySQL Router 连接到该组，无需了解组内各个实例的详细信息。 要使用 MySQL InnoDB Cluster，您必须下载并安装 MySQL Shell 和 MySQL Router 软件。\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">一份数字存档</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#概述及架构">概述及架构</a>
+      <ol>
+        <li><a href="#什么是-mysql-innodb-集群">什么是 MySQL InnoDB 集群</a></li>
+        <li><a href="#架构">架构</a>
+          <ol>
+            <li><a href="#mysql-组复制插件mysql-group-replication-plugin">MySQL 组复制插件（MySQL Group Replication Plugin）</a></li>
+            <li><a href="#组复制的工作原理">组复制的工作原理</a></li>
+            <li><a href="#单主模式">单主模式</a></li>
+            <li><a href="#多主模式">多主模式</a></li>
+            <li><a href="#冲突解决">冲突解决</a></li>
+            <li><a href="#共识与法定人数consensus-and-quorum">共识与法定人数（Consensus and Quorum）</a></li>
+            <li><a href="#使用场景">使用场景</a></li>
+            <li><a href="#组复制要求和限制">组复制：要求和限制</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#工具">工具</a>
+      <ol>
+        <li><a href="#mysql-shellmysqlsh">MySQL Shell（mysqlsh）</a>
+          <ol>
+            <li><a href="#使用-mysql-shell-执行脚本using-mysql-shell-to-execute-a-script">使用 MySQL Shell 执行脚本（Using MySQL Shell to Execute a Script）</a></li>
+          </ol>
+        </li>
+        <li><a href="#mysql-路由器mysqlrouter">MySQL 路由器（mysqlrouter）</a></li>
+      </ol>
+    </li>
+    <li><a href="#配置集群">配置集群</a>
+      <ol>
+        <li><a href="#部署场景deployment-scenarios">部署场景（Deployment Scenarios）</a></li>
+        <li><a href="#部署沙盒实例并创建集群">部署沙盒实例并创建集群</a></li>
+        <li><a href="#分布式恢复distributed-recovery">分布式恢复（Distributed Recovery）</a>
+          <ol>
+            <li><a href="#将客户端连接到集群connecting-clients-to-the-cluster">将客户端连接到集群（Connecting Clients to the Cluster）</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#管理集群">管理集群</a>
+      <ol>
+        <li><a href="#管理沙盒实例managing-sandbox-instances">管理沙盒实例（Managing Sandbox Instances）</a></li>
+        <li><a href="#检查集群状态checking-the-status-of-a-cluster">检查集群状态（Checking the Status of a Cluster）</a></li>
+        <li><a href="#查看集群的结构viewing-the-structure-of-a-cluster">查看集群的结构（Viewing the Structure of a Cluster）</a></li>
+        <li><a href="#检查实例的状态checking-the-state-of-an-instance">检查实例的状态（Checking the State of an Instance）</a></li>
+        <li><a href="#从集群中移除实例removing-instances-from-the-cluster">从集群中移除实例（Removing Instances from the Cluster）</a></li>
+        <li><a href="#将实例重新加入集群rejoining-an-instance-to-the-cluster">将实例重新加入集群（Rejoining an Instance to the Cluster）</a></li>
+        <li><a href="#恢复法定人数丢失restoring-quorum-loss">恢复法定人数丢失（Restoring Quorum Loss）</a></li>
+        <li><a href="#从严重故障中恢复集群recovering-the-cluster-from-a-major-outage">从严重故障中恢复集群（Recovering the Cluster from a Major Outage）</a></li>
+        <li><a href="#解散集群dissolving-a-cluster">解散集群（Dissolving a Cluster）</a></li>
+        <li><a href="#禁用-super_read_only">禁用 super_read_only</a></li>
+        <li><a href="#自定义-mysql-innodb-集群customizing-a-mysql-innodb-cluster">自定义 MySQL InnoDB 集群（Customizing a MySQL InnoDB Cluster）</a></li>
+        <li><a href="#自定义实例customizing-an-instance">自定义实例（Customizing an Instance）</a></li>
+        <li><a href="#在集群中配置安全连接configuring-secure-connection-in-a-cluster">在集群中配置安全连接（Configuring Secure Connection in a Cluster）</a></li>
+        <li><a href="#创建服务器白名单creating-a-server-whitelist">创建服务器白名单（Creating a Server Whitelist）</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql/" style="background-color: ; color: #fff;">
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/mysql-13-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">MySQL-13-配置复制拓扑结构</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-08-29</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/mysql-13-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/mysql-13-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>目标：</p>
+<ul>
+<li>描述 MySQL InnoDB 集群和组复制</li>
+<li>例举 c 的典型用例</li>
+<li>对比两种不同的部署模式</li>
+<li>配置 MySQL InnoDB 集群</li>
+<li>管理 MySQL InnoDB 集群</li>
+</ul>
+<h2 id="概述及架构">概述及架构
+</h2><h3 id="什么是-mysql-innodb-集群">什么是 MySQL InnoDB 集群
+</h3><ul>
+<li>为 MySQL 提供完整且可扩展的高可用性解决方案
+<ul>
+<li>易于配置和管理集群中的一组服务器实例</li>
+</ul>
+</li>
+<li>使用 MySQL Group Replication（MySQL 组复制 ）在组内所有服务器之间复制数据
+<ul>
+<li>AdminAPI 让您无需直接操作组复制。</li>
+<li>您可通过 MySQL Shell（使用您选择的 Python 或 JavaScript 编程语言 ）使用 AdminAPI。</li>
+</ul>
+</li>
+<li>自动管理故障转移
+<ul>
+<li>如果组中的某台服务器出现故障，集群会自行重新配置。</li>
+<li>该组至少需要三台服务器才能实现容错</li>
+</ul>
+</li>
+<li>使客户端能够透明地连接到该组
+<ul>
+<li>客户端通过 MySQL Router 连接到该组，无需了解组内各个实例的详细信息。</li>
+</ul>
+</li>
+</ul>
+<p>要使用 MySQL InnoDB Cluster，您必须下载并安装 MySQL Shell 和 MySQL Router 软件。</p>
+<h3 id="架构">架构
+</h3><img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211323864.png" alt="image-20250721132324759" style="zoom:67%;" />
+<p>集群依赖于 MySQL 组复制（MySQL Group Replication），该功能安装在集群中的每个服务器实例上。组复制是一个 MySQL 服务器插件，使你能够创建灵活的复制拓扑，若集群中的某台服务器离线，这些拓扑可自动重新配置。要形成一个具备高可用性的组，必须至少有三台服务器。组可以在单主模式（同一时间只有一台服务器接受更新）或多主模式（所有服务器都可接受更新，即便更新是并发发出的 ）下运行。</p>
+<p>MySQL 组复制插件在 5.7 版本中引入，但直接使用起来较为复杂。MySQL InnoDB Cluster 引入了新的组件，这些组件紧密集成，让组复制的设置和管理变得更加容易。其中包括 MySQL Router，它位于应用程序和集群之间，将流量路由到合适的集群实例。如果主实例出现故障，集群会自动将另一个实例提升为主实例，MySQL Router 会开始将流量路由到新的主实例。所有这些操作都无需数据库管理员（DBA）干预。</p>
+<p>你可以使用 MySQL Shell 来管理集群。MySQL Shell 是一个新的交互式界面，使你能够通过新的管理 API（Admin API），使用熟悉的 JavaScript 或 Python 语法来管理 MySQL。</p>
+<h4 id="mysql-组复制插件mysql-group-replication-plugin">MySQL 组复制插件（MySQL Group Replication Plugin）
+</h4><p>组复制是 MySQL 的一个插件，它使一组服务器能够在彼此之间复制数据，并具备以下功能：</p>
+<ul>
+<li>自动处理服务器故障转移</li>
+<li>当成员因崩溃、故障或重新连接而加入或离开组时，自动重新配置组</li>
+<li>容错能力</li>
+<li>冲突解决</li>
+<li>一个高可用、已复制的数据库</li>
+</ul>
+<h4 id="组复制的工作原理">组复制的工作原理
+</h4><ul>
+<li>服务器属于一个复制组。
+<ul>
+<li>一个复制组最多可包含 9 台服务器。</li>
+<li>至少需要 3 台服务器才能实现容错。</li>
+<li>组复制使用全局事务标识符（GTIDs）。</li>
+<li>该组由一个 UUID 定义。</li>
+</ul>
+</li>
+<li>组成员身份自动管理。
+<ul>
+<li>加入或重新加入组的服务器会自动与其他服务器同步。</li>
+<li>服务器可随时离开和加入组。</li>
+</ul>
+</li>
+<li>复制组以以下两种模式之一运行：
+<ul>
+<li>单主模式：组中仅有一台服务器接受更新。</li>
+<li>多主模式：组中的所有服务器都接受更新。</li>
+</ul>
+</li>
+<li>更改会复制到组的所有成员。</li>
+</ul>
+<p>成员服务器被配置为属于一个复制组。根据组复制模式的不同，客户端向一个或多个成员写入数据。更改会复制到复制组的所有成员。</p>
+<p>组可以在单主模式下运行，具备自动主选举功能，此时仅有一个成员接受更新。或者，组也可以部署在多主模式下，在此模式中，所有成员都接受更新，即便这些更新是并发发出的。</p>
+<h4 id="单主模式">单主模式
+</h4><ul>
+<li>一个组成员接受写操作（主节点）。</li>
+<li>其余组成员作为只读的热备（从节点）。</li>
+<li>这是默认模式，在大多数场景中效果最佳。
+<ul>
+<li>应用程序和开发人员仅与单个服务器交互以进行更新。</li>
+<li>这避免了多主模式的一些限制。</li>
+<li>应用程序可以连接到任何从节点以读取数据。</li>
+</ul>
+</li>
+<li>如果主节点发生故障，组会自动选举一个新的主节点：(下方图示说明：最初服务器 S1 是主节点，写客户端与 S1 交互、读客户端可连接 S1 - S5 ；当 S1 故障后，组自动选举，最终 S2 成为新主节点，写客户端转而与 S2 交互)
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211328821.png" alt="image-20250721132807766" style="zoom:80%;" /></li>
+</ul>
+<h4 id="多主模式">多主模式
+</h4><ul>
+<li>所有服务器都可接收更新，即便更新是并发执行的。</li>
+<li>然而，它并不能扩展写操作，因为所有服务器仍需写入所有更新。</li>
+<li>如果某台服务器发生故障，客户端可连接到复制组中的任何其他服务器。</li>
+<li>与单主模式相比，存在更多限制</li>
+</ul>
+<p>（下方图示说明：初始所有服务器（S1 - S5 ）都是主节点，写客户端可连任意节点；当 S1 故障后，S1 的客户端可连接到 S3 ）
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211329706.png" alt="image-20250721132958656" style="zoom:80%;" /></p>
+<h4 id="冲突解决">冲突解决
+</h4><ul>
+<li>组中的每个服务器独立执行事务，但所有服务器必须就决策达成一致。
+<ul>
+<li>读写事务在被组接收时进行提交。
+<ul>
+<li>为了应用事务，大多数成员必须同意（“认证”）该事务在全局事务序列中的顺序。</li>
+</ul>
+</li>
+<li>只读事务不需要组批准，会立即提交。</li>
+</ul>
+</li>
+<li>如果两个并发事务影响同一行，就会发生冲突。
+<ul>
+<li>首先提交的事务 “获胜”。其他事务回滚。</li>
+</ul>
+</li>
+<li>如果网络分区导致出现 “脑裂” 情况（组内成员无法达成一致），则系统无法达成共识，需要人工干预。</li>
+</ul>
+<h4 id="共识与法定人数consensus-and-quorum">共识与法定人数（Consensus and Quorum）
+</h4><ul>
+<li>每当发生需要复制的更改时（如常规事务和组成员身份变更 ），组需要达成共识。</li>
+<li>共识或法定人数要求组内过半数（超过一半 ）成员就某一决策达成一致。</li>
+<li>当发生多次非自愿故障，导致多数服务器突然从组中移除时，可能会失去法定人数。
+<ul>
+<li>剩余服务器无法判断其他服务器是崩溃了，还是网络分区使它们被隔离。</li>
+<li>剩余服务器无法自动重新配置。需要人工干预。</li>
+</ul>
+</li>
+<li>任何自愿退出组的服务器，可通知组内其他成员进行自我重新配置。因此，法定人数可得以维持。</li>
+</ul>
+<p><strong>示例</strong>：在一个由 5 台服务器组成的组中，如果其中 3 台突然无响应，多数派就无法形成，因此无法达成法定人数。实际上，剩下的 2 台无法判断另外 3 台是崩溃了，还是网络分区使这 2 台被单独隔离，因此组无法自动重新配置。参考标题为《恢复法定人数丢失（Restoring Quorum Loss）》的幻灯片，了解恢复集群法定人数的流程。</p>
+<p>不过，在上述 5 台服务器中有 3 台同时离开的场景中，如果这 3 台离开的服务器逐一告知组它们要离开，那么成员身份就能从 5 台调整为 2 台，同时在调整过程中保障法定人数。</p>
+<h4 id="使用场景">使用场景
+</h4><ul>
+<li>弹性复制（Elastic replication）：
+<ul>
+<li>涉及复制基础架构的服务器数量非常灵活多变的环境。</li>
+</ul>
+</li>
+<li>高可用分片（Highly available shards）：
+<ul>
+<li>分片是一种实现写操作横向扩展的流行方法。</li>
+<li>每个分片可映射到一个复制组。</li>
+</ul>
+</li>
+<li>作为标准主 - 从复制的替代方案（As an alternative to standard master - slave replication）：
+<ul>
+<li>使用单主模式时，以下操作是自动进行的：
+<ul>
+<li>主 / 从角色的分配</li>
+<li>当前主节点发生故障时，新主节点的选举</li>
+<li>在主节点和从节点上设置读 / 写模式</li>
+<li>关于哪个服务器是主节点的全局一致视图</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="组复制要求和限制">组复制：要求和限制
+</h4><ul>
+<li><strong>必需条件（Required）</strong>
+<ul>
+<li>通信方面：
+<ul>
+<li>参与复制的服务器需处于相近网络位置（低延迟网络环境 ），以降低延迟。</li>
+</ul>
+</li>
+<li>冲突检测方面：
+<ul>
+<li>使用 InnoDB 存储引擎。</li>
+<li>每张表必须有主键。</li>
+<li>启用 GTIDs（全局事务标识符 ）。</li>
+</ul>
+</li>
+<li>复制方面：
+<ul>
+<li>启用二进制日志记录及从库更新功能。</li>
+<li>二进制日志格式为 ROW 格式。</li>
+<li>元数据必须以 TABLE 格式存储。</li>
+<li>设置 <code>transaction_write_set_extraction = XXHASH64</code> 。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>禁止情况（Forbidden）</strong>
+<ul>
+<li>常规情况：
+<ul>
+<li>二进制日志事件校验和。</li>
+<li>表锁和命名锁。</li>
+<li>复制过滤器。</li>
+</ul>
+</li>
+<li>多主模式下：
+<ul>
+<li>可串行化（SERIALIZABLE ）隔离级别。</li>
+<li>级联外键。</li>
+<li>在不同成员上对同一对象执行并发的数据定义语言（DDL ）和数据操作语言（DML ）语句 。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>必须确保 <code>transaction_write_set_extraction</code> 变量设置为 <code>XXHASH64</code>，这样在收集行记录写入二进制日志时，服务器也会收集写集合。基于主键的写集合能简化操作，并且提供一个唯一标识被修改行的标签。组复制利用该标签检测冲突。</p>
+<p>在多主模式下，不能在不同成员上对同一对象执行数据定义语言（DDL ）和数据操作语言（DML ）语句，因为这可能导致无法检测的冲突。</p>
+<h2 id="工具">工具
+</h2><h3 id="mysql-shellmysqlsh">MySQL Shell（mysqlsh）
+</h3><ul>
+<li>是一款面向 MySQL 的高级客户端和代码编辑器。</li>
+<li>支持使用 JavaScript、Python 或 SQL 命令进行脚本编写
+<ul>
+<li>你可以交互输入命令，也可以批量执行命令。</li>
+<li>可通过分别输入 <code>\js</code>、<code>\py</code> 或 <code>\sql</code>，在语言之间切换。</li>
+</ul>
+</li>
+<li>能够通过 API 访问 MySQL 功能
+<ul>
+<li><strong>XDevAPI</strong>：与运行 X 插件的 MySQL 服务器通信，以处理关系型数据和 MySQL 文档存储。</li>
+<li><strong>AdminAPI</strong>：配置和管理 MySQL InnoDB 集群。</li>
+</ul>
+</li>
+<li>支持以制表符分隔、表格和 JSON（JavaScript 对象表示法 ）格式输出。</li>
+<li>通过全局<code>Session</code>（会话 ）对象与 MySQL 服务器交互
+<ul>
+<li>若使用 Python 脚本，可通过调用 <code>mysqlx</code> 模块的 <code>getSession()</code> 方法创建 <code>Session</code> 对象。</li>
+<li>若使用 SQL，客户端连接时会创建 <code>Session</code> 对象。</li>
+</ul>
+</li>
+</ul>
+<h4 id="使用-mysql-shell-执行脚本using-mysql-shell-to-execute-a-script">使用 MySQL Shell 执行脚本（Using MySQL Shell to Execute a Script）
+</h4><p>示例：</p>
+<ul>
+<li>
+<p>从文件加载 JavaScript 代码进行批处理：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ mysqlsh --file script.js
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>将 JavaScript 文件重定向到标准输入以执行：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ mysqlsh &lt; script.js
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>将 SQL 重定向到标准输入以执行：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;show databases;&#34;</span> <span class="p">|</span> mysqlsh --sql --uri root@127.0.0.1:3306
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>使批处理文件可执行（仅适用于 Linux）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/usr/local/mysql-shell/bin/mysqlsh --file
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>print<span class="o">(</span><span class="s2">&#34;Hello World\n&#34;</span><span class="o">)</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="mysql-路由器mysqlrouter">MySQL 路由器（mysqlrouter）
+</h3><ul>
+<li>
+<p>作为中间件，在客户端应用与后端 MySQL 服务器之间提供透明路由功能</p>
+</li>
+<li>
+<p>通过自动路由连接来管理故障转移</p>
+<ul>
+<li>无需自定义代码；采用负载均衡策略</li>
+</ul>
+</li>
+<li>
+<p>提供负载均衡功能</p>
+<ul>
+<li>将数据库连接分布到服务器池中，以实现性能优化和可扩展性</li>
+</ul>
+</li>
+<li>
+<p>实现了可插拔架构</p>
+<ul>
+<li>开发者可扩展产品，并为自定义用例创建插件</li>
+</ul>
+<p><img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202507211508890.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250721150849660"
+	
+	
+></p>
+</li>
+</ul>
+<h2 id="配置集群">配置集群
+</h2><h3 id="部署场景deployment-scenarios">部署场景（Deployment Scenarios）
+</h3><p>你可以使用以下两种方法之一配置 MySQL InnoDB 集群：</p>
+<ul>
+<li><strong>沙盒部署（Sandbox deployment）</strong>：允许你在生产服务器部署之前，在本地测试 MySQL InnoDB 集群。</li>
+<li><strong>生产部署（Production deployment）</strong>：允许你在网络中的多台主机上，部署构成集群的各个实例</li>
+</ul>
+<h3 id="部署沙盒实例并创建集群">部署沙盒实例并创建集群
+</h3><ol>
+<li>
+<p>在 3310、3320 和 3330 端口部署三个沙盒实例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">deploySandboxInstance</span><span class="p">(</span><span class="mi">3310</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">deploySandboxInstance</span><span class="p">(</span><span class="mi">3320</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">deploySandboxInstance</span><span class="p">(</span><span class="mi">3330</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>连接到种子实例（数据所在的实例 ）并创建集群：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="err">\</span><span class="nx">connect</span> <span class="nx">root</span><span class="err">@</span><span class="nx">localhost</span><span class="o">:</span><span class="mi">3310</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">cluster</span> <span class="o">=</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">createCluster</span><span class="p">(</span><span class="s1">&#39;mycluster&#39;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>添加实例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">cluster</span><span class="p">.</span><span class="nx">addInstance</span><span class="p">(</span><span class="mi">3320</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">cluster</span><span class="p">.</span><span class="nx">addInstance</span><span class="p">(</span><span class="mi">3330</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<p><strong>补充说明</strong>：
+<code>dba</code> shell 全局变量代表 AdminAPI。你可以调用其 <code>deploySandboxInstance</code> 方法，传入实例所需的 TCP 端口作为参数。</p>
+<p>然后，你可以使用 shell 的 <code>\connect</code> 方法（或其简写形式，如示例中的 <code>\connect user@localhost:port</code> ）连接到实例。本示例使用 URI 字符串指定连接详情，但你也可以使用字典。</p>
+<p>当你使用 <code>dba.createCluster()</code> 创建集群时，该操作会返回一个 <code>cluster</code> 对象，你可以将其赋值给变量。你可以使用此对象操作集群，例如添加实例或检查集群状态。如果你希望日后重新获取集群，例如在重启 MySQL Shell 后，可使用 <code>dba.getCluster(clustername, options)</code>。将 <code>connectToPrimary</code> 选项设置为 <code>false</code> 以查询并连接到主实例。例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">cluster1</span> <span class="o">=</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">getCluster</span><span class="p">(</span><span class="s1">&#39;mycluster&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">connectToPrimary</span><span class="o">:</span><span class="kc">false</span><span class="p">})</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>MySQL InnoDB 集群依赖 <code>SET PERSIST</code> 来持久化实例配置设置。只有在运行 MySQL 8.0 或更高版本，且 <code>persisted_globals_load=ON</code>（默认设置 ）时，自动持久化才可用。在支持自动持久化的本地实例上，配置设置会存储在实例的 <code>mysqld-auto.cnf</code> 文件中。如果本地实例不支持自动持久化，AdminAPI 会尝试将这些更改写入实例的选项文件。</p>
+<h3 id="分布式恢复distributed-recovery">分布式恢复（Distributed Recovery）
+</h3><ul>
+<li>是用于同步加入或重新加入集群的成员节点数据的过程。</li>
+<li>选择集群中一个已存在的成员节点作为 “捐赠者（donor）”，以更新待加入的成员节点。</li>
+<li>有两种可用方式：
+<ul>
+<li>克隆恢复（Clone recovery）
+<ul>
+<li>使用克隆插件（clone plugin）对捐赠者节点的数据进行快照，并将快照恢复到待加入的成员节点。</li>
+<li>会删除待加入成员节点中所有已存在的数据。</li>
+<li>MySQL 8.0.17 及以上版本可用。</li>
+</ul>
+</li>
+<li>增量恢复（Incremental recovery）
+<ul>
+<li>复制捐赠者节点的二进制日志，并在待加入的成员节点上应用这些事务。</li>
+<li>如果所有集群成员节点中所需的二进制日志已被清理（purge），则恢复会失败。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>补充说明</strong>：
+默认情况下，集群会自动选择最合适的恢复方式，但你也可以选择配置此行为。你可以在 <code>cluster.addInstance()</code> 方法中使用 <code>recoveryMethod</code> 选项来指定恢复方式，有效值为 <code>'clone'</code> 和 <code>'incremental'</code>。</p>
+<p>从 8.0.17 版本开始，若在一个已安装 MySQL 克隆插件（MySQL Clone plugin）的实例上，使用 <code>dba.createCluster()</code> 创建新集群，克隆插件会被自动安装，且集群会配置为支持克隆恢复。InnoDB 集群恢复账号会被创建，并赋予所需的 <code>BACKUP_ADMIN</code> 权限，以支持克隆功能</p>
+<h4 id="将客户端连接到集群connecting-clients-to-the-cluster">将客户端连接到集群（Connecting Clients to the Cluster）
+</h4><ol>
+<li>
+<p>在与应用程序相同的主机上安装 MySQL Router。</p>
+</li>
+<li>
+<p>使用种子实例（seed instance）上的元数据服务器引导（bootstrap）MySQL Router：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ mysqlrouter --bootstrap user@hostname:port --directory<span class="o">=</span>directory_path
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>启动 MySQL Router：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ directory_path/start.sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>这会创建读 / 写（read/write）和只读（read-only）TCP 端口。</li>
+</ul>
+</li>
+<li>
+<p>将客户端连接到合适的 TCP 端口。</p>
+<ul>
+<li>例如，使用 MySQL Shell 以 root 用户连接到读 / 写端口 6446：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ ./bin/mysqlsh --uri root@localhost:6446
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>要验证你连接到的机器，可查询 <code>port</code> 和 <code>hostname</code> 服务器变量。</p>
+</li>
+</ol>
+<p><strong>补充说明</strong>：
+<code>--directory</code> 选项配置 MySQL Router 从一个独立的目录运行。这使你能够在同一主机上部署多个 Router 实例，且无需 root 权限。</p>
+<h2 id="管理集群">管理集群
+</h2><h3 id="管理沙盒实例managing-sandbox-instances">管理沙盒实例（Managing Sandbox Instances）
+</h3><p>使用以下函数管理沙盒实例：</p>
+<ul>
+<li><code>dba.deploySandboxInstance(port)</code>：创建一个新实例。</li>
+<li><code>dba.startSandboxInstance(port)</code>：启动一个沙盒实例。</li>
+<li><code>dba.stopSandboxInstance(port)</code>：优雅地停止一个正在运行的实例，与 <code>dba.killSandboxInstance()</code> 不同。</li>
+<li><code>dba.killSandboxInstance(port)</code>：立即停止一个正在运行的实例。适用于模拟意外停机场景。</li>
+<li><code>dba.deleteSandboxInstance(port)</code>：从文件系统中移除一个沙盒实例。</li>
+</ul>
+<p><strong>注意</strong>
+这些函数中的每一个都接受一个可选的 <code>options</code>（选项）对象作为第二个参数，该对象会影响操作结果</p>
+<h3 id="检查集群状态checking-the-status-of-a-cluster">检查集群状态（Checking the Status of a Cluster）
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">cluster</span> <span class="o">=</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">getCluster</span><span class="p">(</span><span class="s2">&#34;mycluster&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">cluster</span><span class="p">.</span><span class="nx">status</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;clusterName&#34;</span><span class="o">:</span> <span class="s2">&#34;mycluster&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;defaultReplicaSet&#34;</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;name&#34;</span><span class="o">:</span> <span class="s2">&#34;default&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;primary&#34;</span><span class="o">:</span> <span class="s2">&#34;localhost:3320&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;ssl&#34;</span><span class="o">:</span> <span class="s2">&#34;REQUIRED&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;status&#34;</span><span class="o">:</span> <span class="s2">&#34;OK&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;statusText&#34;</span><span class="o">:</span> <span class="s2">&#34;Cluster is ONLINE and can tolerate up to ONE failure.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;topology&#34;</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;localhost:3310&#34;</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;address&#34;</span><span class="o">:</span> <span class="s2">&#34;localhost:3310&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;mode&#34;</span><span class="o">:</span> <span class="s2">&#34;R/O&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;readReplicas&#34;</span><span class="o">:</span> <span class="p">[],</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;role&#34;</span><span class="o">:</span> <span class="s2">&#34;HA&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;status&#34;</span><span class="o">:</span> <span class="s2">&#34;ONLINE&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;localhost:3320&#34;</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">...</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;localhost:3330&#34;</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">...</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;groupInformationSourceMember&#34;</span><span class="o">:</span> <span class="s2">&#34;localhost:3310&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>注意</strong>
+连接集群的方式会影响 <code>cluster.status()</code> 的输出。如果通过只读连接访问集群，你将只能看到与从实例（secondary instances）相关的状态信息。若要查看主实例（primary instance (s)）的状态信息，请使用读 / 写连接。</p>
+<h3 id="查看集群的结构viewing-the-structure-of-a-cluster">查看集群的结构（Viewing the Structure of a Cluster）
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">cluster</span><span class="p">.</span><span class="nx">describe</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;clusterName&#34;</span><span class="o">:</span> <span class="s2">&#34;mycluster&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;defaultReplicaSet&#34;</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;name&#34;</span><span class="o">:</span> <span class="s2">&#34;default&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;instances&#34;</span><span class="o">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;name&#34;</span><span class="o">:</span> <span class="s2">&#34;localhost:3310&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;host&#34;</span><span class="o">:</span> <span class="s2">&#34;localhost:3310&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;role&#34;</span><span class="o">:</span> <span class="s2">&#34;HA&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;name&#34;</span><span class="o">:</span> <span class="s2">&#34;localhost:3320&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;host&#34;</span><span class="o">:</span> <span class="s2">&#34;localhost:3320&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;role&#34;</span><span class="o">:</span> <span class="s2">&#34;HA&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;name&#34;</span><span class="o">:</span> <span class="s2">&#34;localhost:3330&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;host&#34;</span><span class="o">:</span> <span class="s2">&#34;localhost:3330&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;role&#34;</span><span class="o">:</span> <span class="s2">&#34;HA&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="检查实例的状态checking-the-state-of-an-instance">检查实例的状态（Checking the State of an Instance）
+</h3><ul>
+<li>执行 <code>cluster.checkInstanceState(instance)</code> 以验证实例的 GTID 状态与集群的关联情况。
+<ul>
+<li>分析实例已执行的 GTID 与集群上已执行 / 清理的 GTID，判断该实例是否可加入集群。</li>
+</ul>
+</li>
+<li>此方法的输出结果为以下之一：
+<ul>
+<li><code>OK new</code>：实例未执行任何 GTID 事务；因此，它不会与集群已执行的 GTID 冲突。</li>
+<li><code>OK recoverable</code>：实例已执行 GTID，但这些 GTID 与集群种子实例已执行的 GTID 无冲突。</li>
+<li><code>ERROR diverged</code>：实例已执行的 GTID 与集群种子实例已执行的 GTID 存在分歧（冲突 ）。</li>
+<li><code>ERROR lost_transactions</code>：实例已执行的 GTID 数量多于集群种子实例已执行的 GTID 数量。</li>
+</ul>
+</li>
+</ul>
+<h3 id="从集群中移除实例removing-instances-from-the-cluster">从集群中移除实例（Removing Instances from the Cluster）
+</h3><p>通过调用 <code>cluster.removeInstance()</code> 方法从集群中移除实例，用法如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">cluster</span><span class="p">.</span><span class="nx">removeInstance</span><span class="p">(</span><span class="s1">&#39;user@hostname:port&#39;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="将实例重新加入集群rejoining-an-instance-to-the-cluster">将实例重新加入集群（Rejoining an Instance to the Cluster）
+</h3><ul>
+<li>重启后的实例默认会尝试自动重新加入集群。</li>
+<li>与集群其他成员失去连接超过 5 秒的实例会成为 “疑似成员”，并在驱逐超时（由 <code>expelTimeout</code> 选项控制 ）后被驱逐。</li>
+<li>被驱逐的实例可配置为尝试自动重新加入集群：
+<ul>
+<li>若自动重新加入失败，会等待 5 分钟后重试。</li>
+<li>在配置的自动重新加入最大重试次数（<code>autoRejoinTries</code> 选项 ）失败后，实例会切换到配置的退出动作状态（<code>exitStateAction</code> 选项 ）。</li>
+</ul>
+</li>
+<li>若已离开集群的实例（例如，因连接丢失 ）未自动重新加入或自动重新加入失败，执行 <code>cluster.rejoinInstance(instance)</code> 手动重新加入。</li>
+</ul>
+<h3 id="恢复法定人数丢失restoring-quorum-loss">恢复法定人数丢失（Restoring Quorum Loss）
+</h3><p>若某个实例发生故障，集群可能会丢失法定人数（quorum），即无法选举新主库的能力。可使用 <code>cluster.forceQuorumUsingPartitionOf()</code> 重新建立法定人数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">cluster</span> <span class="o">=</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">getCluster</span><span class="p">(</span><span class="s2">&#34;mycluster&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 集群丢失法定人数，其状态显示为 &#34;status&#34;: &#34;NO_QUORUM&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">cluster</span><span class="p">.</span><span class="nx">forceQuorumUsingPartitionOf</span><span class="p">(</span><span class="s2">&#34;localhost:3310&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Restoring</span> <span class="nx">replicaset</span> <span class="s1">&#39;default&#39;</span> <span class="nx">from</span> <span class="nx">loss</span> <span class="k">of</span> <span class="nx">quorum</span><span class="p">,</span> <span class="nx">by</span> <span class="nx">using</span> <span class="nx">the</span> <span class="nx">partition</span> <span class="nx">composed</span> <span class="k">of</span> <span class="p">[</span><span class="nx">localhost</span><span class="o">:</span><span class="mi">3310</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Please</span> <span class="nx">provide</span> <span class="nx">the</span> <span class="nx">password</span> <span class="k">for</span> <span class="s1">&#39;root@localhost:3310&#39;</span><span class="o">:</span> <span class="o">******</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Restoring</span> <span class="nx">the</span> <span class="nx">InnoDB</span> <span class="nx">cluster</span> <span class="p">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">The</span> <span class="nx">InnoDB</span> <span class="nx">cluster</span> <span class="nx">was</span> <span class="nx">successfully</span> <span class="nx">restored</span> <span class="nx">using</span> <span class="nx">the</span> <span class="nx">partition</span> <span class="nx">from</span> <span class="nx">the</span> <span class="nx">instance</span> <span class="s1">&#39;root@localhost:3310&#39;</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">WARNING</span><span class="o">:</span> <span class="nx">To</span> <span class="nx">avoid</span> <span class="nx">a</span> <span class="nx">split</span><span class="o">-</span><span class="nx">brain</span> <span class="nx">scenario</span><span class="p">,</span> <span class="nx">ensure</span> <span class="nx">that</span> <span class="nx">all</span> <span class="nx">other</span> <span class="nx">members</span> <span class="k">of</span> <span class="nx">the</span> <span class="nx">replicaset</span> <span class="nx">are</span> <span class="nx">removed</span> <span class="nx">or</span> <span class="nx">joined</span> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="从严重故障中恢复集群recovering-the-cluster-from-a-major-outage">从严重故障中恢复集群（Recovering the Cluster from a Major Outage）
+</h3><p>若集群完全停滞（故障停运），执行以下步骤：</p>
+<ol>
+<li>
+<p>重启集群实例。</p>
+<ul>
+<li>
+<p>例如，在沙盒部署环境中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">startSandboxInstance</span><span class="p">(</span><span class="mi">3310</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">startSandboxInstance</span><span class="p">(</span><span class="mi">3320</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">startSandboxInstance</span><span class="p">(</span><span class="mi">3330</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>连接到一个实例并启动 MySQL Shell。</p>
+</li>
+<li>
+<p>在 MySQL Shell 中，连接到集群并执行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">dba.rebootClusterFromCompleteOutage()
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="err">\</span><span class="nx">connect</span> <span class="s1">&#39;root@localhost:3310&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">cluster</span> <span class="o">=</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">rebootClusterFromCompleteOutage</span><span class="p">()</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<p><strong>补充说明</strong>：
+<code>dba.rebootClusterFromCompleteOutage()</code> 函数用于从完全故障中重启集群。它会将 MySQL Shell 所连接的实例选为新的种子实例（seed instance）并恢复集群。种子实例应包含最新的数据。此外，它还会根据用户提供的选项更新集群配置。</p>
+<p>若此过程失败（说明集群元数据已严重损坏 ），你可能需要删除元数据并重新从头创建集群。可使用 <code>dba.dropMetadataSchema()</code> 删除集群元数据。</p>
+<h3 id="解散集群dissolving-a-cluster">解散集群（Dissolving a Cluster）
+</h3><p>要完全解散集群，请执行以下步骤：</p>
+<ol>
+<li>连接到一个可读写（read/write）实例。</li>
+<li>执行<code>cluster.dissolve()</code>。
+<ul>
+<li>移除所有集群元数据和配置，并禁用组复制（group replication）。</li>
+<li>实例之间曾复制的数据会保留完整。</li>
+<li>清空所有已赋值给 <code>Cluster</code> 对象的变量。</li>
+</ul>
+</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="err">\</span><span class="nx">connect</span> <span class="s1">&#39;root@localhost:3310&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">cluster</span> <span class="o">=</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">getCluster</span><span class="p">(</span><span class="s2">&#34;mycluster&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="nx">cluster</span><span class="p">.</span><span class="nx">dissolve</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">The</span> <span class="nx">cluster</span> <span class="nx">was</span> <span class="nx">successfully</span> <span class="nx">dissolved</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Replication</span> <span class="nx">was</span> <span class="nx">disabled</span> <span class="nx">but</span> <span class="nx">user</span> <span class="nx">data</span> <span class="nx">was</span> <span class="nx">left</span> <span class="nx">intact</span><span class="p">.</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="禁用-super_read_only">禁用 super_read_only
+</h3><p>每当组复制（Group Replication）停止时，<code>super_read_only</code> 变量会被设置为 <code>ON</code>，以确保不会对实例进行写入操作。当你尝试对这样的实例使用以下 AdminAPI 命令时，系统会让你选择是否在该实例上设置 <code>super_read_only=OFF</code>：</p>
+<ul>
+<li><code>dba.configureInstance()</code></li>
+<li><code>dba.configureLocalInstance()</code></li>
+<li><code>dba.createCluster()</code></li>
+<li><code>dba.rebootClusterFromCompleteOutage()</code></li>
+<li><code>dba.dropMetadataSchema()</code></li>
+</ul>
+<p>在非交互执行中，你还可以通过将 <code>clearReadOnly</code> 选项设置为 <code>true</code> 来实现（关闭 <code>super_read_only</code> ）。例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">dba</span><span class="p">.</span><span class="nx">configureInstance</span><span class="p">(</span><span class="nx">instance</span><span class="p">,</span> <span class="p">{</span><span class="nx">clearReadOnly</span><span class="o">:</span> <span class="kc">true</span><span class="p">})</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>交互会话示例</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">mysql</span><span class="o">-</span><span class="nx">js</span><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">myCluster</span> <span class="o">=</span> <span class="nx">dba</span><span class="p">.</span><span class="nx">dropMetadataSchema</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Are</span> <span class="nx">you</span> <span class="nx">sure</span> <span class="nx">you</span> <span class="nx">want</span> <span class="nx">to</span> <span class="nx">remove</span> <span class="nx">the</span> <span class="nx">Metadata</span><span class="o">?</span> <span class="p">[</span><span class="nx">y</span><span class="o">/</span><span class="nx">N</span><span class="p">]</span><span class="o">:</span> <span class="nx">y</span>
+</span></span><span class="line"><span class="cl"><span class="nx">The</span> <span class="nx">MySQL</span> <span class="nx">instance</span> <span class="nx">at</span> <span class="s1">&#39;localhost:3310&#39;</span> <span class="nx">currently</span> <span class="nx">has</span> <span class="nx">the</span> <span class="nx">super_read_only</span> <span class="nx">system</span> <span class="nx">variable</span> <span class="nx">set</span> <span class="nx">to</span> <span class="s1">&#39;ON&#39;</span> <span class="nx">to</span> <span class="nx">protect</span> <span class="nx">it</span> <span class="nx">from</span> <span class="nx">inadvertent</span> <span class="nx">updates</span> <span class="nx">from</span> <span class="nx">applications</span><span class="p">.</span> <span class="nx">You</span> <span class="nx">must</span> <span class="nx">first</span> <span class="nx">unset</span> <span class="nx">it</span> <span class="nx">to</span> <span class="nx">be</span> <span class="nx">able</span> <span class="nx">to</span> <span class="nx">perform</span> <span class="nx">any</span> <span class="nx">changes</span> <span class="nx">to</span> <span class="k">this</span> <span class="nx">instance</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">For</span> <span class="nx">more</span> <span class="nx">information</span><span class="p">,</span> <span class="nx">see</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl"><span class="nx">https</span><span class="o">:</span><span class="c1">//dev.mysql.com/doc/refman/en/server-system-variables.html#sysvar_super_read_only
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Do</span> <span class="nx">you</span> <span class="nx">want</span> <span class="nx">to</span> <span class="nx">disable</span> <span class="nx">super_read_only</span> <span class="nx">and</span> <span class="k">continue</span><span class="o">?</span> <span class="p">[</span><span class="nx">y</span><span class="o">/</span><span class="nx">N</span><span class="p">]</span><span class="o">:</span> <span class="nx">y</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Metadata</span> <span class="nx">Schema</span> <span class="nx">successfully</span> <span class="nx">removed</span><span class="p">.</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="自定义-mysql-innodb-集群customizing-a-mysql-innodb-cluster">自定义 MySQL InnoDB 集群（Customizing a MySQL InnoDB Cluster）
+</h3><p>执行 <code>dba.createCluster(String name, Dictionary options)</code> 创建 InnoDB 集群时，你可以提供一系列选项来自定义集群。<code>options</code> 参数需指定为 JSON 对象。可配置的部分取值如下：</p>
+<ul>
+<li>
+<p><strong><code>multiPrimary</code></strong>：布尔值，用于定义一个包含多个可写实例的 InnoDB 集群，默认值为 <code>false</code>（即单主模式 ）。</p>
+</li>
+<li>
+<p><code>failoverConsistency</code></p>
+<p>：字符串值，指示集群提供的一致性保障，默认值为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">EVENTUAL
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>。</p>
+<ul>
+<li>若设为 <code>BEFORE_ON_PRIMARY_FAILOVER</code>，新主库会在应用完旧主库的积压事务前，暂停新查询的执行。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>expelTimeout</code></strong>：整数值，定义集群成员在驱逐无响应成员前应等待的时间（秒 ），默认值为 <code>0</code>。</p>
+</li>
+</ul>
+<p>其他可用选项包括：</p>
+<ul>
+<li><code>interactive</code></li>
+<li><code>disableClone</code></li>
+<li><code>gtidSetIsComplete</code></li>
+<li><code>adoptFromGR</code></li>
+<li><code>memberSslMode</code></li>
+<li><code>ipWhitelist</code></li>
+<li><code>groupName</code></li>
+<li><code>localAddress</code></li>
+<li><code>groupSeeds</code></li>
+<li><code>exitStateAction</code></li>
+<li><code>memberWeight</code></li>
+<li><code>autoRejoinTries</code></li>
+</ul>
+<p><code>groupName</code>、<code>localAddress</code> 和 <code>groupSeeds</code> 属于高级选项，不建议使用，因为手动配置这些值可能导致组复制（Group Replication ）错误。建议让 AdminAPI 自动配置它们。</p>
+<p>这些选项中的一部分可通过 <code>cluster.setOption()</code> 函数进行修改。</p>
+<h3 id="自定义实例customizing-an-instance">自定义实例（Customizing an Instance）
+</h3><p>使用 <code>dba.addInstance(InstanceDef instance, Dictionary options)</code> 将实例添加到集群时，你可以提供一系列选项来自定义该实例。可配置的部分取值如下：</p>
+<ul>
+<li><code>recoveryMethod</code>：首选的状态恢复方法，默认值为 <code>AUTO</code>。
+<ul>
+<li>可设置为 <code>clone</code>（克隆恢复 ）或 <code>incremental</code>（增量恢复 ）。</li>
+</ul>
+</li>
+<li><code>exitStateAction</code>：实例意外离开集群时的状态，默认值为<code>READ_ONLY</code>。
+<ul>
+<li>可设置为 <code>ABORT_SERVER</code>（实例关闭 ）或 <code>OFFLINE_MODE</code>（只读，且仅接受具有管理权限的客户端连接 ）。</li>
+</ul>
+</li>
+<li><strong><code>memberWeight</code></strong>：用于自动故障转移时主库选举的整数值（百分比权重 ），默认值为 <code>50</code>。</li>
+<li><strong><code>autoRejoinTries</code></strong>：配置实例被驱逐后尝试重新加入集群的次数，默认值为 <code>0</code>。</li>
+</ul>
+<p>其他可用选项包括：</p>
+<ul>
+<li><code>label</code></li>
+<li><code>waitRecovery</code></li>
+<li><code>password</code></li>
+<li><code>memberSslMode</code></li>
+<li><code>ipWhitelist</code></li>
+<li><code>localAddress</code></li>
+<li><code>groupSeeds</code></li>
+</ul>
+<p>这些选项中的一部分可通过 <code>cluster.setInstanceOption()</code> 函数进行修改</p>
+<h3 id="在集群中配置安全连接configuring-secure-connection-in-a-cluster">在集群中配置安全连接（Configuring Secure Connection in a Cluster）
+</h3><ul>
+<li>使用 <code>dba.createCluster()</code> 搭建集群时，<code>memberSslMode</code> 选项用于配置 SSL 连接。其模式如下：
+<ul>
+<li><strong>AUTO（默认 ）</strong>：若服务器实例支持 SSL，则自动启用；若不支持，则禁用。</li>
+<li><strong>DISABLED</strong>：为种子实例禁用 SSL 加密。</li>
+<li><strong>REQUIRED</strong>：为集群中的种子实例启用 SSL 加密。若无法启用，会抛出错误。</li>
+</ul>
+</li>
+<li>执行 <code>cluster.addInstance()</code> 和 <code>cluster.rejoinInstance()</code> 命令时，<code>memberSslMode</code> 选项用于配置 SSL 连接。其模式如下：
+<ul>
+<li><strong>AUTO（默认 ）</strong>：根据集群配置，自动启用或禁用 SSL 加密。</li>
+<li><strong>DISABLED</strong>：为该实例禁用 SSL 加密。</li>
+<li><strong>REQUIRED</strong>：为集群中的该实例启用 SSL 加密。</li>
+</ul>
+</li>
+</ul>
+<p>对于沙盒实例，<code>cluster.deploySandboxInstance()</code> 会在可能的情况下，默认尝试部署启用 SSL 加密的实例。</p>
+<h3 id="创建服务器白名单creating-a-server-whitelist">创建服务器白名单（Creating a Server Whitelist）
+</h3><ul>
+<li>集群会维护一份属于该集群的已授权服务器列表，称为白名单。
+<ul>
+<li>只有白名单中的服务器才能加入集群。</li>
+<li>默认白名单包含服务器网络接口上的私有网络地址。</li>
+</ul>
+</li>
+<li>使用 <code>ipWhitelist</code> 选项，通过 <code>dba.createCluster()</code>、<code>cluster.addInstance()</code> 或 <code>cluster.rejoinInstance()</code> 创建自定义白名单，以增强安全性。
+<ul>
+<li>以逗号分隔的列表形式传入 IP 地址或子网的 CIDR 表示法，并用引号包裹。</li>
+<li>在实例上配置 <code>group_replication_ip_whitelist</code> 系统变量。</li>
+</ul>
+</li>
+</ul>
+<p><strong>CIDR 表示法示例</strong>：</p>
+<ul>
+<li><code>10.0.0.0/8</code> 包含的 IP 地址范围是 <code>10.0.0.0–10.255.255.255</code></li>
+<li><code>172.16.0.0/16</code> 包含的 IP 地址范围是 <code>172.16.0.0–172.16.255.255</code></li>
+<li><code>172.16.0.0/24</code> 包含的 IP 地址范围是 <code>172.16.0.0–172.16.0.255</code></li>
+<li><code>192.168.0.0/24</code> 包含的 IP 地址范围是 <code>192.168.0.0–192.168.0.255</code></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-12-管理复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-11-配置复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-10-执行备份</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-09-备份策略</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-08-优化查询性能</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

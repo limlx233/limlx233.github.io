@@ -1,0 +1,2436 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="目标：\n使用 MySQL Enterprise Backup执行一致性备份 使用 mysqldump 和 mysqlpump工具执行逻辑备份 解释何时及如何使用物理文件备份 从复制从库进行备份 使用二进制日志恢复数据库 MySQL备份工具\r备份工具概述：\r用于逻辑备份的 SQL 语句 结合 SQL 语句与操作系统命令的物理备份 示例：LOCK TABLES 其他 MySQL 备份工具： MySQL Enterprise Backup：物理备份 mysqldump：逻辑备份 mysqlpump：逻辑备份 第三方工具 1. 逻辑备份的 SQL 语句\r逻辑备份通过 SQL 语句导出数据的逻辑结构（如 SQL 脚本），而非直接复制物理文件。常见的 SQL 方法包括：\n">
+<title>MySQL-10-执行备份</title>
+
+<link rel='canonical' href='http://localhost:1313/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-10-执行备份">
+<meta property='og:description' content="目标：\n使用 MySQL Enterprise Backup执行一致性备份 使用 mysqldump 和 mysqlpump工具执行逻辑备份 解释何时及如何使用物理文件备份 从复制从库进行备份 使用二进制日志恢复数据库 MySQL备份工具\r备份工具概述：\r用于逻辑备份的 SQL 语句 结合 SQL 语句与操作系统命令的物理备份 示例：LOCK TABLES 其他 MySQL 备份工具： MySQL Enterprise Backup：物理备份 mysqldump：逻辑备份 mysqlpump：逻辑备份 第三方工具 1. 逻辑备份的 SQL 语句\r逻辑备份通过 SQL 语句导出数据的逻辑结构（如 SQL 脚本），而非直接复制物理文件。常见的 SQL 方法包括：\n">
+<meta property='og:url' content='http://localhost:1313/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-28T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-08-28T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="MySQL-10-执行备份">
+<meta name="twitter:description" content="目标：\n使用 MySQL Enterprise Backup执行一致性备份 使用 mysqldump 和 mysqlpump工具执行逻辑备份 解释何时及如何使用物理文件备份 从复制从库进行备份 使用二进制日志恢复数据库 MySQL备份工具\r备份工具概述：\r用于逻辑备份的 SQL 语句 结合 SQL 语句与操作系统命令的物理备份 示例：LOCK TABLES 其他 MySQL 备份工具： MySQL Enterprise Backup：物理备份 mysqldump：逻辑备份 mysqlpump：逻辑备份 第三方工具 1. 逻辑备份的 SQL 语句\r逻辑备份通过 SQL 语句导出数据的逻辑结构（如 SQL 脚本），而非直接复制物理文件。常见的 SQL 方法包括：\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">好记性不如烂笔头</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#mysql备份工具">MySQL备份工具</a>
+      <ol>
+        <li><a href="#备份工具概述">备份工具概述：</a>
+          <ol>
+            <li><a href="#1-逻辑备份的-sql-语句">1. <strong>逻辑备份的 SQL 语句</strong></a></li>
+            <li><a href="#2-物理备份的-sql-与系统命令结合">2. <strong>物理备份的 SQL 与系统命令结合</strong></a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#使用-mysql-enterprise-backup进行物理备份">使用 <code>MySQL Enterprise Backup</code>进行物理备份</a>
+      <ol>
+        <li><a href="#mysql-enterprise-backup">MySQL Enterprise Backup</a></li>
+        <li><a href="#mysql-enterprise-backup-storage-engines">MySQL Enterprise Backup: Storage Engines</a>
+          <ol>
+            <li><a href="#innodb-引擎">InnoDB 引擎</a></li>
+            <li><a href="#其他存储引擎">其他存储引擎</a></li>
+          </ol>
+        </li>
+        <li><a href="#mysql-enterprise-backup-innodb-files">MySQL Enterprise Backup: InnoDB Files</a></li>
+        <li><a href="#mysql-enterprise-backup-non-innodb-files">MySQL Enterprise Backup: Non-InnoDB Files</a></li>
+        <li><a href="#全量备份">全量备份</a></li>
+        <li><a href="#单文件备份">单文件备份</a></li>
+        <li><a href="#备份过程">备份过程</a></li>
+        <li><a href="#增量备份">增量备份</a></li>
+        <li><a href="#差异备份">差异备份</a></li>
+        <li><a href="#验证操作">验证操作</a></li>
+        <li><a href="#恢复操作">恢复操作</a>
+          <ol>
+            <li><a href="#恢复命令">恢复命令</a></li>
+            <li><a href="#恢复增量备份restoring-incremental-backups">恢复增量备份（Restoring Incremental Backups）</a></li>
+            <li><a href="#更新操作update-operations">更新操作（Update Operations）</a></li>
+            <li><a href="#单文件操作single-file-operations">单文件操作（Single-File Operations）</a></li>
+            <li><a href="#mysql-企业版备份所需的基本权限">MySQL 企业版备份所需的基本权限</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#使用-mysqldump-和-mysqlpump-进行逻辑备份">使用 <code>mysqldump</code> 和 <code>mysqlpump</code> 进行逻辑备份</a>
+      <ol>
+        <li><a href="#mysqldump-和-mysqlpump"><code>mysqldump</code> 和 <code>mysqlpump</code></a>
+          <ol>
+            <li><a href="#mysqldump"><code>mysqldump</code></a></li>
+            <li><a href="#mysqlpump">mysqlpump</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#其他物理备份方法">其他物理备份方法</a>
+      <ol>
+        <li><a href="#innodb-物理备份概述">InnoDB 物理备份：概述</a>
+          <ol>
+            <li><a href="#物理备份的可移植性">物理备份的可移植性</a></li>
+            <li><a href="#innodb-物理备份流程">InnoDB 物理备份流程</a></li>
+            <li><a href="#从-innodb-物理备份中恢复">从 InnoDB 物理备份中恢复</a></li>
+          </ol>
+        </li>
+        <li><a href="#使用可传输表空间进行备份">使用可传输表空间进行备份</a>
+          <ol>
+            <li><a href="#可传输表空间将表复制到另一个实例">可传输表空间：将表复制到另一个实例</a></li>
+          </ol>
+        </li>
+        <li><a href="#物理-myisam-和-archive-备份">物理 MyISAM 和 ARCHIVE 备份</a>
+          <ol>
+            <li></li>
+            <li><a href="#物理-myisam-和-archive-备份流程">物理 MyISAM 和 ARCHIVE 备份流程</a></li>
+            <li><a href="#从物理-myisam-或-archive-备份中恢复">从物理 MyISAM 或 Archive 备份中恢复</a></li>
+          </ol>
+        </li>
+        <li><a href="#lvm-快照">LVM 快照</a>
+          <ol>
+            <li></li>
+            <li><a href="#lvm-备份流程">LVM 备份流程</a></li>
+          </ol>
+        </li>
+        <li><a href="#备份日志和状态文件">备份日志和状态文件</a>
+          <ol>
+            <li></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#基于复制的备份">基于复制的备份</a>
+      <ol>
+        <li><a href="#利用复制辅助备份">利用复制辅助备份</a></li>
+        <li><a href="#从复制从服务器进行备份">从复制从服务器进行备份</a>
+          <ol>
+            <li><a href="#从多个源备份到单个服务器">从多个源备份到单个服务器</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#使用二进制文件恢复数据库">使用二进制文件恢复数据库</a>
+      <ol>
+        <li><a href="#处理二进制日志内容">处理二进制日志内容</a></li>
+        <li><a href="#选择性二进制日志处理">选择性二进制日志处理</a></li>
+        <li><a href="#时间点恢复">时间点恢复</a></li>
+        <li><a href="#配置-mysql-以进行恢复操作">配置 MySQL 以进行恢复操作</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql/" style="background-color: ; color: #fff;">
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">MySQL-10-执行备份</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-08-28</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>目标：</p>
+<ul>
+<li>使用 <code>MySQL Enterprise Backup</code>执行一致性备份</li>
+<li>使用 <code>mysqldump</code> 和 <code>mysqlpump</code>工具执行逻辑备份</li>
+<li>解释何时及如何使用物理文件备份</li>
+<li>从复制从库进行备份</li>
+<li>使用二进制日志恢复数据库</li>
+</ul>
+<h2 id="mysql备份工具">MySQL备份工具
+</h2><h3 id="备份工具概述">备份工具概述：
+</h3><ul>
+<li><strong>用于逻辑备份的 SQL 语句</strong></li>
+<li>结合 SQL 语句与操作系统命令的物理备份
+<ul>
+<li>示例：<code>LOCK TABLES</code></li>
+</ul>
+</li>
+<li>其他 MySQL 备份工具：
+<ul>
+<li>MySQL Enterprise Backup：物理备份</li>
+<li><code>mysqldump</code>：逻辑备份</li>
+<li><code>mysqlpump</code>：逻辑备份</li>
+</ul>
+</li>
+<li><strong>第三方工具</strong></li>
+</ul>
+<h4 id="1-逻辑备份的-sql-语句">1. <strong>逻辑备份的 SQL 语句</strong>
+</h4><p>逻辑备份通过 SQL 语句导出数据的逻辑结构（如 SQL 脚本），而非直接复制物理文件。常见的 SQL 方法包括：</p>
+<ul>
+<li>
+<p><code>SELECT ... INTO OUTFILE</code></p>
+<p>将查询结果导出为文本文件（如 CSV），适合灵活筛选数据：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">OUTFILE</span><span class="w"> </span><span class="s1">&#39;/tmp/users.csv&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>SHOW CREATE TABLE</code></p>
+<p>获取创建表的 SQL 语句，用于备份表结构：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SHOW</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">orders</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong><code>mysqldump</code> 的底层原理</strong>
+本质上是执行一系列 <code>SELECT</code> 和 <code>SHOW CREATE</code> 语句，生成完整的 SQL 备份文件。</p>
+</li>
+</ul>
+<h4 id="2-物理备份的-sql-与系统命令结合">2. <strong>物理备份的 SQL 与系统命令结合</strong>
+</h4><p>物理备份直接复制数据库文件（如 <code>.ibd</code>、<code>.frm</code>），需通过 SQL 语句确保数据一致性：</p>
+<ul>
+<li>
+<p><code>LOCK TABLES ... READ</code></p>
+<p>（适用于 MyISAM 等非事务引擎）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">LOCK</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">READ</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 锁定表为只读状态，防止备份期间数据变更
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>FLUSH TABLES WITH READ LOCK</code></p>
+<p>（适用于全库备份）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">FLUSH</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">READ</span><span class="w"> </span><span class="k">LOCK</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 刷新所有表到磁盘并加全局读锁
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>操作系统命令复制文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Linux 示例：复制 InnoDB 数据文件</span>
+</span></span><span class="line"><span class="cl">cp -R /var/lib/mysql/data/ /backup/
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>解锁表</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">UNLOCK</span><span class="w"> </span><span class="n">TABLES</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 备份完成后释放锁
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="使用-mysql-enterprise-backup进行物理备份">使用 <code>MySQL Enterprise Backup</code>进行物理备份
+</h2><h3 id="mysql-enterprise-backup">MySQL Enterprise Backup
+</h3><ul>
+<li>适用于 MySQL 的多平台热备份工具
+<ul>
+<li>可通过命令行运行：<code>mysqlbackup</code></li>
+</ul>
+</li>
+<li>针对 InnoDB 表进行了优化
+<ul>
+<li>也能备份 MySQL 支持的其他存储引擎的表</li>
+</ul>
+</li>
+<li>支持的功能：
+<ul>
+<li>除常规全量备份外，还支持增量备份和差异备份</li>
+<li>单文件备份：
+<ul>
+<li>可流式传输到其他存储设备或文件服务器</li>
+<li>可备份到磁带</li>
+<li>可直接备份到云存储</li>
+</ul>
+</li>
+<li>备份加密与压缩</li>
+<li>部分备份和可传输表空间（transportable tablespace）</li>
+</ul>
+</li>
+<li>可在 MySQL 企业级监控（MySQL Enterprise Monitor）的备份仪表盘中监控备份状态</li>
+</ul>
+<p>对于 MySQL Server 8.0，应使用与服务器版本号相同的 MySQL 企业级备份（MySQL Enterprise Backup）版本</p>
+<h3 id="mysql-enterprise-backup-storage-engines">MySQL Enterprise Backup: Storage Engines
+</h3><h4 id="innodb-引擎">InnoDB 引擎
+</h4><p>MySQL 企业级备份（MySQL Enterprise Backup）对 InnoDB 表执行热备份：</p>
+<ul>
+<li>备份过程中，连接到数据库的应用程序可以正常运行。</li>
+<li>这种备份不会阻塞正常的数据库操作。</li>
+<li>即使在备份过程中数据发生变更，这些变更也会被捕获。</li>
+</ul>
+<h4 id="其他存储引擎">其他存储引擎
+</h4><p>MySQL 企业级备份对其他存储引擎执行温备份：</p>
+<ul>
+<li>应用程序可以读取数据库表。</li>
+<li>在非 InnoDB 表的备份过程中：
+<ul>
+<li>8.0.16 版本之前，数据库无法被修改。</li>
+<li>从 8.0.16 版本开始，仅非 InnoDB 表无法被修改，而 InnoDB 表允许执行 DML（数据操纵语言）操作，但不允许执行 DDL（数据定义语言）操作。</li>
+</ul>
+</li>
+</ul>
+<p>MySQL 企业级备份不支持离线（冷）备份。MySQL 服务器必须处于运行状态，<code>mysqlbackup</code> 工具才能连接到服务器并启动备份。</p>
+<h3 id="mysql-enterprise-backup-innodb-files">MySQL Enterprise Backup: InnoDB Files
+</h3><p>使用 <code>mysqlbackup</code> 备份的原始 InnoDB 文件包括：</p>
+<ul>
+<li><code>ibdata*</code> 文件：共享表空间文件，包含系统表空间，可能还包含一些用户表的数据。</li>
+<li><code>mysql.ibd</code>：包含数据字典的 <code>mysql</code> 表空间文件。</li>
+<li><code>.ibd</code> 文件：每个表对应的数据文件和通用表空间文件。</li>
+<li><code>undo_*</code> 文件：撤销日志（undo log）表空间文件。</li>
+<li><code>ib_logfile*</code> 文件
+<ul>
+<li>从 <code>ib_logfile*</code> 文件中提取的数据会存储在一个名为 <code>ibbackup_logfile</code> 的新备份文件中。
+<ul>
+<li><code>ibbackup_logfile</code>包含<strong>备份过程中发生的新变更</strong>（因热备份时数据仍在写入）</li>
+</ul>
+</li>
+<li>这包括重做日志（redo log）信息，这些信息记录了备份过程中发生的数据变更。</li>
+</ul>
+</li>
+</ul>
+<h3 id="mysql-enterprise-backup-non-innodb-files">MySQL Enterprise Backup: Non-InnoDB Files
+</h3><ul>
+<li>MySQL 企业级备份（MySQL Enterprise Backup）针对 InnoDB 进行了优化。</li>
+<li>若满足以下条件，可使用该工具备份非 InnoDB 数据：
+<ul>
+<li>待备份的 MySQL 服务器支持 InnoDB。</li>
+<li>服务器中至少包含一个 InnoDB 表。</li>
+</ul>
+</li>
+<li>默认情况下，<code>mysqlbackup</code>会备份数据目录（datadir）下所有子目录中的文件。
+<ul>
+<li>若指定 <code>--only-known-file-types</code> 选项，备份将仅包含 MySQL 识别的扩展名的文件。</li>
+</ul>
+</li>
+<li>例如，对于 MyISAM 存储的数据，以下文件会被备份：
+<ul>
+<li><code>.MYD</code>：MyISAM 数据文件</li>
+<li><code>.MYI</code>：MyISAM 索引文件</li>
+<li><code>.sdi</code>：元数据文件（存储表结构等信息）</li>
+</ul>
+</li>
+</ul>
+<p>MySQL 企业级备份（MEB）的核心优势在于对 InnoDB 的热备份支持，但也能处理非 InnoDB 引擎的数据，需满足以下条件：</p>
+<ol>
+<li>
+<p><strong>兼容性前提</strong></p>
+<ul>
+<li><strong>必须支持 InnoDB</strong>：MEB 依赖 InnoDB 的事务和 MVCC 机制来协调备份过程，因此服务器必须安装并启用 InnoDB 引擎。</li>
+<li><strong>至少存在一个 InnoDB 表</strong>：即使主要数据使用 MyISAM 等其他引擎存储，也需有至少一个 InnoDB 表，以确保工具能正常启动备份流程。</li>
+</ul>
+</li>
+<li>
+<p><strong>备份范围控制</strong></p>
+<ul>
+<li><strong>默认行为</strong>：备份数据目录下的<strong>所有文件</strong>，包括自定义日志、临时文件等，可能包含无关内容。</li>
+<li><strong><code>--only-known-file-types</code> 选项</strong>：仅备份 MySQL 官方识别的文件类型（如 <code>.MYD</code>、<code>.ibd</code>、<code>.sdi</code>），过滤掉无关文件，使备份更 “纯净”。
+例如：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --only-known-file-types backup-to-image /path/to/backup
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>MyISAM 引擎文件备份</strong>
+对于 MyISAM 表，MEB 会备份以下关键文件：</p>
+<ul>
+<li><strong><code>.MYD</code></strong>：存储表的实际数据（类似 CSV 结构，但为二进制格式）。</li>
+<li><strong><code>.MYI</code></strong>：存储表的索引信息（如主键、索引键的 B-Tree 结构）。</li>
+<li><strong><code>.sdi</code></strong>（MySQL 8.0+）：存储表的元数据（如列定义、约束），替代了早期版本的 <code>.frm</code> 文件。
+<strong>注意</strong>：MyISAM 不支持事务，备份时需通过锁表确保数据一致性（温备份），可能短暂影响业务写入。</li>
+</ul>
+</li>
+<li>
+<p><strong>其他非 InnoDB 引擎支持</strong>
+MEB 理论上可备份所有 MySQL 支持的存储引擎（如 MEMORY、CSV、ARCHIVE 等），但需注意：</p>
+<ul>
+<li><strong>MEMORY 表</strong>：数据存储在内存中，备份时仅保存表结构（<code>.frm</code> 或 <code>.sdi</code>），重启后数据丢失。</li>
+<li><strong>CSV 表</strong>：数据以文本 CSV 格式存储，备份 <code>.CSV</code> 文件和元数据（<code>.sdi</code>）。</li>
+<li><strong>ARCHIVE 表</strong>：适合历史归档数据，备份 <code>.ARM</code>（数据）和 <code>.ARZ</code>（索引）文件。</li>
+</ul>
+</li>
+</ol>
+<h3 id="全量备份">全量备份
+</h3><ul>
+<li><strong>启动方式</strong>
+<ul>
+<li>需在 MySQL 服务器<strong>主机上启动</strong> <code>mysqlbackup</code>，而非远程执行。</li>
+<li>使用与 <code>mysql</code> 客户端相同的选项提供认证信息和服务器坐标，包括 <code>--user</code>、<code>--port</code> 和 <code>--password</code>。</li>
+<li><code>--backup_dir</code> 选项指定存储备份数据和元数据的目录。</li>
+</ul>
+</li>
+<li><strong>基础命令</strong>
+<ul>
+<li><code>backup</code>：执行备份的初始阶段（创建备份文件但不应用最新变更）。</li>
+<li><code>backup-and-apply-log</code>：包含备份的初始阶段，并在第二阶段更新备份中的 InnoDB 表，使其包含备份过程中发生的所有数据变更。</li>
+</ul>
+</li>
+</ul>
+<h3 id="单文件备份">单文件备份
+</h3><ul>
+<li>
+<p>使用 <code>backup-to-image</code> 命令可将备份写入单个文件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --user<span class="o">=</span>root --password<span class="o">=</span>xxx <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --backup-image<span class="o">=</span>/backup/full_backup_20250714.img <span class="se">\ </span> <span class="c1"># 单文件路径</span>
+</span></span><span class="line"><span class="cl">  --backup_dir<span class="o">=</span>/tmp/backup_temp <span class="se">\ </span> <span class="c1"># 临时元数据目录</span>
+</span></span><span class="line"><span class="cl">  backup-to-image
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>--backup-image</code> 选项指定存储备份的文件名和路径。</li>
+<li><code>--backup_dir</code> 选项指定用于存储备份元数据的临时文件夹。</li>
+</ul>
+</li>
+<li>
+<p>单文件备份的优势：</p>
+<ul>
+<li>更易于管理
+<ul>
+<li>每次备份对应一个文件</li>
+</ul>
+</li>
+<li>可流式传输到其他设备或服务器</li>
+<li>可备份到磁带</li>
+<li>可备份到云存储</li>
+</ul>
+</li>
+</ul>
+<h3 id="备份过程">备份过程
+</h3><ol>
+<li><code>mysqlbackup</code> 建立与 MySQL 服务器的连接。</li>
+<li><code>mysqlbackup</code>对 InnoDB 表执行在线备份。
+<ul>
+<li>此阶段不干扰正常的数据库处理（如读写操作）。</li>
+</ul>
+</li>
+<li>当 <code>mysqlbackup</code>运行接近完成时，它会：
+<ul>
+<li>执行 SQL 语句<code>LOCK INSTANCE FOR BACKUP</code>
+<ul>
+<li>这会阻塞 DDL 操作（如 <code>ALTER TABLE</code>），但允许 DML 操作（如 <code>INSERT</code>、<code>UPDATE</code>）继续执行。</li>
+</ul>
+</li>
+<li>对备份中包含的所有非 InnoDB 表执行 SQL 语句 <code>FLUSH TABLES tbl_name, ... WITH READ LOCK</code></li>
+<li>将非 InnoDB 文件（如 MyISAM 的 <code>.MYI</code> 和 <code>.MYD</code> 文件）复制到备份目录。</li>
+</ul>
+</li>
+<li><code>mysqlbackup</code> 运行完成后，解锁表和实例</li>
+</ol>
+<p>如果满足以下条件，读锁阶段（read-locked phase）的持续时间会很短：</p>
+<ul>
+<li>在 read lock 生效期间，不在数据库中执行长时间的 <code>SELECT</code> 或其他查询。</li>
+<li>非 InnoDB 表的体积较小。</li>
+</ul>
+<p>上述的步骤 3 描述的是 <code>mysqlbackup</code> 8.0.16 及更新版本的流程。</p>
+<p>对于 8.0.16 之前版本的 <code>mysqlbackup</code>，步骤 3 会通过 SQL 语句 <code>FLUSH TABLES WITH READ LOCK</code> 锁定整个数据库，这会阻塞所有表上的写入操作。</p>
+<h3 id="增量备份">增量备份
+</h3><p>每次增量备份仅包含自上一次备份（该备份本身可以是全量备份或增量备份）以来的变更。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --user<span class="o">=</span>username --password --port<span class="o">=</span>portnumber 
+</span></span><span class="line"><span class="cl">       --incremental --incremental-base<span class="o">=</span>history:last_backup 
+</span></span><span class="line"><span class="cl">       --backup_dir<span class="o">=</span>incr-backup-directory backup
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>添加 <code>--incremental</code> 选项以执行增量备份。</li>
+<li>使用 <code>--incremental-base</code> 选项指定上一次备份作为增量备份的基础。</li>
+<li>如果在两次备份间隔期间，大部分数据未发生变化，增量备份可提高备份速度并减少存储备份所需的空间。</li>
+<li>适用于 InnoDB 表，或只读、极少更新的非 InnoDB 表。
+<ul>
+<li>对于非 InnoDB 文件，若自上一次备份以来文件有变化，则整个文件会被包含在增量备份中。</li>
+</ul>
+</li>
+</ul>
+<p>可以通过将备份命令替换为 <code>backup-to-image</code> 命令并指定 <code>--backup-image</code> 选项，将备份写入单个文件。</p>
+<p><code>--incremental-base=history:last_backup</code> 选项会使 <code>mysqlbackup</code> 从 <code>backup_history</code> 表中记录的上一次成功的非 TTS（表空间传输）备份中查询 <code>end_lsn</code> 值（该表位于正在备份的服务器实例中）。</p>
+<p>或者，你可以指定 <code>dir:directory_path</code> 作为 <code>--incremental-base</code> 选项的值，以指定包含上一次备份的目录路径。</p>
+<p>除了 <code>--incremental-base</code> 选项，你还可以使用 <code>--start-lsn</code> 选项指定上一次备份中包含的最大 LSN（日志序列号）值，将其用作增量备份的基础。</p>
+<ol>
+<li><strong>增量备份基本逻辑</strong>：增量备份只关注两次备份间数据的变化部分，基于上一次全量或增量备份做差异捕获，能有效减少备份数据量和存储占用，提升备份效率，不过恢复时需按顺序整合全量 + 各增量备份。</li>
+<li>命令参数说明：
+<ul>
+<li><code>--incremental</code> 是开启增量备份模式的关键标识；<code>--incremental-base</code> 用于指定增量备份的 “基准”，<code>history:last_backup</code> 是从备份历史表找基准，<code>dir:directory_path</code> 则指定基准备份所在目录 。</li>
+<li><code>--start-lsn</code> 通过明确 LSN（日志序列号，记录数据库变更的关键标识）值作为基准，原理和 <code>--incremental-base</code> 类似，灵活适配不同场景。</li>
+</ul>
+</li>
+<li><strong>适用场景与限制</strong>：对 InnoDB 表、只读 / 少更新的非 InnoDB 表友好，利用了 InnoDB 事务日志等特性高效捕获变更；但非 InnoDB 表若有变化，是整文件备份，若这类表体积大且频繁变，增量优势就会受限。</li>
+<li><strong>单文件备份拓展</strong>：结合 <code>backup-to-image</code> 可把增量备份输出为单个文件，方便存储、传输（如传至磁带、云存储），和全量备份的单文件模式配合，统一管理备份文件形态 。</li>
+<li><strong>版本与兼容性</strong>：依托 <code>backup_history</code> 表等机制，是 MySQL Enterprise Backup 工具在 8.0 等版本的功能，体现了商业备份工具对备份流程精细化、高效化的支持，不过使用时要留意数据库版本、备份历史记录维护等问题，确保基准备份可查、可用 。</li>
+</ol>
+<h3 id="差异备份">差异备份
+</h3><p>每次差异备份会包含自上一次全量备份以来对数据所做的所有变更。这是增量备份的一种特殊情况，以全量备份作为其基础。</p>
+<ul>
+<li>使用 <code>--incremental-base=history:last_full_backup</code> 选项指定上一次全量备份作为增量备份的基础。该选项从 8.0.17 版本开始可用。</li>
+<li>与增量备份类似，不同之处在于其基础始终是全量备份。</li>
+</ul>
+<p>你可以通过将备份命令替换为 <code>backup-to-image</code> 命令并指定 <code>--backup-image</code> 选项，将备份写入单个文件。</p>
+<p>可以使用 <code>--start-lsn</code> 选项来替代 <code>--incremental-base</code> 选项，指定上一次全量备份中包含的最大 LSN（日志序列号）值，作为差异备份的基础。如果你指定的是上一次增量备份的最大 LSN 值（而非全量备份的），那么该备份会变成增量备份，而非差异备份。</p>
+<p>注意：增量备份和差异备份的命令类似；你指定的基础备份决定了该备份是增量备份还是差异备份。</p>
+<h3 id="验证操作">验证操作
+</h3><p><code>validate</code> 命令用于检查备份的完整性。</p>
+<ul>
+<li>
+<p><strong>验证备份镜像</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --backup-image<span class="o">=</span>image-file validate
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>验证备份目录</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --backup-dir<span class="o">=</span>backup-directory validate
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>验证备份中每个数据页的校验和（checksum)值。</li>
+</ul>
+</li>
+<li>
+<p><strong>限制</strong>：</p>
+<ul>
+<li>仅验证 InnoDB 数据文件（<code>ibdata*</code> 和 <code>*.ibd</code> 文件）。</li>
+<li>无法检测从 <code>*.ibd</code> 文件中被移除或截断的缺失页。</li>
+<li>无法检测备份中缺失的文件或已被删除的文件。</li>
+</ul>
+</li>
+</ul>
+<h3 id="恢复操作">恢复操作
+</h3><ol>
+<li>关闭 MySQL 服务器。</li>
+<li>删除服务器数据目录内的所有文件。
+<ul>
+<li>删除由 <code>--innodb_data_home_dir</code>、<code>--innodb_log_group_home_dir</code> 和 <code>--innodb_undo_directory</code> 选项指定目录中的所有文件。</li>
+</ul>
+</li>
+<li>运行 <code>mysqlbackup</code> 从全量备份中恢复备份文件。</li>
+<li>如有可用的增量备份或差异备份，可选择从这些备份进行恢复（可选操作）。</li>
+<li>应用可用的二进制日志，以：
+<ul>
+<li>恢复上一次备份后对数据库所做的所有更改。</li>
+<li>执行时间点恢复，防止错误操作损坏数据。</li>
+</ul>
+</li>
+<li>启动 MySQL 服务器。</li>
+</ol>
+<h4 id="恢复命令">恢复命令
+</h4><ul>
+<li>
+<p><strong><code>copy-back</code></strong></p>
+<ul>
+<li>恢复已使用 <code>apply-log</code> 命令处理为一致状态的目录备份。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --backup-dir<span class="o">=</span>backup-dir copy-back
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>将备份目录（<code>backup-dir</code>）中的文件恢复到数据目录。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>copy-back-and-apply-log</code></strong></p>
+<ul>
+<li>一步操作中，恢复单文件备份或目录备份，并对恢复的数据执行 <code>apply-log</code> 操作。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --backup-dir<span class="o">=</span>temp-backup-dir 
+</span></span><span class="line"><span class="cl">    --backup-image<span class="o">=</span>image-file copy-back-and-apply-log
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>使用 <code>temp-backup-dir</code> 存储临时文件，将 <code>image-file</code> 中的文件恢复到数据目录。</li>
+</ul>
+</li>
+</ul>
+<p>当使用 <code>copy-back</code> 命令时，MySQL 企业级备份（MySQL Enterprise Backup）会：</p>
+<ul>
+<li>将数据文件、日志和其他已备份的文件从备份目录复制到其原始位置。</li>
+<li>对这些文件执行任何所需的后处理操作。</li>
+</ul>
+<p>在 <code>copy-back</code> 过程中，<code>mysqlbackup</code> 无法从服务器查询其设置，因此它会读取标准配置文件以获取诸如 <code>datadir</code> 等选项的信息。</p>
+<ul>
+<li>如果想恢复到不同的服务器，可使用 <code>--defaults-file</code> 选项提供非标准的默认配置文件。</li>
+</ul>
+<h4 id="恢复增量备份restoring-incremental-backups">恢复增量备份（Restoring Incremental Backups）
+</h4><ul>
+<li>
+<p>恢复增量备份或差异备份之前，必须先恢复正确的基础备份（全量备份 ）。</p>
+</li>
+<li>
+<p>在恢复操作中添加<code>--incremental</code>选项</p>
+<ul>
+<li>
+<p>从增量备份目录恢复：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --incremental-backup-dir<span class="o">=</span>incr-backup-dir <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --incremental copy-back-and-apply-log
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>从单文件增量备份恢复：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --backup-dir<span class="o">=</span>temp-backup-dir --backup-image<span class="o">=</span>image-file <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --incremental copy-back-and-apply-log
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<h4 id="更新操作update-operations">更新操作（Update Operations）
+</h4><p>全量备份的目录备份可通过以下方式更新：</p>
+<ul>
+<li>
+<p><strong><code>apply-log</code> 操作</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --backup-dir<span class="o">=</span>backup-dir apply-log
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>使用 <code>backup</code> 命令进行的全量备份，若已通过 <code>apply-log</code> 命令更新，则可直接使用 <code>copy-back</code> 命令恢复，而非 <code>copy-back-and-apply-log</code> 命令。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>apply-incremental-backup</code> 操作</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --incremental-backup-dir<span class="o">=</span>incr-backup-dir <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --backup-dir<span class="o">=</span>backup-dir apply-incremental-backup
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>backup-dir</code> 中的全量备份，可使用以该全量备份为基础的增量备份进行更新。</li>
+<li>这可加快恢复过程，因为它能减少需要恢复的增量备份数量。这也可加快备份速度，因为它能将增量备份转换为全量备份。</li>
+</ul>
+</li>
+</ul>
+<p>这是 MySQL 企业级备份中<strong>优化备份链、加速恢复</strong>的关键操作，核心是通过 <code>apply-log</code> 或 <code>apply-incremental-backup</code> 提前合并变更，减少恢复时的步骤：</p>
+<h5 id="1-apply-log预合并-redo-日志">1. <code>apply-log</code>：预合并 redo 日志
+</h5><ul>
+<li><strong>作用</strong>：
+对全量备份（目录形式）执行 <code>apply-log</code>，会将备份期间的 redo 日志（如 <code>ibbackup_logfile</code>）应用到备份文件中，使备份文件处于 “可立即恢复” 的一致状态。</li>
+<li><strong>恢复简化</strong>：
+若备份已执行 <code>apply-log</code>，恢复时无需再运行 <code>copy-back-and-apply-log</code>，直接用 <code>copy-back</code> 即可（因为日志已提前合并），减少恢复步骤。</li>
+</ul>
+<h5 id="2-apply-incremental-backup增量合并到全量">2. <code>apply-incremental-backup</code>：增量合并到全量
+</h5><ul>
+<li><strong>作用</strong>：
+将增量备份（<code>--incremental-backup-dir</code> 指定）合并到基础全量备份（<code>--backup-dir</code> 指定）中，使全量备份 “升级” 为包含增量变更的新全量备份。</li>
+<li>价值：
+<ul>
+<li><strong>加速恢复</strong>：恢复时无需依次应用多个增量备份，直接恢复合并后的全量备份即可。</li>
+<li><strong>转换备份类型</strong>：将增量备份转换为全量备份，适合需要长期保留全量备份、减少增量备份数量的场景。</li>
+</ul>
+</li>
+</ul>
+<h5 id="3-实际应用场景">3. 实际应用场景
+</h5><ul>
+<li><strong>定期优化备份链</strong>：
+每周日做全量备份，周一至周六做增量备份。每周六执行 <code>apply-incremental-backup</code>，将周一至周六的增量合并到周日的全量备份，生成新的全量备份，减少恢复时需处理的增量数量。</li>
+<li><strong>简化恢复流程</strong>：
+对重要的全量备份提前执行 <code>apply-log</code>，确保恢复时只需 <code>copy-back</code>，降低故障时的恢复复杂度。</li>
+</ul>
+<h5 id="4-关键注意事项">4. 关键注意事项
+</h5><ul>
+<li><strong>备份目录一致性</strong>：
+<code>apply-incremental-backup</code> 的基础全量备份必须与增量备份的基准一致（通过 LSN 或备份历史匹配），否则会因变更冲突导致数据损坏。</li>
+<li><strong>空间占用</strong>：
+合并增量备份会增加全量备份的体积（需存储增量变更），需平衡存储成本和恢复效率。</li>
+</ul>
+<h4 id="单文件操作single-file-operations">单文件操作（Single-File Operations）
+</h4><ul>
+<li>
+<p><strong>将现有备份目录转换为单文件备份</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --backup_dir<span class="o">=</span>backup-dir <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --backup-image<span class="o">=</span>image-file backup-dir-to-image
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>列出单文件备份的内容</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --backup-image<span class="o">=</span>image-file list-image
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>从单文件备份中提取文件</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlbackup --backup-image<span class="o">=</span>image-file --src-entry<span class="o">=</span>file-to-extract <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --dst-entry<span class="o">=</span>file-to-extract extract
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>--src-entry</code>：指定要从单文件备份中提取的文件或目录。</li>
+<li><code>--dst-entry</code>：与单文件备份配合使用，将单个文件或目录提取到用户指定的路径。</li>
+</ul>
+</li>
+</ul>
+<p>这是 MySQL 企业级备份中 ** 单文件备份（镜像文件）** 的核心操作，支持转换、查看、提取，解决多文件备份管理复杂的问题：</p>
+<h5 id="1-backup-dir-to-image目录转单文件">1. <code>backup-dir-to-image</code>：目录转单文件
+</h5><ul>
+<li><strong>作用</strong>：
+将分散的备份目录（含 <code>.ibd</code>、<code>.MYD</code> 等文件）打包为单个镜像文件（如 <code>.img</code>），便于存储、传输（如上传到云存储、写入磁带）。</li>
+<li>命令解析：
+<ul>
+<li><code>--backup_dir</code>：指定现有备份目录的路径。</li>
+<li><code>--backup-image</code>：指定生成的单文件镜像的路径（需提前创建空文件或指定新路径）。</li>
+</ul>
+</li>
+<li><strong>应用场景</strong>：
+定期将全量备份目录转换为单文件，简化异地容灾的传输流程。</li>
+</ul>
+<h5 id="2-list-image查看单文件内容">2. <code>list-image</code>：查看单文件内容
+</h5><ul>
+<li><strong>作用</strong>：
+列出单文件备份中包含的所有文件和目录结构，类似 <code>ls</code> 命令，用于快速校验备份内容。</li>
+<li><strong>命令解析</strong>：
+只需指定 <code>--backup-image</code>（单文件路径），即可输出备份内的文件列表（如 <code>ibdata1</code>、<code>mydb/mytable.ibd</code> 等）。</li>
+<li><strong>实践价值</strong>：
+恢复前确认备份包含目标文件（如误删表的 <code>.ibd</code> 文件），避免恢复后发现文件缺失。</li>
+</ul>
+<h5 id="3-extract从单文件提取文件">3. <code>extract</code>：从单文件提取文件
+</h5><ul>
+<li><strong>作用</strong>：
+从单文件备份中提取指定文件或目录，无需恢复整个备份，适合快速恢复单个表或文件。</li>
+<li>命令解析：
+<ul>
+<li><code>--src-entry</code>：指定要提取的文件路径（需与 <code>list-image</code> 查看的路径一致，如 <code>mydb/mytable.ibd</code>）。</li>
+<li><code>--dst-entry</code>：指定提取到的目标路径（如 <code>/restore/mytable.ibd</code>）。</li>
+</ul>
+</li>
+<li><strong>典型场景</strong>：
+误删某张表的 <code>.ibd</code> 文件时，从全量备份镜像中直接提取该文件，无需恢复整个数据库。</li>
+</ul>
+<h5 id="4-关键注意事项-1">4. 关键注意事项
+</h5><ul>
+<li>
+<h5 id="依赖备份结构"><strong>依赖备份结构</strong>：
+</h5><p>操作单文件备份前，需确保备份是通过 <code>backup-to-image</code> 或 <code>backup-dir-to-image</code> 生成的标准镜像，否则可能因格式不兼容失败。</p>
+</li>
+<li>
+<p><strong>路径精确匹配</strong>：
+<code>extract</code> 时 <code>--src-entry</code> 需严格匹配 <code>list-image</code> 显示的路径（包括目录层级），否则无法找到文件。</p>
+</li>
+<li>
+<p><strong>提取后的兼容性</strong>：
+提取的文件需手动适配权限、配置（如 InnoDB 表空间文件需确保 <code>ibdata1</code> 一致），否则可能无法直接使用。</p>
+</li>
+</ul>
+<h4 id="mysql-企业版备份所需的基本权限">MySQL 企业版备份所需的基本权限
+</h4><p>所需的最低权限：</p>
+<ul>
+<li><strong>BACKUP_ADMIN</strong>（适用于 8.0.16 及更高版本）和对所有数据库及表的 <strong>RELOAD</strong> 权限</li>
+<li>对 <code>mysql.backup_progress</code> 表的 <strong>CREATE、INSERT、UPDATE、DROP</strong> 权限</li>
+<li>对 <code>mysql.backup_history</code> 表的 <strong>CREATE、INSERT、UPDATE、DROP、SELECT、ALTER</strong> 权限</li>
+<li><strong>SUPER</strong> 权限：用于启用和禁用日志记录，以及优化锁定机制，以最大程度减少对数据库处理的干扰</li>
+<li><strong>REPLICATION CLIENT</strong> 权限：用于检索备份中存储的二进制日志位置</li>
+<li><strong>PROCESS</strong> 权限：用于处理带有 <code>ALGORITHM=INPLACE</code> 子句的 DDL 语句</li>
+<li>对 <code>performance_schema.replication_group_members</code> 的 <strong>SELECT</strong> 权限：用于判断服务器实例是否属于组复制（Group Replication）配置</li>
+<li>对于 8.0.16 及更高版本，还需要对 <code>performance_schema.variables_info</code> 和 <code>performance_schema.log_status</code> 的 <strong>SELECT</strong> 权限</li>
+</ul>
+<h5 id="授予所需权限">授予所需权限
+</h5><p>以下脚本设置了 <code>backupuser</code>使用者所需权限：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-SQL" data-lang="SQL"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="s1">&#39;mysqlbackup&#39;</span><span class="o">@</span><span class="s1">&#39;localhost&#39;</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">GRANT</span><span class="w"> </span><span class="n">BACKUP_ADMIN</span><span class="p">,</span><span class="w"> </span><span class="n">RELOAD</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;mysqlbackup&#39;</span><span class="o">@</span><span class="s1">&#39;localhost&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">GRANT</span><span class="w"> </span><span class="k">CREATE</span><span class="p">,</span><span class="w"> </span><span class="k">INSERT</span><span class="p">,</span><span class="w"> </span><span class="k">DROP</span><span class="p">,</span><span class="w"> </span><span class="k">UPDATE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">mysql</span><span class="p">.</span><span class="n">backup_progress</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;mysqlbackup&#39;</span><span class="o">@</span><span class="s1">&#39;localhost&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">GRANT</span><span class="w"> </span><span class="k">CREATE</span><span class="p">,</span><span class="w"> </span><span class="k">INSERT</span><span class="p">,</span><span class="w"> </span><span class="k">DROP</span><span class="p">,</span><span class="w"> </span><span class="k">UPDATE</span><span class="p">,</span><span class="w"> </span><span class="k">SELECT</span><span class="p">,</span><span class="w"> </span><span class="k">ALTER</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">mysql</span><span class="p">.</span><span class="n">backup_history</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;mysqlbackup&#39;</span><span class="o">@</span><span class="s1">&#39;loaclhost&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">GRANT</span><span class="w"> </span><span class="n">SUPER</span><span class="p">,</span><span class="w"> </span><span class="n">REPLICATION</span><span class="w"> </span><span class="n">CLIENT</span><span class="p">,</span><span class="w"> </span><span class="n">PROCESS</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;mysqlbackup&#39;</span><span class="o">@</span><span class="s1">&#39;localhost&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">performance_schema</span><span class="p">,</span><span class="w"> </span><span class="n">variable_info</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;mysqlbackup&#39;</span><span class="o">@</span><span class="s1">&#39;localhost&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">performance_schema</span><span class="p">.</span><span class="n">varibale_info</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;mysqlbackup&#39;</span><span class="o">@</span><span class="s1">&#39;localhost&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">performance_schema</span><span class="p">.</span><span class="n">log_status</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;mysqlbackup&#39;</span><span class="o">@</span><span class="s1">&#39;localhost&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="使用-mysqldump-和-mysqlpump-进行逻辑备份">使用 <code>mysqldump</code> 和 <code>mysqlpump</code> 进行逻辑备份
+</h2><h3 id="mysqldump-和-mysqlpump"><code>mysqldump</code> 和 <code>mysqlpump</code>
+</h3><ul>
+<li><code>mysqldump</code> 和 <code>mysqlpump</code> 工具包含在 MySQL 发行版中。</li>
+<li>它们用于执行逻辑备份，且适用于任何数据库引擎。
+<ul>
+<li>某些功能（如 “热备份”）仅能对 InnoDB 表执行。</li>
+<li>默认情况下，对于所有存储引擎，它们均以 “温备份” 方式运行。</li>
+</ul>
+</li>
+<li>可通过 Linux 和 UNIX 系统中的 <code>crontab</code> 或 Windows 系统中的 “任务计划程序” 实现自动化操作。</li>
+<li><code>mysqldump</code> 和 <code>mysqlpump</code> 没有跟踪或报告工具</li>
+</ul>
+<h4 id="mysqldump"><code>mysqldump</code>
+</h4><ul>
+<li>
+<p>将表内容导出到文件：</p>
+<ul>
+<li>可导出所有数据库、特定数据库或特定表</li>
+<li>允许备份本地或远程服务器</li>
+<li>与存储引擎无关</li>
+<li>以文本格式写入</li>
+<li>具有可移植性</li>
+<li>是出色的复制 / 迁移策略</li>
+<li>适合小型导出，但不适合全量备份</li>
+</ul>
+</li>
+<li>
+<p>基本用法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-SQL" data-lang="SQL"><span class="line"><span class="cl"><span class="n">mysqldump</span><span class="w"> </span><span class="c1">--user=username --password=password db_name &gt; backup.file
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>**存储位置：**对于包含 <code>CREATE TABLE</code> 和 <code>INSERT</code> 语句的 SQL 格式导出文件，服务器会将表内容发送至 <code>mysqldump</code>，再由 <code>mysqldump</code> 将输出写入客户端主机</p>
+</li>
+</ul>
+<h5 id="使用-mysqldump-保证数据的一致性">使用 <code>mysqldump</code> 保证数据的一致性
+</h5><p>确保一致性：</p>
+<ul>
+<li>
+<p><strong><code>--master-data</code> 可选参数</strong></p>
+<ul>
+<li>备份期间通过 <code>FLUSH TABLES WITH READ LOCK</code> 锁定所有表</li>
+<li>在备份文件中以 <code>CHANGE MASTER TO</code> 语句记录二进制日志位置</li>
+<li><code>--master-data=2</code> 会将该位置记录为注释</li>
+</ul>
+</li>
+<li>
+<p><strong>同时使用 <code>--master-data</code> 和 <code>--single-transaction</code> 参数</strong></p>
+<ul>
+<li>不锁定表</li>
+<li>仅保证 InnoDB 表的一致性</li>
+<li>在备份操作开始时获取全局锁，以获取一致的二进制日志位置</li>
+</ul>
+</li>
+<li>
+<p><strong><code>--lock-all-tables</code> 参数</strong></p>
+<ul>
+<li>在整个导出过程中锁定所有表，以此保证一致性</li>
+</ul>
+</li>
+<li>
+<p><strong><code>--flush-logs</code> 参数</strong>
+- 启动一个新的二进制日志</p>
+</li>
+</ul>
+<p><code>--single-transaction</code> 选项通过使用可重复读隔离级别的事务来读取所有 InnoDB 数据，从而实现非阻塞的数据一致性</p>
+<h5 id="mysqldump-中用于创建对象的选项">mysqldump 中用于创建对象的选项
+</h5><ul>
+<li>
+<p><code>--no-create-db</code></p>
+<ul>
+<li>不生成 <code>CREATE DATABASE</code> 语句</li>
+</ul>
+</li>
+<li>
+<p><code>--no-create-info</code></p>
+<ul>
+<li>不生成 <code>CREATE TABLE</code> 语句</li>
+</ul>
+</li>
+<li>
+<p><code>--no-data</code></p>
+<ul>
+<li>只创建数据库和表结构，不导出数据</li>
+</ul>
+</li>
+<li>
+<p><code>--no-tablespaces</code></p>
+<ul>
+<li>告知 MySQL 服务器不要在输出中写入任何 <code>CREATE LOGFILE GROUP</code> 或 <code>CREATE TABLESPACE</code> 语句</li>
+</ul>
+</li>
+<li>
+<p><code>--quick</code></p>
+<ul>
+<li>从表中逐行检索数据，而不缓冲多行数据</li>
+</ul>
+</li>
+</ul>
+<h5 id="mysqldump-中用于删除对象的选项">mysqldump 中用于删除对象的选项
+</h5><ul>
+<li><code>--add-drop-database</code>
+<ul>
+<li>在每一个 <code>CREATE DATABASE</code>语句前  增加一个 <code>DROP DATABASE</code> 语句</li>
+</ul>
+</li>
+<li><code>--add-drop-table</code>
+<ul>
+<li>在每一个 <code>CREATE TABLE</code>语句前  增加一个 <code>DROP TABLE</code> 语句</li>
+</ul>
+</li>
+</ul>
+<h5 id="mysqldump-常规选项">mysqldump 常规选项
+</h5><ul>
+<li>
+<p>存储例程、事件和触发器：</p>
+</li>
+<li>
+<p><code>--routines</code></p>
+<ul>
+<li>导出所备份数据库中的存储例程（存储过程和存储函数）</li>
+</ul>
+</li>
+<li>
+<p><code>--events</code></p>
+<ul>
+<li>导出为事件调度器（Event Schedu ler）创建的事件</li>
+</ul>
+</li>
+<li>
+<p><code>--triggers</code></p>
+<ul>
+<li>导出每个被备份表的触发器</li>
+</ul>
+</li>
+<li>
+<p>一站式选项（<code>--opt</code>）</p>
+<ul>
+<li>用于创建高效且完整的备份文件的最常用选项的简写形式
+<ul>
+<li>包含 <code>--add-drop-table</code>、<code>--add-locks</code>、<code>--create-options</code>、<code>--disable-keys</code>、<code>--extended-insert</code>、<code>--lock-tables</code>、<code>--quick</code> 和 <code>--set-charset</code> 选项。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>MySQL 8.0 将存储例程和调度事件存储在数据字典中，而非像早期版本的 MySQL 服务器那样存储在表中。因此，对 <code>mysql</code> 数据库的备份并不包含存储过程和事件。必须在 <code>mysqldump</code> 中显式指定 <code>--routines</code> 和 <code>--events</code> 选项才能对它们进行备份。</p>
+<p><code>--triggers</code> 和 <code>--opt</code> 选项默认是启用的；可使用 <code>--skip-triggers</code> 和 <code>--skip-opt</code> 来禁用它们。</p>
+<h5 id="恢复-mysqldump-备份">恢复 mysqldump 备份
+</h5><ul>
+<li>
+<p><strong>使用 mysql 重新加载 mysqldump 备份</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysql --login-path<span class="o">=</span>login-path database &lt; backup_file.sql
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果备份文件中不包含指定数据库的 <code>USE</code> 语句，你必须指明数据库名称。</li>
+<li>如果你使用&ndash;database或&ndash;all-databases选项执行mysqldump：
+<ul>
+<li>转储文件会包含合适的 <code>USE db_name</code> 语句。</li>
+<li>从该转储文件重新加载时，无需指定目标数据库名称。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>从一个数据库复制到另一个数据库</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqldump -uuser -ppassword orig-db <span class="p">|</span> mysql -uuser -ppassword copy-db
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h6 id="从一个数据库复制到另一个数据库">从一个数据库复制到另一个数据库
+</h6><p>可以使用 <code>mysqldump</code> 的输出来恢复表或数据库，以及复制它们。<code>mysql</code> 可以从管道读取数据，因此 <code>mysqldump</code> 和 <code>mysql</code> 的使用可以组合成一条单一命令，将表从一个数据库复制到另一个数据库。这种管道技术还可用于通过网络将数据库或表复制到另一台服务器。</p>
+<h5 id="使用-mysqlimport">使用 mysqlimport
+</h5><ul>
+<li>如果你使用 <code>--tab</code> 选项调用 <code>mysqldump</code>，它会生成以制表符分隔的数据文件：
+<ul>
+<li>一个包含 <code>CREATE TABLE</code> 语句的 <code>.sql</code> 文件</li>
+<li>一个包含表数据的 <code>.txt</code> 文本文件</li>
+</ul>
+</li>
+<li>要重新加载表，请按以下步骤操作：
+<ol>
+<li>切换到备份目录。</li>
+<li>使用 <code>mysql</code> 处理 <code>.sql</code> 文件。</li>
+<li>使用 <code>mysqlimport</code> 加载 <code>.txt</code> 文件。</li>
+</ol>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">① <span class="nb">cd</span> backup_dir  
+</span></span><span class="line"><span class="cl">② mysql -uuser -ppassword database &lt; table.sql  
+</span></span><span class="line"><span class="cl">③ mysqlimport -uuser -ppassword database table.txt  
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h6 id="mysqlimport-补充说明">mysqlimport 补充说明
+</h6><p>如果将 <code>--tab</code> 选项与 <code>--fields-terminated-by</code>（字段分隔符）、<code>--fields-enclosed-by</code>（字段包围符）等格式控制选项结合使用，需要在 <code>mysqlimport</code> 中指定<strong>相同的格式控制选项</strong>，这样它才能知道如何解析数据文件。</p>
+<h5 id="mysqldump-所需权限">mysqldump 所需权限
+</h5><p>要使用 <code>mysqldump</code>，你必须具备以下权限：</p>
+<ul>
+<li>对要备份的表有 <code>SELECT</code> 权限</li>
+<li>对要备份的视图有 <code>SHOW VIEW</code> 权限</li>
+<li>对要备份的触发器有 <code>TRIGGER</code> 权限</li>
+<li><code>LOCK TABLES</code> 权限（除非你使用 <code>--single-transaction</code> 选项）</li>
+</ul>
+<p>其他选项可能需要额外权限。例如：</p>
+<ul>
+<li>要使用 <code>--flush-logs</code> 或 <code>--master-data</code> 选项，你必须具备 <code>RELOAD</code> 权限。</li>
+<li>要使用 <code>--tab</code> 选项生成制表符分隔的输出，你必须具备 <code>FILE</code> 权限。</li>
+<li>要使用 <code>--routines</code> 选项备份存储函数和存储过程，你必须具备全局 <code>SELECT</code> 权限。</li>
+</ul>
+<h5 id="重新加载转储文件所需的权限">重新加载转储文件所需的权限
+</h5><p>要重新加载转储文件（即恢复备份），你必须具备以下权限：</p>
+<ul>
+<li>对每个被转储（备份）的对象，拥有 <code>CREATE</code> 权限</li>
+<li>对每个被转储（备份）的表，拥有 <code>INSERT</code> 权限</li>
+<li>如果 <code>mysqldump</code> 输出中包含用于更改数据库排序规则以保留字符编码的语句，需对数据库拥有 <code>ALTER</code> 权限</li>
+</ul>
+<h4 id="mysqlpump">mysqlpump
+</h4><p><code>mysqlpump</code> 与 <code>mysqldump</code> 非常相似，但有以下增强功能：</p>
+<ul>
+<li>通过使用并行线程提取数据，提供比 <code>mysqldump</code> 更好的性能
+<ul>
+<li><code>mysqlpump</code> 会将转储过程拆分为多个子任务，然后将这些子任务添加到一个多线程队列中。</li>
+<li>之后由若干线程（默认是两个）处理该队列。</li>
+</ul>
+</li>
+<li>能更好地控制在每个线程上转储哪些数据库对象</li>
+<li>以 <code>CREATE USER</code>/<code>GRANT</code> 语句的形式转储用户，而非向 <code>mysql</code> 系统数据库中插入记录</li>
+<li>支持压缩输出</li>
+<li>显示进度指示器</li>
+<li>为 InnoDB 表提供更快的辅助索引重新加载（恢复）</li>
+</ul>
+<p><strong>补充说明</strong></p>
+<p>为 InnoDB 表实现更快的辅助索引重新加载，是通过在插入行之后再添加索引来达成的。</p>
+<h5 id="使用-mysqlpump-指定要备份的对象">使用 mysqlpump 指定要备份的对象
+</h5><p><code>mysqlpump</code> 工具提供了许多选项，用于指定要备份哪些数据库对象，例如：</p>
+<ul>
+<li>
+<p><strong>备份所有数据库（默认行为）</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlpump -uuser -ppassword &gt; full_backup.sql
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>仅备份 <code>employees</code> 和 <code>world</code> 数据库</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlpump -uuser -ppassword <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--databases employees world &gt; emp_world_backup.sql
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>备份所有名称以 <code>db.</code> 开头的数据库</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlpump -uuser -ppassword <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--include-databases<span class="o">=</span>db% --result-file<span class="o">=</span>all_db_backup.sql
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>备份所有内容，但排除名为 <code>t1</code> 的表</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlpump -uuser -ppassword --exclude-tables<span class="o">=</span>t1 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--result-file<span class="o">=</span>partial_backup.sql
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h6 id="补充说明">补充说明
+</h6><p>与 <code>mysqldump</code> 不同，<code>mysqlpump</code> 的默认行为是<strong>备份所有数据库</strong>。如果执行 <code>mysqlpump</code> 时未指定要包含的模式（数据库），此选项会隐式生效。</p>
+<p>默认情况下，<code>mysqlpump</code> 不会备份以下内部数据库：<code>PERFORMANCE_SCHEMA</code>、<code>INFORMATION_SCHEMA</code>、<code>sys</code> 和 <code>ndbinfo</code>。若要备份这些数据库，需通过 <code>--databases</code> 或 <code>--include-databases</code> 选项显式指定它们的名称。</p>
+<p><code>mysqlpump</code> 会以逻辑账户的形式备份用户（使用 <code>CREATE USER</code> 和 <code>GRANT</code> 语句，例如使用 <code>--include-users</code> 或 <code>--users</code> 选项时）。因此，默认情况下，<code>mysql</code> 系统数据库的备份<strong>不包含存储用户定义的授权表</strong>（如 <code>user</code>、<code>db</code>、<code>tables_priv</code>、<code>columns_priv</code>、<code>procs_priv</code> 或 <code>proxies_priv</code> 表 ）。若要备份这些授权表，需指定 <code>mysql</code> 数据库及对应的表名。</p>
+<h5 id="使用-mysqlpump-进行并行处理">使用 mysqlpump 进行并行处理
+</h5><p>你可以使用 <code>--default-parallelism</code> 和 <code>--parallel-schemas</code> 选项配置 <code>mysqlpump</code> 所用的线程数量。例如：</p>
+<ul>
+<li>
+<p><strong>使用 4 个线程备份所有数据库</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlpump --user --password <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--default-parallelism<span class="o">=</span><span class="m">4</span> &gt; full_backup.sql
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>创建两个队列</strong>：一个用于处理 <code>db1</code> 和 <code>db2</code>，另一个用于处理 <code>db3</code> 和 <code>db4</code>。在第一个队列使用 5 个线程，第二个队列使用 2 个线程，对所有其他模式（数据库）的默认队列使用 3 个线程：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mysqlpump --user --password <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--parallel-schemas<span class="o">=</span>5:db1,db2 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--parallel-schemas<span class="o">=</span>2:db3,db4 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--default-parallelism<span class="o">=</span><span class="m">3</span> &gt; full_backup.sql
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h6 id="注意事项">注意事项
+</h6><p><code>--default-parallelism</code> 选项的默认线程数量是 2。</p>
+<h2 id="其他物理备份方法">其他物理备份方法
+</h2><h3 id="innodb-物理备份概述">InnoDB 物理备份：概述
+</h3><ul>
+<li>物理（二进制）备份操作会生成完整的 InnoDB 备份。
+<ul>
+<li>包含所有 InnoDB 表的备份</li>
+<li>生成所有表空间文件的精确副本</li>
+</ul>
+</li>
+<li>所有数据库中的 InnoDB 表必须一起进行备份。
+<ul>
+<li>InnoDB 会在系统表空间中集中维护一些信息。</li>
+<li>其他 InnoDB 表空间包含的表数据，依赖于系统表空间中 InnoDB 的数据字典。</li>
+</ul>
+</li>
+<li>在文件复制期间，必须关闭 MySQL 服务器，以确保所有表空间的一致性。
+<ul>
+<li>这是一种 “冷备份”</li>
+</ul>
+</li>
+</ul>
+<h4 id="物理备份的可移植性">物理备份的可移植性
+</h4><ul>
+<li><strong>二进制可移植性</strong>
+<ul>
+<li>二进制数据库文件可从一台 MySQL 服务器复制到另一台。</li>
+<li>当在一台机器上制作的物理备份要用于架构不同的另一台机器时，二进制可移植性很有用。
+<ul>
+<li>例如，你可通过复制二进制数据库文件，将数据库从一台 MySQL 服务器复制到另一台。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>存储引擎可移植性</strong>
+<ul>
+<li>InnoDB：
+<ul>
+<li>数据库的所有表空间和日志文件可直接复制。
+<ul>
+<li>示例：你可将表空间文件从一台机器上的 MySQL 服务器直接复制到另一台机器的 MySQL 服务器，第二台服务器可访问该表空间。</li>
+<li>源系统和目标系统上的数据库目录名称必须相同。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>MyISAM 和 Archive：
+<ul>
+<li>单个表的所有文件可直接复制，且元数据可从 <code>.sdi</code> 文件导入。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="windows-系统的文件名兼容性">Windows 系统的文件名兼容性
+</h5><ul>
+<li>
+<p>MySQL 服务器在 Windows 系统上会内部存储小写的数据库和表名称。</p>
+</li>
+<li>
+<p>对于区分大小写的文件系统，使用选项文件语句：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="na">lower_case_table_names</span><span class="o">=</span><span class="s">1</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在 MySQL 8.0 中，禁止使用与服务器初始化时不同的 <code>lower_case_table_names</code> 设置启动服务器。你必须在初始化数据目录前设置该选项，之后无法更改</p>
+</li>
+</ul>
+<h4 id="innodb-物理备份流程">InnoDB 物理备份流程
+</h4><ol>
+<li>执行服务器的慢速（干净）关闭。
+<ul>
+<li>需要设置 <code>innodb_fast_shutdown=0</code>（默认值为 1 ）</li>
+<li>允许在关闭前完成额外的 InnoDB 刷新操作</li>
+<li>关闭耗时更长，但启动会更快</li>
+</ul>
+</li>
+<li>复制所有 InnoDB 数据、日志和配置文件：
+<ul>
+<li>数据文件：<code>ibdata</code> 和 <code>*.ibd</code></li>
+<li>重做日志文件：<code>ib_logfile*</code></li>
+<li>回滚表空间文件：<code>undo_*</code></li>
+<li>服务器应用的所有配置文件，如 <code>my.cnf</code></li>
+</ul>
+</li>
+<li>重启服务器</li>
+</ol>
+<h4 id="从-innodb-物理备份中恢复">从 InnoDB 物理备份中恢复
+</h4><ul>
+<li>要使用物理备份恢复 InnoDB 表，需执行以下操作：
+<ol>
+<li>停止服务器</li>
+<li>替换备份过程中复制的所有组件</li>
+<li>重启服务器</li>
+</ol>
+</li>
+<li>InnoDB 将表元数据存储在共享表空间中。必须：
+<ul>
+<li>将共享表空间和每个表的表空间文件作为一个组进行复制
+<ul>
+<li>这会替换目标系统表空间。</li>
+</ul>
+</li>
+<li>复制相应的重做日志文件和回滚表空间文件</li>
+</ul>
+</li>
+</ul>
+<h3 id="使用可传输表空间进行备份">使用可传输表空间进行备份
+</h3><p>当使用可传输表空间备份 InnoDB 表时：</p>
+<ul>
+<li>可以执行部分备份
+<ul>
+<li>按表备份，或备份属于某个业务功能的多张表</li>
+</ul>
+</li>
+<li>无需在另一台服务器加载这些表
+<ul>
+<li>如果想读取备份副本用于分析或其他用途，需确保在目标服务器上 InnoDB 设为只读。</li>
+<li>还必须确保源服务器和只读服务器的 InnoDB 页大小和行格式匹配。</li>
+<li>不得在另一台服务器中使用这些表进行修改操作。</li>
+<li>如果修改了这些表，备份将不再具备完整性。</li>
+</ul>
+</li>
+<li>可以按表或按业务功能恢复部分备份</li>
+</ul>
+<h4 id="可传输表空间将表复制到另一个实例">可传输表空间：将表复制到另一个实例
+</h4><ol>
+<li>
+<p>在源实例上，执行 <code>FLUSH TABLES...FOR EXPORT</code> 来让表进入静默状态并创建 <code>.cfg</code> 元数据文件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">FLUSH</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">EXPORT</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>.cfg</code> 文件会在 InnoDB 数据目录中创建。</li>
+</ul>
+</li>
+<li>
+<p>将 <code>.ibd</code> 和 <code>.cfg</code> 文件从源实例复制到目标实例。</p>
+</li>
+<li>
+<p>在源实例上，执行 <code>UNLOCK TABLES</code> 来释放锁。</p>
+</li>
+<li>
+<p>在目标实例上，创建一个与源实例上表结构相同的表。</p>
+</li>
+<li>
+<p>在目标实例上，丢弃现有表空间：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="n">DISCARD</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在目标实例上，导入表空间：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="n">IMPORT</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<h5 id="补充说明-1">补充说明
+</h5><p>如果你复制的是 InnoDB 分区表，每个分区会有单独的表空间（<code>.ibd</code> 文件）和 <code>.cfg</code> 文件。你必须在目标实例上丢弃每个分区的表空间，复制所有 <code>.ibd</code> 和 <code>.cfg</code> 文件，并导入所有表空间</p>
+<h3 id="物理-myisam-和-archive-备份">物理 MyISAM 和 ARCHIVE 备份
+</h3><ul>
+<li>物理 MyISAM 和 ARCHIVE 备份包含 MySQL 用于表示表的文件。
+<ul>
+<li>对于 MyISAM 表，这些文件是.sdi、.MYD 和.MYI 文件。</li>
+<li>对于 ARCHIVE 表，这些文件是.sdi 和.ARZ 文件。</li>
+</ul>
+</li>
+<li>在复制操作期间，其他程序（包括服务器）不得修改正在复制的文件。
+<ul>
+<li>为避免服务器交互问题，在复制操作期间锁定并刷新表，或者停止服务器</li>
+</ul>
+</li>
+</ul>
+<h5 id="注意">注意
+</h5><p>在 Linux 系统上，锁定表而非关闭服务器这种方式是可行的。在 Windows 系统上，文件锁定行为使得对于被服务器锁定的表，可能无法复制其表文件。在这种情况下，复制表文件前请停止服务器</p>
+<h4 id="物理-myisam-和-archive-备份流程">物理 MyISAM 和 ARCHIVE 备份流程
+</h4><ol>
+<li>
+<p>当服务器正在运行时，锁定要复制的表：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">USE</span><span class="w"> </span><span class="n">world_myisam</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">FLUSH</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="n">city</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">READ</span><span class="w"> </span><span class="k">LOCK</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>执行文件系统复制：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># cp datadir/world_myisam/city.* /backupdir/</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>启动一个新的二进制日志文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">FLUSH</span><span class="w"> </span><span class="n">LOGS</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>新的二进制日志文件包含备份之后所有更改数据的语句（以及任何后续的二进制日志文件 ）。</li>
+</ul>
+</li>
+<li>
+<p>文件系统复制完成后，释放锁</p>
+</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">USE</span><span class="w"> </span><span class="n">world_myisam</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">FLUSH</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="n">city</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">READ</span><span class="w"> </span><span class="k">LOCK</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果你不想刷新日志，可以使用 <code>SHOW MASTER STATUS</code> 命令记录当前日志坐标，该命令会返回当前二进制日志文件名和位置。</p>
+<h4 id="从物理-myisam-或-archive-备份中恢复">从物理 MyISAM 或 Archive 备份中恢复
+</h4><p>要从物理备份中恢复 MyISAM 或 ARCHIVE 表，请按以下步骤操作：</p>
+<ol>
+<li>
+<p>如果存在现有表，则删除该表</p>
+</li>
+<li>
+<p>将备份的数据文件复制到相应的数据库目录中</p>
+</li>
+<li>
+<p>将备份的.sdi 文件复制到服务器主机上的临时目录</p>
+</li>
+<li>
+<p>运行 <code>IMPORT TABLE</code> 语句，指定.sdi 文件的路径，以将表加载到数据库中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">IMPORT</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="s1">&#39;sdi_file_path&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<p>请注意，.sdi 文件包含模式名称（即数据库名 ）和表名。如果要将其恢复到不同的数据库或表名，你可能需要编辑该文件。
+<code>IMPORT TABLE</code> 语句会将数据字典加载到 MySQL 服务器中</p>
+<h3 id="lvm-快照">LVM 快照
+</h3><p>逻辑卷管理器（LVM）：</p>
+<ul>
+<li>管理物理介质上的存储区域，比磁盘分区更具灵活性
+<ul>
+<li>物理卷</li>
+<li>逻辑卷</li>
+<li>卷组</li>
+</ul>
+</li>
+<li>使用一种称为 “写时复制（copy - on - write）” 的机制来创建快照
+<ul>
+<li>快照的表现就好像它是创建快照时文件系统的即时副本。</li>
+<li>在内部，快照会记录创建快照后发生变化的磁盘块的原始版本。</li>
+<li>当你访问快照时，LVM 会从文件系统返回未更改的块，或者返回已更改块的原始副本。</li>
+</ul>
+</li>
+</ul>
+<h5 id="写时复制快照">写时复制快照
+</h5><p>当你从新创建的快照中读取文件时，LVM 会从原始卷中读取这些文件。当原始卷发生更改时，LVM 会在更改原始卷上的数据之前，立即将数据复制到快照中，这样，自创建快照以来发生更改的任何数据都以其原始形式存储在快照中。其结果是，当你从快照中读取文件时，它会提供创建快照瞬间存在的数据版本。</p>
+<p>因为快照几乎是即时创建的，你可以认为在创建快照期间，底层数据不会发生变化。这使得快照对于备份 InnoDB 数据库非常有用，如果你所有文件都存储在一个可以作为单个快照进行快照的逻辑卷中，则无需关闭服务器。如果文件分布在多个逻辑卷上，则必须关闭 MySQL 数据库服务器，并快照所有包含 MySQL 数据文件的卷，然后再重新启动服务器。</p>
+<h4 id="lvm-备份流程">LVM 备份流程
+</h4><ul>
+<li>
+<p>在以下情况时，使用 LVM 快照执行物理备份：</p>
+<ul>
+<li>主机支持 LVM
+<ul>
+<li>示例：Linux 支持 LVM2。</li>
+</ul>
+</li>
+<li>包含 MySQL 数据目录的文件系统位于逻辑卷上</li>
+</ul>
+</li>
+<li>
+<p>备份流程：</p>
+<ol>
+<li>
+<p>如有需要，关闭 MySQL 服务器或锁定表。</p>
+<ul>
+<li>
+<p>如果 InnoDB 文件分布在多个卷上，或者你想要进行一致性备份，则需要关闭服务器。</p>
+</li>
+<li>
+<p>如果你要备份非 InnoDB 表，可以使用 <code>FLUSH TABLES WITH READ LOCK</code>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>为包含 MySQL 数据目录的逻辑卷创建快照。</p>
+</li>
+<li>
+<p>如有需要，重启 MySQL 服务器或解锁表。</p>
+</li>
+<li>
+<p>从快照执行物理备份。</p>
+</li>
+<li>
+<p>删除快照。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h5 id="lvm-命令示例">LVM 命令示例
+</h5><ul>
+<li>
+<p>从 <code>/dev/VG_MYSQL/lv_datadir</code> 逻辑卷创建名为 <code>lv_datadirbackup</code>、预留大小为 2GB 的快照。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">lvcreate -s -n lv_datadirbackup -L 2G /dev/VG_MYSQL/lv_datadir
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>挂载快照并使用 <code>tar</code> 备份文件。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir /mnt/snap
+</span></span><span class="line"><span class="cl">mount /dev/VG_MYSQL/lv_datadirbackup /mnt/snap
+</span></span><span class="line"><span class="cl">tar -cvzf backup.tar /mnt/snap
+</span></span><span class="line"><span class="cl">umount /mnt/snap
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>从卷 <code>VG_MYSQL</code> 中删除名为 <code>lv_datadirbackup</code> 的快照。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">lvremove VG_MYSQL/lv_datadirbackup
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="备份日志和状态文件">备份日志和状态文件
+</h3><ul>
+<li>二进制日志文件</li>
+<li>服务器使用的选项文件（my.cnf 和 my.ini 文件 ）</li>
+<li>复制相关文件：
+<ul>
+<li><a class="link" href="https://master.info/"  target="_blank" rel="noopener"
+    >master.info</a></li>
+<li><a class="link" href="https://relay-log.info/"  target="_blank" rel="noopener"
+    >relay-log.info</a></li>
+</ul>
+</li>
+<li>复制从服务器数据文件
+<ul>
+<li>SQL_LOAD - *</li>
+</ul>
+</li>
+<li>MySQL 二进制文件和库</li>
+<li>策略：
+<ul>
+<li>静态文件：在服务器运行时，使用常规系统工具进行备份</li>
+<li>动态文件：在服务器停止时，使用常规系统工具进行备份</li>
+</ul>
+</li>
+</ul>
+<h5 id="二进制日志文件">二进制日志文件
+</h5><p>二进制日志存储备份完成后所做的更新操作。</p>
+<h5 id="服务器使用的选项文件mycnf-和-myini-文件-">服务器使用的选项文件（my.cnf 和 my.ini 文件 ）
+</h5><p>这些文件包含发生崩溃后必须恢复的配置信息。</p>
+<h5 id="复制相关文件">复制相关文件
+</h5><p>复制从服务器会创建 <a class="link" href="https://master.info/"  target="_blank" rel="noopener"
+    >master.info</a> 文件，其中包含连接到主服务器所需的信息；还会创建 <a class="link" href="https://relay-log.info/"  target="_blank" rel="noopener"
+    >relay-log.info</a> 文件，用于指示处理中继日志的当前进度。</p>
+<h5 id="复制从服务器数据文件">复制从服务器数据文件
+</h5><p>复制从服务器会创建用于处理 LOAD DATA INFILE 语句的数据文件。这些文件位于由 slave_load_tmpdir 系统变量命名的目录中，你可以通过 &ndash;slave-load-tmpdir 选项设置该变量。如果未设置 slave_load_tmpdir，则使用 tmpdir 系统变量的值。为保护复制从服务器数据，请备份以 SQL_LOAD - 开头的文件。</p>
+<h2 id="基于复制的备份">基于复制的备份
+</h2><h3 id="利用复制辅助备份">利用复制辅助备份
+</h3><p>复制到另一台服务器，以避免备份带来的开销。</p>
+<ul>
+<li>使用从服务器进行备份，而非从主服务器进行备份。</li>
+<li>通过使用从服务器进行备份，可实现：
+<ul>
+<li>使用主服务器的应用程序不会因表锁定或刷新操作而变慢</li>
+<li>备份过程不会给主服务器增加处理负载</li>
+<li>备份文件无需在主服务器上占用额外的硬盘空间或进行额外处理</li>
+</ul>
+</li>
+</ul>
+<h3 id="从复制从服务器进行备份">从复制从服务器进行备份
+</h3><ol>
+<li>
+<p>停止从服务器以进行备份：</p>
+<ul>
+<li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  STOP SLAVE SQL_THREAD
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果你要进行逻辑备份，需刷新表。</li>
+</ul>
+</li>
+<li>
+<p>或者，停止服务器以进行物理文件复制。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>备份从服务器的数据库：</p>
+<ul>
+<li>使用 <code>mysqldump</code> 或 <code>mysqlbackup</code> 备份正在运行的服务器的内容。</li>
+<li>如果你停止了服务器，使用系统工具复制物理文件。
+<ul>
+<li>在停止从服务器之前，确保 <code>slave_open_temp_tables</code> 状态变量的值为 0 。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>启动从服务器：</p>
+<ul>
+<li>如果服务器已停止，则启动服务器。</li>
+<li><code>START SLAVE SQL_THREAD</code></li>
+</ul>
+</li>
+</ol>
+<p>如果从服务器因存在已打开、用于尚未执行的更新操作的临时表而停止，当从服务器重启时，那些更新操作所需的临时表将不再可用。</p>
+<h4 id="从多个源备份到单个服务器">从多个源备份到单个服务器
+</h4><ul>
+<li>多源复制可用于：
+<ul>
+<li>将多个服务器备份到单个服务器</li>
+<li>合并表分片</li>
+<li>将来自多个服务器的数据整合到单个服务器</li>
+</ul>
+</li>
+<li>从服务器会为每个向其发送事务的主服务器创建一个复制通道。
+<ul>
+<li>使用 <code>CHANGE MASTER TO... FOR CHANNEL channelname</code> 语法：</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">CHANGE</span><span class="w"> </span><span class="n">MASTER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">MASTER_LOG_FILE</span><span class="o">=</span><span class="s1">&#39;binlog.000006&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">MASTER_LOG_POS</span><span class="o">=</span><span class="mi">143</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">CHANNEL</span><span class="w"> </span><span class="s1">&#39;shard-1&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>可同时复制所有通道，或启动 / 停止单个通道：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">START</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="n">IO_THREAD</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">CHANNEL</span><span class="w"> </span><span class="s1">&#39;shard-1&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果在备份策略中要整合多个分片，可以仅在一天中的特定时段启用从服务器的 IO 线程，以避免在高峰时段给分片主服务器带来过大压力。但要注意，主服务器上所有相关事件都必须完成复制，而这在从服务器上可能需要花费相当长的时间。</p>
+<h2 id="使用二进制文件恢复数据库">使用二进制文件恢复数据库
+</h2><h3 id="处理二进制日志内容">处理二进制日志内容
+</h3><ol>
+<li>
+<p>确定备份完成后写入了哪些日志。</p>
+</li>
+<li>
+<p>使用 <code>mysqlbinlog</code> 转换日志内容：<code>mysqlbinlog binlog.000050 binlog.000051 binlog.000052 | mysql</code></p>
+<ul>
+<li>用一条命令处理所有二进制日志。</li>
+</ul>
+</li>
+<li>
+<p>删除服务器主机上不再有用且占用空间的二进制日志：</p>
+<ul>
+<li>
+<p>使用 <code>mysqldump</code> 创建备份时，可使用 <code>--delete-master-logs</code> 选项。</p>
+</li>
+<li>
+<p>执行 <code>PURGE BINARY LOGS</code>来删除不再有用的文件或事件。</p>
+<ul>
+<li>不要删除尚未复制或备份的日志文件或事件。
+<code>PURGE BINARY LOGS TO 'binlog.000048';</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>在恢复二进制备份文件或重新加载文本备份文件后，通过重新处理服务器二进制日志中记录的数据更改来完成恢复操作。为此，你必须确定备份完成后写入了哪些日志。然后，需要使用 <code>mysqlbinlog</code> 程序将这些二进制日志的内容转换为文本 SQL 语句，以便用 <code>mysql</code> 处理生成的语句。</p>
+<h3 id="选择性二进制日志处理">选择性二进制日志处理
+</h3><ul>
+<li>
+<p>恢复部分二进制日志：</p>
+<ul>
+<li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  --start-position
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>指定要提取的第一条日志语句的日志位置</li>
+</ul>
+</li>
+<li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  --stop-position
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>指定停止提取日志内容的日志位置</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">mysqlbinlog --start-position=23456 binlog.000004 | mysql
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>使用 <code>--database</code> 仅选择那些在选定特定默认数据库后发生的事件：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">mysqlbinlog --database=sales binlog.000043 | mysql
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>使用 <code>--rewrite-db</code> 恢复到不同的数据库：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">mysqlbinlog --rewrite-db=&#39;sales-&gt;sales_03&#39; binlog.000082 | mysql
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>mysqlbinlog</code> 还支持 <code>--start-datetime</code> 和 <code>--stop-datetime</code> 选项。这些选项使用二进制日志中记录的事件时间戳（事件开始时间 ）。由于二进制日志中的事件是根据提交顺序排序的，事件时间戳可能不是按排序顺序排列的。建议检查二进制日志以获取位置，而不是使用日期时间选项。</p>
+<h3 id="时间点恢复">时间点恢复
+</h3><p>你可能希望仅应用二进制日志中某个时间点之前或之后的部分内容：</p>
+<ul>
+<li>之前：
+<ul>
+<li>如果你知道有人意外执行了有破坏性的语句，且你想将更改恢复到该时间点之前的状态。</li>
+<li>如果你要将更改恢复到某一特定日期的最后时刻，并同步到分析服务器。</li>
+</ul>
+</li>
+<li>之后：
+<ul>
+<li>如果你在全量备份之后，或者在已备份的、已刷新的二进制日志之后，使用二进制日志来应用更改，那么你可以应用该时间点之后的日志。</li>
+</ul>
+</li>
+</ul>
+<h3 id="配置-mysql-以进行恢复操作">配置 MySQL 以进行恢复操作
+</h3><ul>
+<li>
+<p>MySQL 客户端程序可能因缓冲区溢出而失败。</p>
+<ul>
+<li>在使用 <code>mysqldump</code> 进行逻辑备份期间</li>
+<li>在使用 <code>mysql</code> 进行转储文件恢复期间</li>
+<li>在使用 <code>mysqlbinlog</code> 和 <code>mysql</code> 进行二进制日志恢复操作期间</li>
+</ul>
+</li>
+<li>
+<p>配置以下变量：</p>
+<ul>
+<li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  --max-allowed-packet=256M
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>默认值：64M</li>
+<li>确保在备份和恢复操作期间该值足够大，以免超过 MySQL 的数据包大小限制</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/mysql-13-%E9%80%9A%E8%BF%87-innodb-%E9%9B%86%E7%BE%A4%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-13-通过 InnoDB 集群实现高可用性</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-12-管理复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-11-配置复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-09-备份策略</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-08-优化查询性能</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

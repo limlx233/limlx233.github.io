@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="MySQL 架构总览\rMySQL 采用分层架构设计，自上而下分为三大核心层，各层职责清晰、解耦性强，确保不同模块可独立优化。\n层级 核心功能 关键组件 连接层（Connection Layer） 建立客户端与服务器的连接，处理认证与协议 连接协议、SSL 加密、线程管理 SQL 层（SQL Layer） 解析、优化 SQL 请求，处理权限校验 语法解析器、查询优化器、权限校验模块 存储层（Storage Layer） 负责数据的实际存储与读取，支持多引擎 InnoDB、MyISAM、MEMORY 等存储引擎 如何传输数据？连接层的核心逻辑\r连接层是 MySQL 与客户端交互的 “门户”，核心解决 “如何安全、高效地建立连接” 问题，主要涉及连接协议、认证机制与数据加密。\n">
+<title>MySQL-02-架构</title>
+
+<link rel='canonical' href='http://localhost:1313/p/mysql-02-%E6%9E%B6%E6%9E%84/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-02-架构">
+<meta property='og:description' content="MySQL 架构总览\rMySQL 采用分层架构设计，自上而下分为三大核心层，各层职责清晰、解耦性强，确保不同模块可独立优化。\n层级 核心功能 关键组件 连接层（Connection Layer） 建立客户端与服务器的连接，处理认证与协议 连接协议、SSL 加密、线程管理 SQL 层（SQL Layer） 解析、优化 SQL 请求，处理权限校验 语法解析器、查询优化器、权限校验模块 存储层（Storage Layer） 负责数据的实际存储与读取，支持多引擎 InnoDB、MyISAM、MEMORY 等存储引擎 如何传输数据？连接层的核心逻辑\r连接层是 MySQL 与客户端交互的 “门户”，核心解决 “如何安全、高效地建立连接” 问题，主要涉及连接协议、认证机制与数据加密。\n">
+<meta property='og:url' content='http://localhost:1313/p/mysql-02-%E6%9E%B6%E6%9E%84/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-18T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-08-18T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="MySQL-02-架构">
+<meta name="twitter:description" content="MySQL 架构总览\rMySQL 采用分层架构设计，自上而下分为三大核心层，各层职责清晰、解耦性强，确保不同模块可独立优化。\n层级 核心功能 关键组件 连接层（Connection Layer） 建立客户端与服务器的连接，处理认证与协议 连接协议、SSL 加密、线程管理 SQL 层（SQL Layer） 解析、优化 SQL 请求，处理权限校验 语法解析器、查询优化器、权限校验模块 存储层（Storage Layer） 负责数据的实际存储与读取，支持多引擎 InnoDB、MyISAM、MEMORY 等存储引擎 如何传输数据？连接层的核心逻辑\r连接层是 MySQL 与客户端交互的 “门户”，核心解决 “如何安全、高效地建立连接” 问题，主要涉及连接协议、认证机制与数据加密。\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">好记性不如烂笔头</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#mysql-架构总览">MySQL 架构总览</a></li>
+    <li><a href="#如何传输数据连接层的核心逻辑">如何传输数据？连接层的核心逻辑</a>
+      <ol>
+        <li><a href="#主流连接协议对比">主流连接协议对比</a>
+          <ol>
+            <li><a href="#关键端口说明">关键端口说明</a></li>
+          </ol>
+        </li>
+        <li><a href="#2-本地连接示例">2. 本地连接示例</a></li>
+        <li><a href="#3-ssl-加密默认的安全保障">3. SSL 加密：默认的安全保障</a></li>
+      </ol>
+    </li>
+    <li><a href="#如何处理请求sql-层的执行流程">如何处理请求？SQL 层的执行流程</a>
+      <ol>
+        <li><a href="#sql-层核心组件与执行顺序">SQL 层核心组件与执行顺序</a></li>
+      </ol>
+    </li>
+    <li><a href="#如何存储数据存储层与存储引擎">如何存储数据？存储层与存储引擎</a>
+      <ol>
+        <li><a href="#主流存储引擎对比">主流存储引擎对比</a></li>
+        <li><a href="#存储引擎核心能力对比表">存储引擎核心能力对比表</a></li>
+        <li><a href="#sql-层与存储层的交互规则">SQL 层与存储层的交互规则</a></li>
+      </ol>
+    </li>
+    <li><a href="#元数据管理mysql-8-的事务性数据字典">元数据管理：MySQL 8 的事务性数据字典</a>
+      <ol>
+        <li><a href="#元数据类型">元数据类型</a></li>
+        <li><a href="#mysql-8-事务性数据字典优势">MySQL 8 事务性数据字典优势</a></li>
+      </ol>
+    </li>
+    <li><a href="#innodb-表空间数据存储的-容器">InnoDB 表空间：数据存储的 “容器”</a>
+      <ol>
+        <li><a href="#表空间类型与用途">表空间类型与用途</a></li>
+        <li><a href="#表空间选择建议">表空间选择建议</a></li>
+      </ol>
+    </li>
+    <li><a href="#重做与回滚日志innodb-的事务保障">重做与回滚日志：InnoDB 的事务保障</a>
+      <ol>
+        <li><a href="#redo-log崩溃恢复的-保险">Redo Log：崩溃恢复的 “保险”</a></li>
+        <li><a href="#undo-log回滚与-mvcc-的-基石">Undo Log：回滚与 MVCC 的 “基石”</a></li>
+        <li><a href="#事务修改三大阶段时序">事务修改三大阶段时序</a></li>
+      </ol>
+    </li>
+    <li><a href="#内存使用mysql-的-缓存策略">内存使用：MySQL 的 “缓存策略”</a>
+      <ol>
+        <li><a href="#内存分配三大类别">内存分配三大类别</a></li>
+        <li><a href="#核心内存组件缓冲池buffer-pool">核心内存组件：缓冲池（Buffer Pool）</a></li>
+      </ol>
+    </li>
+    <li><a href="#插件与组件交互mysql-的-扩展接口">插件与组件交互：MySQL 的 “扩展接口”</a>
+      <ol>
+        <li><a href="#插件类型与示例">插件类型与示例</a></li>
+        <li><a href="#插件核心特性">插件核心特性</a></li>
+      </ol>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql/" style="background-color: ; color: #fff;">
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/mysql-02-%E6%9E%B6%E6%9E%84/">MySQL-02-架构</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-08-18</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/mysql-02-%E6%9E%B6%E6%9E%84/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/mysql-02-%E6%9E%B6%E6%9E%84/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="mysql-架构总览">MySQL 架构总览
+</h2><p>MySQL 采用<strong>分层架构</strong>设计，自上而下分为三大核心层，各层职责清晰、解耦性强，确保不同模块可独立优化。</p>
+<p><img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508181310695.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250818131025453"
+	
+	
+></p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>层级</th>
+          <th>核心功能</th>
+          <th>关键组件</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>连接层（Connection Layer）</td>
+          <td>建立客户端与服务器的连接，处理认证与协议</td>
+          <td>连接协议、SSL 加密、线程管理</td>
+      </tr>
+      <tr>
+          <td>SQL 层（SQL Layer）</td>
+          <td>解析、优化 SQL 请求，处理权限校验</td>
+          <td>语法解析器、查询优化器、权限校验模块</td>
+      </tr>
+      <tr>
+          <td>存储层（Storage Layer）</td>
+          <td>负责数据的实际存储与读取，支持多引擎</td>
+          <td>InnoDB、MyISAM、MEMORY 等存储引擎</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="如何传输数据连接层的核心逻辑">如何传输数据？连接层的核心逻辑
+</h2><p>连接层是 MySQL 与客户端交互的 “门户”，核心解决 <strong>“如何安全、高效地建立连接”</strong> 问题，主要涉及连接协议、认证机制与数据加密。</p>
+<h3 id="主流连接协议对比">主流连接协议对比
+</h3><p>MySQL 支持多种连接协议，适配不同场景（本地 / 远程、Windows/Linux），协议实现于客户端库与驱动中。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>协议（Protocol）</th>
+          <th>连接范围</th>
+          <th>支持的子协议</th>
+          <th>适用操作系统</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>TCP/IP</td>
+          <td>本地、远程</td>
+          <td>Classic 协议、X 协议</td>
+          <td>所有系统</td>
+      </tr>
+      <tr>
+          <td>Socket 文件</td>
+          <td>本地</td>
+          <td>Classic 协议、X 协议</td>
+          <td>Linux、BSD、macOS 等类 Unix 系统</td>
+      </tr>
+      <tr>
+          <td>Shared Memory</td>
+          <td>本地</td>
+          <td>Classic 协议</td>
+          <td>Windows</td>
+      </tr>
+      <tr>
+          <td>Named Pipes</td>
+          <td>本地</td>
+          <td>Classic 协议</td>
+          <td>Windows</td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="关键端口说明">关键端口说明
+</h4><ul>
+<li>
+<p><strong>3306</strong>：Classic 协议默认端口（&ndash;port 配置）</p>
+</li>
+<li>
+<p><strong>33060</strong>：X 协议默认端口（&ndash;mysqlx-port 配置）</p>
+</li>
+<li>
+<p><strong>33062</strong>：Classic 协议管理员连接端口（&ndash;admin-port 配置）</p>
+</li>
+</ul>
+<h3 id="2-本地连接示例">2. 本地连接示例
+</h3><ul>
+<li><strong>Linux 下 Socket 连接</strong>（最优选择）：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 使用指定 Socket 文件</span>
+</span></span><span class="line"><span class="cl">mysql -s /var/lib/mysql/mysql.sock -uroot -p
+</span></span><span class="line"><span class="cl"><span class="c1"># 使用默认 Socket 文件（/tmp/mysql.sock）</span>
+</span></span><span class="line"><span class="cl">mysql -uroot -p
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>注意：未指定 &ndash;host 时，MySQL 默认用 <a class="link" href="http://localhost"  target="_blank" rel="noopener"
+    >localhost</a> 触发 Socket 连接；若需 TCP 连接本地，需显式指定 &ndash;protocol=tcp，如 mysql -h <a class="link" href="http://localhost"  target="_blank" rel="noopener"
+    >localhost</a> &ndash;protocol=tcp -uroot -p。</p></blockquote>
+<ul>
+<li><strong>Windows 下 Shared Memory/Named Pipes 连接</strong>：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Shared Memory 连接（默认禁用）</span>
+</span></span><span class="line"><span class="cl">mysql --protocol<span class="o">=</span>memory -uroot -p
+</span></span><span class="line"><span class="cl"><span class="c1"># Named Pipes 连接</span>
+</span></span><span class="line"><span class="cl">mysql --protocol<span class="o">=</span>pipe -uroot -p
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="3-ssl-加密默认的安全保障">3. SSL 加密：默认的安全保障
+</h3><ul>
+<li>
+<p><strong>适用场景</strong>：仅 TCP/IP 连接支持 SSL 加密，Socket、Named Pipes 等本地连接不支持。</p>
+</li>
+<li>
+<p><strong>自动配置</strong>：若服务器安装 OpenSSL，MySQL 安装器会调用 mysql_ssl_rsa_setup 生成 SSL 密钥（存于数据目录），客户端自动使用密钥加密通信。</p>
+</li>
+<li>
+<p><strong>强制加密</strong>：可配置服务器与客户端 “必须使用 SSL”，未启用 SSL 时拒绝连接。</p>
+</li>
+</ul>
+<h2 id="如何处理请求sql-层的执行流程">如何处理请求？SQL 层的执行流程
+</h2><p>SQL 层是 MySQL 的 “大脑”，负责将客户端发送的 SQL 语句转化为可执行的计划，核心流程遵循 <strong>“解析→校验→优化→执行→日志”</strong> 五步走。</p>
+<h3 id="sql-层核心组件与执行顺序">SQL 层核心组件与执行顺序
+</h3><p><img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508181311032.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20250818131149953"
+	
+	
+></p>
+<ol>
+<li><strong>解析（Parser）</strong>：校验 SQL 语法与语义（如 “表是否存在”“字段是否合法”），将 SQL 转化为标准语法树。</li>
+<li><strong>权限校验（Authorization）</strong>：检查当前用户是否有 “执行该 SQL” 的权限（如 SELECT 表权限、UPDATE 字段权限）。</li>
+<li><strong>优化（Optimizer）</strong>：生成最优执行计划 —— 例如选择哪个索引、表连接顺序，目标是最小化 IO 与计算开销。</li>
+<li><strong>执行（Query Execution）</strong>：调用存储层接口，执行优化后的计划，返回结果。</li>
+<li><strong>日志记录（Query Logging）</strong>：可选功能，记录服务器接收或执行的 SQL（如慢查询日志、审计日志）。</li>
+</ol>
+<h2 id="如何存储数据存储层与存储引擎">如何存储数据？存储层与存储引擎
+</h2><p>存储层是 MySQL 的 “硬盘管家”，负责数据的物理存储与读取，核心是<strong>存储引擎</strong>——MySQL 支持多引擎，不同引擎适配不同业务场景。</p>
+<h3 id="主流存储引擎对比">主流存储引擎对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>存储引擎</th>
+          <th>核心特性</th>
+          <th>适用场景</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>InnoDB</strong>（默认）</td>
+          <td>支持事务（ACID）、MVCC、行锁、外键；崩溃自动恢复；缓冲池缓存数据与索引</td>
+          <td>电商订单、金融交易等需事务保障的场景</td>
+      </tr>
+      <tr>
+          <td><strong>MyISAM</strong>（ legacy）</td>
+          <td>不支持事务与行锁；表锁；速度快但崩溃易损坏</td>
+          <td>只读报表、历史日志等非事务场景</td>
+      </tr>
+      <tr>
+          <td><strong>MEMORY</strong></td>
+          <td>数据存于内存，重启丢失；支持哈希索引</td>
+          <td>临时计算、高频访问的临时表</td>
+      </tr>
+      <tr>
+          <td><strong>ARCHIVE</strong></td>
+          <td>压缩存储；仅支持 INSERT/SELECT；无索引</td>
+          <td>海量归档数据（如日志、监控数据）</td>
+      </tr>
+      <tr>
+          <td><strong>NDBCluster</strong></td>
+          <td>集群化存储；高可用、高扩展</td>
+          <td>分布式数据库场景</td>
+      </tr>
+      <tr>
+          <td><strong>BLACKHOLE</strong></td>
+          <td>接收数据但不存储，查询返回空</td>
+          <td>复制中继、性能测试（排除存储层干扰）</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="存储引擎核心能力对比表">存储引擎核心能力对比表
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>InnoDB</th>
+          <th>MyISAM</th>
+          <th>MEMORY</th>
+          <th>ARCHIVE</th>
+          <th>NDBCluster</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>事务支持</td>
+          <td>✅</td>
+          <td>❌</td>
+          <td>❌</td>
+          <td>❌</td>
+          <td>✅</td>
+      </tr>
+      <tr>
+          <td>锁粒度</td>
+          <td>行锁</td>
+          <td>表锁</td>
+          <td>表锁</td>
+          <td>行锁</td>
+          <td>行锁</td>
+      </tr>
+      <tr>
+          <td>MVCC</td>
+          <td>✅</td>
+          <td>❌</td>
+          <td>❌</td>
+          <td>❌</td>
+          <td>❌</td>
+      </tr>
+      <tr>
+          <td>外键支持</td>
+          <td>✅</td>
+          <td>❌</td>
+          <td>❌</td>
+          <td>❌</td>
+          <td>✅（7.3+）</td>
+      </tr>
+      <tr>
+          <td>索引类型</td>
+          <td>B-tree（支持自适应哈希）</td>
+          <td>B-tree</td>
+          <td>B-tree / 哈希</td>
+          <td>❌</td>
+          <td>T-tree / 哈希</td>
+      </tr>
+      <tr>
+          <td>存储上限</td>
+          <td>64TB（表空间）</td>
+          <td>256TB（单表）</td>
+          <td>内存大小</td>
+          <td>无限制</td>
+          <td>384EB</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="sql-层与存储层的交互规则">SQL 层与存储层的交互规则
+</h3><ul>
+<li>
+<p><strong>引擎无关性</strong>：大部分 SQL 语句（如 SELECT、INSERT）不依赖存储引擎，由 SQL 层统一解析后调用存储层接口。</p>
+</li>
+<li>
+<p><strong>引擎相关性</strong>：</p>
+<ul>
+<li>
+<p>创建 / 修改表时需指定引擎：CREATE TABLE t (id INT) ENGINE=InnoDB;</p>
+</li>
+<li>
+<p>部分特性仅特定引擎支持（如事务仅 InnoDB/NDB 支持，哈希索引仅 MEMORY/NDB 支持）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="元数据管理mysql-8-的事务性数据字典">元数据管理：MySQL 8 的事务性数据字典
+</h2><p>元数据是 “数据的数据”，包括表结构、索引定义、用户权限等。MySQL 8 之前依赖 MyISAM 存储元数据（如 .frm 文件），8.0 后全面迁移到 InnoDB，实现<strong>事务性数据字典</strong>。</p>
+<h3 id="元数据类型">元数据类型
+</h3><ul>
+<li>
+<p>表定义（CREATE TABLE 语句）</p>
+</li>
+<li>
+<p>存储过程 / 函数定义（CREATE PROCEDURE）</p>
+</li>
+<li>
+<p>视图、触发器、外键约束</p>
+</li>
+<li>
+<p>用户与权限信息（ACL）</p>
+</li>
+</ul>
+<h3 id="mysql-8-事务性数据字典优势">MySQL 8 事务性数据字典优势
+</h3><ul>
+<li>
+<p><strong>统一存储</strong>：所有元数据存于 InnoDB 表，无独立文件（如 .frm），依赖非事务引擎 MyISAM。</p>
+</li>
+<li>
+<p><strong>事务安全</strong>：元数据操作（如 CREATE TABLE、DROP INDEX）支持原子性，崩溃后可恢复。</p>
+</li>
+<li>
+<p><strong>易于扩展</strong>：提供通用数据字典 API，方便新增元数据类型。</p>
+</li>
+<li>
+<p><strong>优化 INFORMATION_SCHEMA</strong>：部分 INFORMATION_SCHEMA 表改为数据字典视图，查询更高效。</p>
+</li>
+</ul>
+<h2 id="innodb-表空间数据存储的-容器">InnoDB 表空间：数据存储的 “容器”
+</h2><p>InnoDB 用<strong>表空间</strong>管理数据文件，表空间是存储表、索引、日志的物理文件集合，支持多种类型以适配不同场景。</p>
+<h3 id="表空间类型与用途">表空间类型与用途
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>表空间类型</th>
+          <th>核心用途</th>
+          <th>关键配置</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>系统表空间</strong>（ibdata1）</td>
+          <td>存储共享数据（如双写缓冲、变更缓冲）；可包含用户表数据</td>
+          <td>innodb_data_file_path（默认 ibdata1:12M:autoextend）</td>
+      </tr>
+      <tr>
+          <td><strong>独立表空间</strong>（.ibd）</td>
+          <td>单表对应一个 .ibd 文件，便于管理与回收空间</td>
+          <td>innodb_file_per_table=ON（默认开启）</td>
+      </tr>
+      <tr>
+          <td><strong>通用表空间</strong></td>
+          <td>多表共享一个 .ibd 文件，减少文件系统开销</td>
+          <td>CREATE TABLESPACE ts ADD DATAFILE &rsquo;ts.ibd';</td>
+      </tr>
+      <tr>
+          <td><strong>回滚表空间</strong></td>
+          <td>存储 Undo Log</td>
+          <td>innodb_undo_directory（默认数据目录）</td>
+      </tr>
+      <tr>
+          <td><strong>临时表空间</strong></td>
+          <td>存储临时表与临时表的 Undo Log</td>
+          <td>innodb_temp_data_file_path（默认 ibtmp1）</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="表空间选择建议">表空间选择建议
+</h3><ul>
+<li>
+<p><strong>独立表空间</strong>：适合需单独管理的表（如按表备份、 truncate 回收空间）。</p>
+</li>
+<li>
+<p><strong>通用表空间</strong>：适合大量小表（减少文件数量，降低文件系统开销）。</p>
+</li>
+<li>
+<p><strong>自定义路径</strong>：可将表空间放在高速设备（如 SSD），提升性能：</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="o">#</span><span class="w"> </span><span class="err">表存于指定目录</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="nb">INT</span><span class="p">)</span><span class="w"> </span><span class="k">DATA</span><span class="w"> </span><span class="n">DIRECTORY</span><span class="w"> </span><span class="s1">&#39;/ssd/datadir&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">#</span><span class="w"> </span><span class="err">通用表空间存于指定目录</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">CREATE</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">ts</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="n">DATAFILE</span><span class="w"> </span><span class="s1">&#39;/ssd/ts.ibd&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="重做与回滚日志innodb-的事务保障">重做与回滚日志：InnoDB 的事务保障
+</h2><p>InnoDB 依赖 <strong>Redo Log（重做日志）</strong> 与 <strong>Undo Log（回滚日志）</strong> 实现事务的 ACID 特性，是崩溃恢复与多版本并发控制（MVCC）的核心。</p>
+<h3 id="redo-log崩溃恢复的-保险">Redo Log：崩溃恢复的 “保险”
+</h3><ul>
+<li>
+<p><strong>作用</strong>：记录数据修改的物理操作（如 “修改表 t 的 id=1 行的 value 为 10”），确保崩溃后未刷盘的修改可恢复。</p>
+</li>
+<li>
+<p><strong>流程</strong>：事务执行时，先写 Redo Log 到内存缓冲，再异步刷盘；事务提交时，Redo Log 确保刷盘（可配置刷盘策略）。</p>
+</li>
+<li>
+<p><strong>文件配置</strong>：</p>
+<ul>
+<li>
+<p>默认 2 个文件（ib_logfile0、ib_logfile1），由 innodb_log_files_in_group（默认 2）与 innodb_log_file_size 控制大小。</p>
+</li>
+<li>
+<p>总大小上限 512GB，建议按业务量调整（过大影响恢复速度，过小频繁切换）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508181321286.png" alt="image-20250818132118206" style="zoom:67%;" />
+<h3 id="undo-log回滚与-mvcc-的-基石">Undo Log：回滚与 MVCC 的 “基石”
+</h3><ul>
+<li>
+<p><strong>作用</strong>：记录修改前的原始数据，用于：</p>
+<ul>
+<li>
+<p>事务回滚（ROLLBACK 时恢复原始数据）。</p>
+</li>
+<li>
+<p>MVCC 并发控制（其他事务读取 “旧版本” 数据）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>存储</strong>：默认存于回滚表空间，内部分为 Insert Undo（记录插入操作）与 Update Undo（记录更新 / 删除操作）。</p>
+</li>
+<li>
+<p><strong>临时表特殊处理</strong>：临时表的 Undo Log 存于全局临时表空间（ibtmp1），且不写入 Redo Log（崩溃后无需恢复临时表）。</p>
+</li>
+</ul>
+<h3 id="事务修改三大阶段时序">事务修改三大阶段时序
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">事务开始
+</span></span><span class="line"><span class="cl">1. 记录 Undo Log：保存原始数据页到 Undo Log（内存）
+</span></span><span class="line"><span class="cl">2. 记录 Redo Log：写入物理修改到 Redo Log（内存缓冲，按策略刷盘）
+</span></span><span class="line"><span class="cl">3. 更新数据页：修改 Buffer Pool 中的数据页（脏页，异步刷盘）
+</span></span><span class="line"><span class="cl">事务提交
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="内存使用mysql-的-缓存策略">内存使用：MySQL 的 “缓存策略”
+</h2><p>MySQL 内存分配分为三大类，合理配置内存是提升性能的关键。</p>
+<h3 id="内存分配三大类别">内存分配三大类别
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>内存类型</th>
+          <th>分配时机</th>
+          <th>用途</th>
+          <th>关键配置</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>服务器 / 共享内存</strong></td>
+          <td>服务器启动时分配，全局共享</td>
+          <td>线程缓存、主机缓存、临时表全局池</td>
+          <td>thread_cache_size、host_cache_size</td>
+      </tr>
+      <tr>
+          <td><strong>存储引擎 / 共享内存</strong></td>
+          <td>服务器启动时分配，引擎共享</td>
+          <td>InnoDB 缓冲池（缓存数据 / 索引）、日志缓冲</td>
+          <td>innodb_buffer_pool_size（建议占物理内存 50%-70%）、innodb_log_buffer_size</td>
+      </tr>
+      <tr>
+          <td><strong>连接 / 会话内存</strong></td>
+          <td>每个连接建立时动态分配，会话独享</td>
+          <td>排序缓冲、连接缓冲</td>
+          <td>sort_buffer_size、join_buffer_size</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="核心内存组件缓冲池buffer-pool">核心内存组件：缓冲池（Buffer Pool）
+</h3><ul>
+<li>
+<p><strong>作用</strong>：InnoDB 最核心的内存组件，缓存数据页与索引页，减少磁盘 IO。</p>
+</li>
+<li>
+<p><strong>刷盘策略</strong>：缓冲池中的 “脏页”（修改后未写盘）会在 checkpoint 时异步刷盘，避免影响事务执行。</p>
+</li>
+<li>
+<p><strong>预热机制</strong>：服务器关闭时保存部分热点页，重启时恢复，减少冷启动后的 IO 高峰（innodb_buffer_pool_dump_pct 配置）。</p>
+</li>
+</ul>
+<h2 id="插件与组件交互mysql-的-扩展接口">插件与组件交互：MySQL 的 “扩展接口”
+</h2><p>MySQL 支持插件机制，允许动态扩展功能，无需重启服务器。</p>
+<h3 id="插件类型与示例">插件类型与示例
+</h3><ul>
+<li>
+<p><strong>守护进程插件</strong>：由服务器直接运行，如线程池插件（thread_pool）、PAM 认证插件。</p>
+</li>
+<li>
+<p><strong>存储引擎插件</strong>：第三方存储引擎（如 TokuDB）。</p>
+</li>
+<li>
+<p><strong>功能插件</strong>：全文解析插件（如 Japanese MeCab）、SQL 重写插件（rewriter）。</p>
+</li>
+</ul>
+<h3 id="插件核心特性">插件核心特性
+</h3><ul>
+<li>
+<p><strong>动态加载 / 卸载</strong>：通过 INSTALL PLUGIN / UNINSTALL PLUGIN 操作，无需重启。</p>
+</li>
+<li>
+<p><strong>客户端 / 服务器双支持</strong>：既支持服务器端插件（如认证），也支持客户端插件（如加密客户端）。</p>
+</li>
+</ul>
+<h2 id="总结">总结
+</h2><p>MySQL 架构是 “分层解耦 + 插件扩展” 的经典设计：</p>
+<ul>
+<li>
+<p>连接层保障 “安全通信”，SQL 层负责 “智能解析”，存储层实现 “灵活存储”；</p>
+</li>
+<li>
+<p>日志与表空间是 InnoDB 事务与性能的基石；</p>
+</li>
+<li>
+<p>事务性数据字典与插件机制则提升了 MySQL 的可靠性与扩展性。</p>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/mysql-13-%E9%80%9A%E8%BF%87-innodb-%E9%9B%86%E7%BE%A4%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-13-通过 InnoDB 集群实现高可用性</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-12-管理复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-11-配置复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-10-执行备份</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-09-备份策略</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="MySQL 用户管理围绕 “账号 - 角色 - 权限” 三层架构展开，通过身份认证确认用户合法性，通过精细化权限分配控制资源访问，支持插件化认证、密码生命周期管理等企业级特性，保障数据库安全与合规。\n">
+<title>MySQL-05-用户管理</title>
+
+<link rel='canonical' href='http://localhost:1313/p/mysql-05-%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-05-用户管理">
+<meta property='og:description' content="MySQL 用户管理围绕 “账号 - 角色 - 权限” 三层架构展开，通过身份认证确认用户合法性，通过精细化权限分配控制资源访问，支持插件化认证、密码生命周期管理等企业级特性，保障数据库安全与合规。\n">
+<meta property='og:url' content='http://localhost:1313/p/mysql-05-%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-22T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-08-22T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="MySQL-05-用户管理">
+<meta name="twitter:description" content="MySQL 用户管理围绕 “账号 - 角色 - 权限” 三层架构展开，通过身份认证确认用户合法性，通过精细化权限分配控制资源访问，支持插件化认证、密码生命周期管理等企业级特性，保障数据库安全与合规。\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">好记性不如烂笔头</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#mysql-权限系统基础">MySQL 权限系统基础</a>
+      <ol>
+        <li><a href="#核心作用">核心作用</a></li>
+        <li><a href="#身份认证与授权流程">身份认证与授权流程</a></li>
+      </ol>
+    </li>
+    <li><a href="#用户账号与角色管理">用户账号与角色管理</a>
+      <ol>
+        <li><a href="#账号命名规则">账号命名规则</a></li>
+        <li><a href="#账号创建与修改">账号创建与修改</a>
+          <ol>
+            <li><a href="#创建账号">创建账号</a></li>
+            <li><a href="#账号重命名">账号重命名</a></li>
+            <li><a href="#账号删除">账号删除</a></li>
+          </ol>
+        </li>
+        <li><a href="#角色管理权限集合">角色管理（权限集合）</a>
+          <ol>
+            <li><a href="#角色的核心特性">角色的核心特性</a></li>
+            <li><a href="#角色创建与删除">角色创建与删除</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#密码与账号安全管理">密码与账号安全管理</a>
+      <ol>
+        <li><a href="#密码设置与修改">密码设置与修改</a>
+          <ol>
+            <li><a href="#设置密码创建--修改时">设置密码（创建 / 修改时）</a></li>
+            <li><a href="#双重密码支持mysql-8014">双重密码支持（MySQL 8.0.14+）</a></li>
+          </ol>
+        </li>
+        <li><a href="#密码过期管理">密码过期管理</a>
+          <ol>
+            <li><a href="#手动设置密码过期">手动设置密码过期</a></li>
+            <li><a href="#自动过期配置">自动过期配置</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#身份认证插件">身份认证插件</a>
+      <ol>
+        <li><a href="#核心认证插件默认支持">核心认证插件（默认支持）</a></li>
+        <li><a href="#特殊认证插件">特殊认证插件</a>
+          <ol>
+            <li><a href="#明文客户端认证插件mysql_clear_password">明文客户端认证插件（mysql_clear_password）</a></li>
+            <li><a href="#可加载认证插件">可加载认证插件</a></li>
+          </ol>
+        </li>
+        <li><a href="#企业级认证插件仅企业版">企业级认证插件（仅企业版）</a>
+          <ol>
+            <li><a href="#pam-认证配置示例">PAM 认证配置示例</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#权限分配与回收">权限分配与回收</a>
+      <ol>
+        <li><a href="#权限范围从大到小">权限范围（从大到小）</a></li>
+        <li><a href="#常用权限类型">常用权限类型</a></li>
+        <li><a href="#权限操作语法">权限操作语法</a>
+          <ol>
+            <li><a href="#授予权限">授予权限</a></li>
+            <li><a href="#回收权限">回收权限</a></li>
+            <li><a href="#部分回收mysql-8016">部分回收（MySQL 8.0.16+）</a></li>
+          </ol>
+        </li>
+        <li><a href="#查看权限">查看权限</a></li>
+      </ol>
+    </li>
+    <li><a href="#角色激活与强制角色">角色激活与强制角色</a>
+      <ol>
+        <li><a href="#角色激活级别优先级会话级--用户级--服务器级">角色激活级别（优先级：会话级 &gt; 用户级 &gt; 服务器级）</a>
+          <ol>
+            <li><a href="#服务器级激活">服务器级激活</a></li>
+            <li><a href="#用户级激活默认角色">用户级激活（默认角色）</a></li>
+            <li><a href="#会话级激活临时生效">会话级激活（临时生效）</a></li>
+          </ol>
+        </li>
+        <li><a href="#强制角色所有用户必激活">强制角色（所有用户必激活）</a></li>
+      </ol>
+    </li>
+    <li><a href="#授权表与权限生效机制">授权表与权限生效机制</a>
+      <ol>
+        <li><a href="#核心授权表存储在-mysql-库中">核心授权表（存储在 mysql 库中）</a></li>
+        <li><a href="#权限生效规则">权限生效规则</a></li>
+      </ol>
+    </li>
+    <li><a href="#最佳实践">最佳实践</a></li>
+    <li><a href="#mysql-用户管理常用命令速查表">MySQL 用户管理常用命令速查表</a>
+      <ol>
+        <li><a href="#用户账号操作">用户账号操作</a>
+          <ol>
+            <li><a href="#创建用户">创建用户</a></li>
+            <li><a href="#修改用户">修改用户</a></li>
+            <li><a href="#删除用户">删除用户</a></li>
+          </ol>
+        </li>
+        <li><a href="#密码管理">密码管理</a>
+          <ol>
+            <li><a href="#设置--修改密码">设置 / 修改密码</a></li>
+            <li><a href="#密码过期配置">密码过期配置</a></li>
+          </ol>
+        </li>
+        <li><a href="#角色操作">角色操作</a>
+          <ol>
+            <li><a href="#角色创建--删除">角色创建 / 删除</a></li>
+            <li><a href="#角色授权与激活">角色授权与激活</a></li>
+          </ol>
+        </li>
+        <li><a href="#权限操作">权限操作</a>
+          <ol>
+            <li><a href="#授予权限-1">授予权限</a></li>
+            <li><a href="#回收权限-1">回收权限</a></li>
+            <li><a href="#查看权限-1">查看权限</a></li>
+          </ol>
+        </li>
+        <li><a href="#辅助操作">辅助操作</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql/" style="background-color: ; color: #fff;">
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/mysql-05-%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/">MySQL-05-用户管理</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-08-22</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/mysql-05-%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/mysql-05-%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>MySQL 用户管理围绕 “账号 - 角色 - 权限” 三层架构展开，通过身份认证确认用户合法性，通过精细化权限分配控制资源访问，支持插件化认证、密码生命周期管理等企业级特性，保障数据库安全与合规。</p>
+<ol>
+<li>创建并管理用户账号与角色，实现权限的批量分配与回收</li>
+<li>设计合理的权限结构，遵循 “最小权限原则” 分配访问权限</li>
+<li>配置身份认证方式，支持本地 / 远程连接及企业级认证（如 PAM、LDAP）</li>
+<li>管控账号安全，包括密码设置、过期策略、双重密码等</li>
+<li>监控与调整用户权限，适配业务场景变化</li>
+</ol>
+<h2 id="mysql-权限系统基础">MySQL 权限系统基础
+</h2><h3 id="核心作用">核心作用
+</h3><ul>
+<li>控制用户对数据库的操作范围，避免越权访问</li>
+<li>区分管理员与普通用户权限，降低误操作风险</li>
+<li>保障数据完整性，防止未授权的数据修改或泄露</li>
+<li>支持多场景访问控制，适配本地 / 远程、应用 / 人工等不同连接需求</li>
+</ul>
+<h3 id="身份认证与授权流程">身份认证与授权流程
+</h3><ol>
+<li><strong>身份认证（连接阶段）</strong>：验证用户 “用户名 + 主机 + 密码 / 认证信息” 的合法性，认证失败直接拒绝连接</li>
+<li><strong>授权校验（查询阶段）</strong>：对已认证用户的每个操作，校验是否具备对应权限，无权限则拒绝执行</li>
+</ol>
+<h2 id="用户账号与角色管理">用户账号与角色管理
+</h2><h3 id="账号命名规则">账号命名规则
+</h3><ul>
+<li>完整格式：<code>'username'@'hostname'</code>，用户名和主机名共同唯一标识一个账号</li>
+<li>用户名限制：最长 32 字符，含特殊字符（如短横线）需用单引号包裹</li>
+<li>主机名格式（支持多种匹配方式）：
+<ul>
+<li>具体主机名：<code>server1</code>、<code>server2.example.com</code></li>
+<li>IP 地址：<code>192.168.9.78</code></li>
+<li>IP 网段：<code>10.0.0.0/255.255.255.0</code></li>
+<li>通配符：<code>%</code>（匹配任意多个字符）、<code>_</code>（匹配单个字符），例：<code>'%.example.com'</code>（匹配该域名下所有主机）、<code>'192.168._.7'</code></li>
+<li>默认值：创建账号时未指定主机名，默认为<code>%</code>（允许从任意主机连接）</li>
+</ul>
+</li>
+</ul>
+<h3 id="账号创建与修改">账号创建与修改
+</h3><h4 id="创建账号">创建账号
+</h4><ul>
+<li>
+<p>基础语法：<code>CREATE USER 'username'@'hostname' IDENTIFIED BY 'password';</code></p>
+</li>
+<li>
+<p>示例：创建本地连接的 web 用户，密码为 Abc123</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">CREATE USER webuser@localhost IDENTIFIED BY &#39;Abc123&#39;;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>安全注意事项：</p>
+<ul>
+<li>禁止创建无密码账号</li>
+<li>避免匿名账号（如<code>''@localhost</code>，无用户名）</li>
+<li>主机名尽量不使用通配符<code>%</code>，限制连接来源</li>
+</ul>
+</li>
+</ul>
+<h4 id="账号重命名">账号重命名
+</h4><ul>
+<li>语法：<code>RENAME USER 'old_user'@'old_host' TO 'new_user'@'new_host';</code></li>
+<li>示例：<code>RENAME USER consultant@laptop3 TO james@laptop3;</code></li>
+</ul>
+<h4 id="账号删除">账号删除
+</h4><ul>
+<li>语法：<code>DROP USER 'username'@'hostname';</code></li>
+<li>作用：删除账号及其所有权限，同时从所有授权表中移除该账号记录</li>
+<li>示例：<code>DROP USER james@laptop3;</code></li>
+</ul>
+<h3 id="角色管理权限集合">角色管理（权限集合）
+</h3><h4 id="角色的核心特性">角色的核心特性
+</h4><ul>
+<li>本质：<strong>一组权限的集合</strong>，可批量授予用户或其他角色</li>
+<li>存储：与用户账号一样存储在<code>mysql.user</code>表中，但不能用于登录</li>
+<li>命名格式：同用户账号（<code>'rolename'@'hostname'</code>），省略主机名默认为<code>%</code></li>
+</ul>
+<h4 id="角色创建与删除">角色创建与删除
+</h4><ul>
+<li>
+<p>创建角色：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">CREATE ROLE &#39;rolename&#39;@&#39;hostname&#39; [, ...];
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>示例：创建管理员角色和开发角色</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">CREATE ROLE r_admin, r_dev@localhost;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>删除角色：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">DROP ROLE &#39;rolename&#39;@&#39;hostname&#39; [, ...];
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>作用：删除角色的同时，回收所有被授予该角色的用户 / 角色的相关权限</li>
+</ul>
+</li>
+</ul>
+<h2 id="密码与账号安全管理">密码与账号安全管理
+</h2><h3 id="密码设置与修改">密码设置与修改
+</h3><h4 id="设置密码创建--修改时">设置密码（创建 / 修改时）
+</h4><ul>
+<li>创建账号时指定密码：<code>CREATE USER 'user'@'host' IDENTIFIED BY 'newpassword';</code></li>
+<li>修改已有账号密码：
+<ul>
+<li>语法 1：<code>ALTER USER 'user'@'host' IDENTIFIED BY 'newpassword';</code></li>
+<li>语法 2：<code>SET PASSWORD FOR 'user'@'host' = 'newpassword';</code></li>
+</ul>
+</li>
+<li>修改当前登录用户密码：
+<ul>
+<li><code>ALTER USER USER() IDENTIFIED BY 'newpassword';</code></li>
+<li><code>SET PASSWORD = 'newpassword';</code></li>
+<li>命令行方式：<code>mysqladmin -u username -p password 'newpassword'</code>（执行时需输入旧密码）</li>
+</ul>
+</li>
+</ul>
+<h4 id="双重密码支持mysql-8014">双重密码支持（MySQL 8.0.14+）
+</h4><ul>
+<li>
+<p>作用：密码变更时保留旧密码（次要密码），避免多系统 / 应用同步更新时出现中断</p>
+</li>
+<li>
+<p>设置方法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ALTER USER USER() IDENTIFIED BY &#39;new_password&#39; RETAIN CURRENT PASSWORD;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>新密码成为主密码，原密码变为次要密码</li>
+</ul>
+</li>
+<li>
+<p>移除次要密码：<code>ALTER USER USER() DISCARD OLD PASSWORD;</code></p>
+</li>
+</ul>
+<h3 id="密码过期管理">密码过期管理
+</h3><h4 id="手动设置密码过期">手动设置密码过期
+</h4><ul>
+<li>创建账号时直接过期：<code>CREATE USER 'erika'@'localhost' IDENTIFIED BY 'first#Pass' PASSWORD EXPIRE;</code></li>
+<li>手动过期已有账号：<code>ALTER USER 'erika'@'localhost' PASSWORD EXPIRE;</code></li>
+<li>效果：用户可登录，但必须先修改密码才能执行其他操作</li>
+</ul>
+<h4 id="自动过期配置">自动过期配置
+</h4><ul>
+<li>
+<p>全局默认策略：通过<code>default_password_lifetime</code>变量设置（默认 0，永不过期）</p>
+</li>
+<li>
+<p>账号级配置（优先级高于全局）：</p>
+<ul>
+<li>
+<p>设置 30 天过期：<code>CREATE USER 'consultant'@'laptop3' IDENTIFIED BY 'change_me' PASSWORD EXPIRE INTERVAL 30 DAY;</code></p>
+</li>
+<li>
+<p>沿用全局默认：<code>ALTER USER 'consultant'@'laptop3' PASSWORD EXPIRE DEFAULT;</code></p>
+</li>
+<li>
+<p>禁用自动过期：<code>ALTER USER 'consultant'@'laptop3' PASSWORD EXPIRE NEVER;</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="身份认证插件">身份认证插件
+</h2><h3 id="核心认证插件默认支持">核心认证插件（默认支持）
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>插件名称</th>
+          <th>特性</th>
+          <th>适用场景</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>caching_sha2_password</td>
+          <td>MySQL 8.0 默认，SHA-256 加密，服务器端缓存</td>
+          <td>绝大多数生产环境</td>
+      </tr>
+      <tr>
+          <td>mysql_native_password</td>
+          <td>传统哈希方式，兼容性好</td>
+          <td>旧版本客户端连接</td>
+      </tr>
+      <tr>
+          <td>sha256_password</td>
+          <td>SHA-256 加密，无缓存</td>
+          <td>兼容旧版企业级场景（已废弃）</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="特殊认证插件">特殊认证插件
+</h3><h4 id="明文客户端认证插件mysql_clear_password">明文客户端认证插件（mysql_clear_password）
+</h4><ul>
+<li>作用：客户端直接发送明文密码到服务器（需配合加密连接）</li>
+<li>启用方式：
+<ul>
+<li>环境变量：<code>LIBMYSQL_ENABLE_CLEARTEXT_PLUGIN=1</code></li>
+<li>命令行参数：<code>mysql --enable-cleartext-plugin -u user -p</code></li>
+<li>C API 函数：<code>mysql_options()</code>指定<code>MYSQL_ENABLE_CLEARTEXT_PLUGIN</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="可加载认证插件">可加载认证插件
+</h4><ul>
+<li>auth_socket：仅允许与系统用户名相同的 MySQL 用户通过 Unix socket 连接（无需密码）</li>
+<li>mysql_no_login：禁止任何客户端连接使用该插件的账号（适用于仅执行存储程序的账号）</li>
+<li>test_plugin_server：用于测试和开发，支持原生和旧密码认证</li>
+</ul>
+<h3 id="企业级认证插件仅企业版">企业级认证插件（仅企业版）
+</h3><ul>
+<li><strong>PAM 认证（authentication_pam）</strong>：对接系统 PAM 服务（如 Linux 密码、LDAP），支持 Linux/macOS</li>
+<li><strong>Windows 认证（authentication_windows）</strong>：使用 Windows 原生服务认证客户端</li>
+<li><strong>LDAP 认证（authentication_ldap_sasl/simple）</strong>：通过 LDAP 目录服务获取用户信息并认证</li>
+</ul>
+<h4 id="pam-认证配置示例">PAM 认证配置示例
+</h4><ol>
+<li>
+<p>创建 PAM 服务配置文件<code>/etc/pam.d/mysql-pam</code>，内容：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">auth    include     password-auth
+</span></span><span class="line"><span class="cl">account include     password-auth
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>创建 PAM 认证的 MySQL 用户：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">bob</span><span class="o">@</span><span class="n">localhost</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">authentication_pam</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s1">&#39;mysql-pam&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>创建 PAM 代理用户（映射系统组到 MySQL 用户）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="o">@</span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">authentication_pam</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s1">&#39;mysql-pam,www=webuser,root=root&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>授权代理权限：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">GRANT</span><span class="w"> </span><span class="n">PROXY</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">webuser</span><span class="o">@</span><span class="n">localhost</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="o">@</span><span class="s1">&#39;&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>登录方式：<code>mysql --enable-cleartext-plugin -u bob -p</code>（输入系统密码）</p>
+</li>
+</ol>
+<h2 id="权限分配与回收">权限分配与回收
+</h2><h3 id="权限范围从大到小">权限范围（从大到小）
+</h3><ol>
+<li><strong>全局权限</strong>：作用于所有数据库，语法<code>ON *.*</code>（例：<code>GRANT SELECT ON *.* TO user@host;</code>）</li>
+<li><strong>数据库权限</strong>：作用于指定数据库，语法<code>ON db_name.*</code></li>
+<li><strong>表权限</strong>：作用于指定表，语法<code>ON db_name.table_name</code></li>
+<li><strong>列权限</strong>：作用于表中指定列，需在权限后指定列名</li>
+<li><strong>存储例程权限</strong>：作用于存储过程 / 函数，语法<code>ON db_name.routine_name</code></li>
+</ol>
+<h3 id="常用权限类型">常用权限类型
+</h3><ul>
+<li>数据操作：<code>SELECT</code>（查询）、<code>INSERT</code>（插入）、<code>UPDATE</code>（更新）、<code>DELETE</code>（删除）</li>
+<li>结构操作：<code>CREATE</code>（创建）、<code>ALTER</code>（修改）、<code>DROP</code>（删除）、<code>CREATE VIEW</code>（创建视图）</li>
+<li>管理权限：<code>SHUTDOWN</code>（关闭服务器）、<code>PROCESS</code>（查看进程）、<code>RELOAD</code>（刷新权限 / 日志）、<code>SUPER</code>（超级权限）</li>
+<li>特殊权限：<code>ALL PRIVILEGES</code>（所有权限，不含授权他人权限）、<code>USAGE</code>（仅连接权限，默认新账号权限）、<code>GRANT OPTION</code>（授权他人权限的权限）</li>
+</ul>
+<h3 id="权限操作语法">权限操作语法
+</h3><h4 id="授予权限">授予权限
+</h4><ul>
+<li>
+<p>基础语法：<code>GRANT 权限1,权限2 ON 范围 TO '用户/角色'@'主机' [WITH GRANT OPTION];</code></p>
+</li>
+<li>
+<p>列级授权示例：授予查询<code>mysql.user</code>表的<code>user</code>和<code>host</code>列权限</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="p">(</span><span class="k">user</span><span class="p">,</span><span class="w"> </span><span class="k">host</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">mysql</span><span class="p">.</span><span class="k">user</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">kari</span><span class="o">@</span><span class="n">localhost</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>授予角色示例：将<code>r_viewer</code>角色授予用户<code>GRANT r_viewer TO kari@localhost WITH ADMIN OPTION;</code></p>
+<p>（<code>WITH ADMIN OPTION允许用户将该角色授予他人</code>）</p>
+</li>
+</ul>
+<h4 id="回收权限">回收权限
+</h4><ul>
+<li>基础语法：<code>REVOKE 权限1,权限2 ON 范围 FROM '用户/角色'@'主机';</code></li>
+<li>回收角色示例：<code>REVOKE r_updater FROM kari@localhost;</code></li>
+<li>回收所有权限：<code>REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'sasha'@'host';</code></li>
+</ul>
+<h4 id="部分回收mysql-8016">部分回收（MySQL 8.0.16+）
+</h4><ul>
+<li>
+<p>作用：全局授予某权限后，排除特定数据库的权限</p>
+</li>
+<li>
+<p>启用条件：<code>SET GLOBAL partial_revokes = ON;</code>（默认关闭）</p>
+</li>
+<li>
+<p>示例：授予全局查询权限，但禁止查询<code>mysql</code>库</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">u1</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="s1">&#39;Pssw0rd&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">u1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">REVOKE</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">mysql</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">u1</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="查看权限">查看权限
+</h3><ul>
+<li>查看当前用户权限：<code>SHOW GRANTS;</code>（等同于<code>SHOW GRANTS FOR CURRENT_USER();</code>）</li>
+<li>查看其他用户权限：<code>SHOW GRANTS FOR 'kari'@'localhost';</code></li>
+<li>查看角色权限：<code>SHOW GRANTS FOR 'r_updater'@'%';</code></li>
+<li>查看角色展开后的用户权限：<code>SHOW GRANTS FOR 'kari'@'localhost' USING r_viewer, r_updater;</code></li>
+</ul>
+<h2 id="角色激活与强制角色">角色激活与强制角色
+</h2><h3 id="角色激活级别优先级会话级--用户级--服务器级">角色激活级别（优先级：会话级 &gt; 用户级 &gt; 服务器级）
+</h3><h4 id="服务器级激活">服务器级激活
+</h4><ul>
+<li>
+<p>配置变量：<code>activate_all_roles_on_login</code>（默认 OFF）</p>
+</li>
+<li>
+<p>作用：所有用户登录时自动激活所有已授予的角色</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SET</span><span class="w"> </span><span class="n">PERSIST</span><span class="w"> </span><span class="n">activate_all_roles_on_login</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>（持久化，重启生效）</p>
+</li>
+</ul>
+<h4 id="用户级激活默认角色">用户级激活（默认角色）
+</h4><ul>
+<li>
+<p>语法：<code>SET DEFAULT ROLE 角色1,角色2 TO 'user'@'host';</code></p>
+</li>
+<li>
+<p>示例：设置用户登录时默认激活<code>r_viewer</code>和<code>r_updater</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SET</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">r_viewer</span><span class="p">,</span><span class="w"> </span><span class="n">r_updater</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">kari</span><span class="o">@</span><span class="n">localhost</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>简化设置：<code>SET DEFAULT ROLE ALL TO kari@localhost;</code>（激活所有授予的角色）</p>
+</li>
+</ul>
+<h4 id="会话级激活临时生效">会话级激活（临时生效）
+</h4><ul>
+<li>语法：<code>SET ROLE 角色1,角色2;</code></li>
+<li>常用参数：
+<ul>
+<li><code>SET ROLE ALL;</code>（激活所有授予的角色）</li>
+<li><code>SET ROLE NONE;</code>（禁用所有角色）</li>
+<li><code>SET ROLE DEFAULT;</code>（激活用户级默认角色）</li>
+</ul>
+</li>
+<li>查看当前激活角色：<code>SELECT CURRENT_ROLE();</code></li>
+</ul>
+<h3 id="强制角色所有用户必激活">强制角色（所有用户必激活）
+</h3><ul>
+<li>作用：无需手动授予，自动对所有用户激活的角色（不可回收）</li>
+<li>配置语法：<code>SET PERSIST mandatory_roles = 'role1, role2@localhost';</code></li>
+<li>特性：不能通过<code>REVOKE</code>或<code>DROP ROLE</code>删除，重启后仍生效</li>
+<li></li>
+</ul>
+<h2 id="授权表与权限生效机制">授权表与权限生效机制
+</h2><h3 id="核心授权表存储在-mysql-库中">核心授权表（存储在 mysql 库中）
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>表名</th>
+          <th>存储内容</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>user</td>
+          <td>用户账号、角色及全局权限</td>
+      </tr>
+      <tr>
+          <td>global_grants</td>
+          <td>动态全局权限</td>
+      </tr>
+      <tr>
+          <td>db</td>
+          <td>数据库级权限</td>
+      </tr>
+      <tr>
+          <td>tables_priv</td>
+          <td>表级权限</td>
+      </tr>
+      <tr>
+          <td>columns_priv</td>
+          <td>列级权限</td>
+      </tr>
+      <tr>
+          <td>role_edges</td>
+          <td>角色与用户 / 角色的授予关系</td>
+      </tr>
+      <tr>
+          <td>default_roles</td>
+          <td>用户的默认激活角色</td>
+      </tr>
+      <tr>
+          <td>password_history</td>
+          <td>用户密码修改历史</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="权限生效规则">权限生效规则
+</h3><ul>
+<li>
+<p>全局权限 / 密码变更：仅对后续新连接生效</p>
+</li>
+<li>
+<p>数据库级权限变更：客户端执行<code>USE db_name</code>后生效</p>
+</li>
+<li>
+<p>角色、表、列、存储例程权限变更：立即生效</p>
+</li>
+<li>
+<p>直接修改授权表后：需执行<code>FLUSH PRIVILEGES</code>重新加载内存副本</p>
+</li>
+<li>
+<p>注意：禁止使用<code>INSERT/UPDATE/DELETE</code>直接修改授权表，避免系统异常</p>
+</li>
+</ul>
+<h2 id="最佳实践">最佳实践
+</h2><ol>
+<li>遵循 “最小权限原则”：普通用户仅授予必要权限（如只读用户仅给<code>SELECT</code>），管理员避免滥用<code>SUPER</code>权限</li>
+<li>角色分类管理：按业务场景创建角色（如<code>r_readonly</code>、<code>r_admin</code>），批量分配给用户，简化权限维护</li>
+<li>密码安全策略：设置自动过期（如 90 天）、强制复杂密码，使用双重密码应对系统升级</li>
+<li>限制连接来源：创建账号时指定具体主机或 IP 网段，避免<code>%</code>通配符</li>
+<li>定期审计权限：通过<code>SHOW GRANTS</code>检查冗余权限，及时回收离职用户或过期角色的权限</li>
+</ol>
+<h2 id="mysql-用户管理常用命令速查表">MySQL 用户管理常用命令速查表
+</h2><h3 id="用户账号操作">用户账号操作
+</h3><h4 id="创建用户">创建用户
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>基础创建</td>
+          <td><code>CREATE USER 'username'@'hostname' IDENTIFIED BY 'password';</code></td>
+          <td>例：<code>CREATE USER webuser@localhost IDENTIFIED BY 'Abc123';</code>，<code>hostname</code>省略默认<code>%</code>（任意主机）</td>
+      </tr>
+      <tr>
+          <td>创建并设置密码过期</td>
+          <td><code>CREATE USER 'username'@'hostname' IDENTIFIED BY 'password' PASSWORD EXPIRE;</code></td>
+          <td>用户登录后需先改密码才能操作</td>
+      </tr>
+      <tr>
+          <td>创建 PAM 认证用户（企业版）</td>
+          <td><code>CREATE USER 'username'@'hostname' IDENTIFIED WITH authentication_pam AS 'pam-service-name';</code></td>
+          <td>例：<code>CREATE USER bob@localhost IDENTIFIED WITH authentication_pam AS 'mysql-pam';</code></td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="修改用户">修改用户
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>重命名用户</td>
+          <td><code>RENAME USER 'old_user'@'old_host' TO 'new_user'@'new_host';</code></td>
+          <td>例：<code>RENAME USER consultant@laptop3 TO james@laptop3;</code></td>
+      </tr>
+      <tr>
+          <td>锁定 / 解锁用户</td>
+          <td><code>ALTER USER 'username'@'hostname' ACCOUNT LOCK/UNLOCK;</code></td>
+          <td>锁定后用户无法登录</td>
+      </tr>
+      <tr>
+          <td>修改用户认证插件</td>
+          <td><code>ALTER USER 'username'@'hostname' IDENTIFIED WITH caching_sha2_password BY 'new_password';</code></td>
+          <td>切换插件时需重新设置密码</td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="删除用户">删除用户
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>删除用户及所有权限</td>
+          <td><code>DROP USER 'username'@'hostname';</code></td>
+          <td>例：<code>DROP USER james@laptop3;</code>，同时清除授权表中该用户记录</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="密码管理">密码管理
+</h3><h4 id="设置--修改密码">设置 / 修改密码
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>修改指定用户密码</td>
+          <td><code>ALTER USER 'username'@'hostname' IDENTIFIED BY 'new_password';</code></td>
+          <td>例：<code>ALTER USER webuser1@localhost IDENTIFIED BY 'n3W&amp;P4$$w0rd';</code></td>
+      </tr>
+      <tr>
+          <td>修改当前用户密码</td>
+          <td><code>ALTER USER USER() IDENTIFIED BY 'new_password';</code> 或 <code>SET PASSWORD = 'new_password';</code></td>
+          <td>登录状态下直接执行，无需指定用户名</td>
+      </tr>
+      <tr>
+          <td>命令行修改密码</td>
+          <td><code>mysqladmin -u username -p password 'new_password';</code></td>
+          <td>执行时需输入旧密码，适用于脚本自动化</td>
+      </tr>
+      <tr>
+          <td>设置双重密码</td>
+          <td><code>ALTER USER USER() IDENTIFIED BY 'new_password' RETAIN CURRENT PASSWORD;</code></td>
+          <td>新密码为主密码，原密码为次要密码（MySQL 8.0.14+）</td>
+      </tr>
+      <tr>
+          <td>移除次要密码</td>
+          <td><code>ALTER USER USER() DISCARD OLD PASSWORD;</code></td>
+          <td>仅保留主密码</td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="密码过期配置">密码过期配置
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>手动设置密码过期</td>
+          <td><code>ALTER USER 'username'@'hostname' PASSWORD EXPIRE;</code></td>
+          <td>例：<code>ALTER USER erika@localhost PASSWORD EXPIRE;</code></td>
+      </tr>
+      <tr>
+          <td>配置账号自动过期</td>
+          <td><code>ALTER USER 'username'@'hostname' PASSWORD EXPIRE INTERVAL N DAY;</code></td>
+          <td>例：<code>ALTER USER consultant@laptop3 PASSWORD EXPIRE INTERVAL 30 DAY;</code>（30 天过期）</td>
+      </tr>
+      <tr>
+          <td>禁用账号自动过期</td>
+          <td><code>ALTER USER 'username'@'hostname' PASSWORD EXPIRE NEVER;</code></td>
+          <td>优先级高于全局默认策略</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="角色操作">角色操作
+</h3><h4 id="角色创建--删除">角色创建 / 删除
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>创建角色</td>
+          <td><code>CREATE ROLE 'rolename'@'hostname' [, 'rolename2'@'hostname2'];</code></td>
+          <td>例：<code>CREATE ROLE r_admin, r_dev@localhost;</code>，省略主机名默认<code>%</code></td>
+      </tr>
+      <tr>
+          <td>删除角色</td>
+          <td><code>DROP ROLE 'rolename'@'hostname' [, 'rolename2'@'hostname2'];</code></td>
+          <td>例：<code>DROP ROLE r_super, r_dev@localhost;</code>，同时回收所有用户的该角色权限</td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="角色授权与激活">角色授权与激活
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>授予角色给用户</td>
+          <td><code>GRANT 'rolename'@'hostname' [, ...] TO 'username'@'hostname' [WITH ADMIN OPTION];</code></td>
+          <td>例：<code>GRANT r_viewer, r_updater TO kari@localhost WITH ADMIN OPTION;</code>，<code>WITH ADMIN OPTION</code>允许用户转授角色</td>
+      </tr>
+      <tr>
+          <td>设置用户默认角色</td>
+          <td><code>SET DEFAULT ROLE 'rolename1'[, 'rolename2'] TO 'username'@'hostname';</code></td>
+          <td>例：<code>SET DEFAULT ROLE r_viewer, r_updater TO kari@localhost;</code>，用户登录自动激活</td>
+      </tr>
+      <tr>
+          <td>会话级激活角色</td>
+          <td><code>SET ROLE 'rolename1'[, 'rolename2'];</code> 或 <code>SET ROLE ALL;</code></td>
+          <td>例：<code>SET ROLE r_viewer;</code>（激活指定角色）、<code>SET ROLE NONE;</code>（禁用所有角色）</td>
+      </tr>
+      <tr>
+          <td>查看当前激活角色</td>
+          <td><code>SELECT CURRENT_ROLE();</code></td>
+          <td>输出当前会话中生效的角色</td>
+      </tr>
+      <tr>
+          <td>配置强制角色（全局）</td>
+          <td><code>SET PERSIST mandatory_roles = 'rolename1, rolename2@localhost';</code></td>
+          <td>所有用户自动激活，不可回收</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="权限操作">权限操作
+</h3><h4 id="授予权限-1">授予权限
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>全局权限授予</td>
+          <td><code>GRANT 权限1[, 权限2] ON *.* TO 'user/role'@'hostname' [WITH GRANT OPTION];</code></td>
+          <td>例：<code>GRANT SELECT, INSERT ON *.* TO admin@localhost;</code>，<code>*.*</code>表示所有数据库</td>
+      </tr>
+      <tr>
+          <td>数据库权限授予</td>
+          <td><code>GRANT 权限1[, 权限2] ON db_name.* TO 'user/role'@'hostname';</code></td>
+          <td>例：<code>GRANT CREATE, ALTER ON world.* TO dev@localhost;</code>，仅作用于<code>world</code>库</td>
+      </tr>
+      <tr>
+          <td>表权限授予</td>
+          <td><code>GRANT 权限1[, 权限2] ON db_name.table_name TO 'user/role'@'hostname';</code></td>
+          <td>例：<code>GRANT SELECT, UPDATE ON world.city TO reader@localhost;</code></td>
+      </tr>
+      <tr>
+          <td>列权限授予</td>
+          <td><code>GRANT 权限(列1, 列2) ON db_name.table_name TO 'user/role'@'hostname';</code></td>
+          <td>例：<code>GRANT SELECT (user, host) ON mysql.user TO kari@localhost;</code>，仅允许操作指定列</td>
+      </tr>
+      <tr>
+          <td>授予所有权限</td>
+          <td><code>GRANT ALL PRIVILEGES ON 范围 TO 'user/role'@'hostname' [WITH GRANT OPTION];</code></td>
+          <td><code>ALL PRIVILEGES</code>不含转授权限，需加<code>WITH GRANT OPTION</code>才允许转授</td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="回收权限-1">回收权限
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>回收指定权限</td>
+          <td><code>REVOKE 权限1[, 权限2] ON 范围 FROM 'user/role'@'hostname';</code></td>
+          <td>例：<code>REVOKE DELETE, INSERT ON world.* FROM Amon@localhost;</code></td>
+      </tr>
+      <tr>
+          <td>回收角色</td>
+          <td><code>REVOKE 'rolename'@'hostname' FROM 'username'@'hostname';</code></td>
+          <td>例：<code>REVOKE r_updater FROM kari@localhost;</code></td>
+      </tr>
+      <tr>
+          <td>回收所有权限</td>
+          <td><code>REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'username'@'hostname';</code></td>
+          <td>清除用户所有权限及转授权限</td>
+      </tr>
+      <tr>
+          <td>部分回收（全局排除特定库）</td>
+          <td><code>REVOKE 权限 ON exclude_db.* FROM 'username'@'hostname';</code></td>
+          <td>需先开启<code>SET GLOBAL partial_revokes = ON;</code>，例：<code>REVOKE SELECT ON mysql.* FROM u1;</code></td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="查看权限-1">查看权限
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>查看当前用户权限</td>
+          <td><code>SHOW GRANTS;</code> 或 <code>SHOW GRANTS FOR CURRENT_USER();</code></td>
+          <td>输出当前登录账号的所有权限与角色</td>
+      </tr>
+      <tr>
+          <td>查看指定用户权限</td>
+          <td><code>SHOW GRANTS FOR 'username'@'hostname';</code></td>
+          <td>例：<code>SHOW GRANTS FOR kari@localhost;</code></td>
+      </tr>
+      <tr>
+          <td>查看角色权限</td>
+          <td><code>SHOW GRANTS FOR 'rolename'@'hostname';</code></td>
+          <td>例：<code>SHOW GRANTS FOR r_updater@'%';</code></td>
+      </tr>
+      <tr>
+          <td>查看角色展开后的用户权限</td>
+          <td><code>SHOW GRANTS FOR 'username'@'hostname' USING 'rolename1'[, 'rolename2'];</code></td>
+          <td>输出角色包含的具体权限，例：<code>SHOW GRANTS FOR kari@localhost USING r_viewer;</code></td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="辅助操作">辅助操作
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>命令</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>查看所有用户 / 角色</td>
+          <td><code>SELECT user, host, authentication_string FROM mysql.user;</code></td>
+          <td>从授权表<code>mysql.user</code>中查询账号信息</td>
+      </tr>
+      <tr>
+          <td>刷新权限（直接修改授权表后）</td>
+          <td><code>FLUSH PRIVILEGES;</code></td>
+          <td>重新加载授权表到内存，使手动修改生效</td>
+      </tr>
+      <tr>
+          <td>查看 PAM 代理用户映射</td>
+          <td><code>SELECT USER(), CURRENT_USER();</code></td>
+          <td>例：代理用户 anne 登录后，输出<code>anne@localhost</code>（实际用户）和<code>webuser@localhost</code>（映射用户）</td>
+      </tr>
+      <tr>
+          <td>命令行登录 MySQL</td>
+          <td>本地：<code>mysql -u username -p password</code>；远程：<code>mysql -u username -p password -h server_ip</code></td>
+          <td><code>-p</code>与密码间无空格，若加空格需后续手动输入密码</td>
+      </tr>
+      <tr>
+          <td>启用明文认证登录（PAM 等场景）</td>
+          <td><code>mysql --enable-cleartext-plugin -u username -p</code></td>
+          <td>客户端发送明文密码，需配合加密连接使用</td>
+      </tr>
+  </tbody>
+</table></div>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/mysql-13-%E9%80%9A%E8%BF%87-innodb-%E9%9B%86%E7%BE%A4%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-13-通过 InnoDB 集群实现高可用性</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-12-%E7%AE%A1%E7%90%86%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-12-管理复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-11-%E9%85%8D%E7%BD%AE%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-11-配置复制拓扑结构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-10-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-10-执行备份</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/mysql-09-%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MySQL-09-备份策略</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
