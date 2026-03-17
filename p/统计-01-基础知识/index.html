@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='http://localhost:1313/p/%E7%BB%9F%E8%AE%A1-01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/'>
 
-<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="统计-01-基础知识">
+<link rel="stylesheet" href="/scss/style.min.6f17aad25265206adafe07264d486a5e426c545d8d1c34b9fb782a3bd97ab43c.css"><meta property='og:title' content="统计-01-基础知识">
 <meta property='og:description' content="前言\r从原始数据中抽取出有价值信息的这个过程我们就称之为数据分析，它是数据科学的重要组成部分\n需要掌握技能：\n数据思维 统计思维 分析方法 分析模型 业务知识 挖掘算法 分析工具 Excel SQL Python BI 工作流程：结合业务完成监控数据、发现异常、深挖原因、探索趋势等\n">
 <meta property='og:url' content='http://localhost:1313/p/%E7%BB%9F%E8%AE%A1-01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/'>
 <meta property='og:site_name' content='Penna_a'>
@@ -1056,11 +1056,10 @@
 <p>各个结果出现的可能性相同</p>
 </li>
 <li>
-$$
-    P(A)= \frac{事件A所包含的基本事件的个数} {样本空间所包含的基本事件的个数}
-    $$</li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202603051333063.png" alt="image-20260305133340794" style="zoom:67%;" />
+</li>
 </ul>
-<p>伯努利大数定理表明：当试验次数无限增加时，事件发生的频率会依概率收敛于其概率，即 $ \lim_{n \to \infty} P\left{ \left| \frac{n_A}{n} - p \right| &lt; \varepsilon \right} = 1 $。</p>
+<p>伯努利大数定理表明：当试验次数无限增加时，事件发生的频率会依概率收敛于其概率，即 <img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202603051332047.png" alt="image-20260305133247787" style="zoom:67%;" /></p>
 <ul>
 <li><strong>只要实验次数足够多，事件的实际概率就会无限接近理论概率</strong></li>
 </ul>
@@ -1885,18 +1884,15 @@ $ 则称 $\hat{\theta}$ 是 $\theta$ 的<strong>无偏估计量</strong>；
 <p>总体相关系数</p>
 <ul>
 <li>$$
-            \rho = \frac{\mathrm{Cov}(X,Y)}{\sqrt{\mathrm{Var}(X)\cdot\mathrm{Var}(Y)}}
-            $$</li>
+\rho = \frac{\mathrm{Cov}(X,Y)}{\sqrt{\mathrm{Var}(X)\cdot\mathrm{Var}(Y)}}
+$$</li>
 </ul>
 </li>
 <li>
 <p>样本 Pearson 相关系数</p>
 <ul>
 <li>
-<p>$$
-r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}
-{\sqrt{\sum_{i=1}^{n}(x_i - \bar{x})^2 \cdot \sum_{i=1}^{n}(y_i - \bar{y})^2}}</p>
-<p>$$</p>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202603051344036.png" alt="image-20260305134440770" style="zoom:50%;" />
 </li>
 </ul>
 </li>
@@ -1927,9 +1923,10 @@ r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}
 <p>既适用小样本也适用于大样本</p>
 </li>
 <li>
-$$
-        t = \frac{r\sqrt{n-2}}{\sqrt{1-r^{2}}} \sim t(n-2)
-        $$</li>
+<p>$$
+t = \frac{r\sqrt{n-2}}{\sqrt{1-r^{2}}} \sim t(n-2)
+$$</p>
+</li>
 </ul>
 </li>
 <li>
@@ -1960,13 +1957,15 @@ $$
 </ul>
 </li>
 <li>
-$$
-        R^{2} = \frac{\mathrm{SSR}}{\mathrm{SST}} = \frac{\sum_{i=1}^{n}(\hat{y}_i - \bar{y})^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
-        $$</li>
+<p>$$
+R^{2} = \frac{\mathrm{SSR}}{\mathrm{SST}} = \frac{\sum_{i=1}^{n}(\hat{y}_i - \bar{y})^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+$$</p>
+</li>
 <li>
-$$
-        R^{2} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}} = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
-        $$<ul>
+<p>$$
+R^{2} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}} = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+$$</p>
+<ul>
 <li>n 次观测值的总误差记为 SST,通常称之为总平方和（<em>total sum of squares</em>）
 <ul>
 <li>由两个部分构成</li>
@@ -2138,7 +2137,9 @@ $$
     <section class="copyright">
         &copy; 
         
-        2025 Penna_a
+            2025 - 
+        
+        2026 Penna_a
     </section>
     <script type="module">
         import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
@@ -2153,6 +2154,87 @@ $$
          
         共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        <p>发布了 24 篇文章 | 共 113643 字</p>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
     </section>
 </footer>
 

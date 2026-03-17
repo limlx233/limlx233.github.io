@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言\r从原始数据中抽取出有价值信息的这个过程我们就称之为数据分析，它是数据科学的重要组成部分\n需要掌握技能：\n数据思维 统计思维 分析方法 分析模型 业务知识 挖掘算法 分析工具 Excel SQL Python BI 工作流程：结合业务完成监控数据、发现异常、深挖原因、探索趋势等\n">
+<title>统计-01-基础知识test</title>
+
+<link rel='canonical' href='http://localhost:1313/p/%E7%BB%9F%E8%AE%A1-01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86test/'>
+
+<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="统计-01-基础知识test">
+<meta property='og:description' content="前言\r从原始数据中抽取出有价值信息的这个过程我们就称之为数据分析，它是数据科学的重要组成部分\n需要掌握技能：\n数据思维 统计思维 分析方法 分析模型 业务知识 挖掘算法 分析工具 Excel SQL Python BI 工作流程：结合业务完成监控数据、发现异常、深挖原因、探索趋势等\n">
+<meta property='og:url' content='http://localhost:1313/p/%E7%BB%9F%E8%AE%A1-01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86test/'>
+<meta property='og:site_name' content='Penna_a'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-09-02T00:35:01&#43;17:30'/><meta property='article:modified_time' content='2025-09-02T00:35:01&#43;17:30'/>
+<meta name="twitter:title" content="统计-01-基础知识test">
+<meta name="twitter:description" content="前言\r从原始数据中抽取出有价值信息的这个过程我们就称之为数据分析，它是数据科学的重要组成部分\n需要掌握技能：\n数据思维 统计思维 分析方法 分析模型 业务知识 挖掘算法 分析工具 Excel SQL Python BI 工作流程：结合业务完成监控数据、发现异常、深挖原因、探索趋势等\n">
+    <link rel="shortcut icon" href="/pen.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/penna_a_hu_5a941f5f88297110.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🖊︎</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Penna_a</a></h1>
+            <h2 class="site-description">好记性不如烂笔头</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/limlx233'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/27829382'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://share.streamlit.io/user/limlx233'
+                        target="_blank"
+                        title="streamlit"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-crown"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#关于统计">关于统计</a>
+      <ol>
+        <li><a href="#概述">概述</a></li>
+        <li><a href="#基本概念">基本概念</a>
+          <ol>
+            <li><a href="#总体和样本">总体和样本</a></li>
+            <li><a href="#参数和统计量">参数和统计量</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#解读数据">解读数据</a>
+      <ol>
+        <li><a href="#数据类型与变量">数据类型与变量</a>
+          <ol>
+            <li><a href="#定性数据">定性数据</a></li>
+            <li><a href="#定量数据">定量数据</a></li>
+          </ol>
+        </li>
+        <li><a href="#数据来源与收集方法">数据来源与收集方法</a>
+          <ol>
+            <li><a href="#数据来源">数据来源</a></li>
+            <li><a href="#收集方法">收集方法</a></li>
+            <li><a href="#抽样方法">抽样方法</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#数据描述">数据描述</a>
+      <ol>
+        <li><a href="#数据可视化展示">数据可视化展示</a>
+          <ol>
+            <li><a href="#定性数据-1">定性数据</a></li>
+            <li><a href="#定量数据-1">定量数据</a></li>
+          </ol>
+        </li>
+        <li><a href="#统计量描述">统计量描述</a>
+          <ol>
+            <li><a href="#集中趋势度量">集中趋势度量</a></li>
+            <li><a href="#离散程度度量">离散程度度量</a></li>
+          </ol>
+        </li>
+        <li><a href="#分布形态度量">分布形态度量</a>
+          <ol>
+            <li><a href="#偏度">偏度</a></li>
+            <li><a href="#峰度">峰度</a></li>
+          </ol>
+        </li>
+        <li><a href="#数据分布特征与应用">数据分布特征与应用</a>
+          <ol>
+            <li><a href="#分布类型与识别">分布类型与识别</a></li>
+            <li><a href="#统计表涉及规范">统计表涉及规范</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#随机和概率">随机和概率</a>
+      <ol>
+        <li><a href="#基本概念-1">基本概念</a></li>
+        <li><a href="#概率">概率</a>
+          <ol>
+            <li><a href="#古典概型">古典概型</a></li>
+            <li><a href="#复合事件">复合事件</a></li>
+            <li><a href="#条件概率">条件概率</a></li>
+            <li><a href="#全概率公式">全概率公式</a></li>
+            <li><a href="#贝叶斯公式">贝叶斯公式</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#随机变量及其分布">随机变量及其分布</a>
+      <ol>
+        <li><a href="#随机变量">随机变量</a></li>
+        <li><a href="#随机变量的分布">随机变量的分布</a>
+          <ol>
+            <li><a href="#离散型随机变量分布">离散型随机变量分布</a></li>
+            <li><a href="#连续型随机变量分布">连续型随机变量分布</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#假设检验">假设检验</a>
+      <ol>
+        <li><a href="#基本原理">基本原理</a>
+          <ol>
+            <li><a href="#基本思想">基本思想</a></li>
+          </ol>
+        </li>
+        <li><a href="#实施步骤">实施步骤</a></li>
+      </ol>
+    </li>
+    <li><a href="#参数估计">参数估计</a>
+      <ol>
+        <li><a href="#参数估计的方法">参数估计的方法</a>
+          <ol>
+            <li><a href="#点估计">点估计</a></li>
+            <li><a href="#区间估计">区间估计</a></li>
+            <li><a href="#贝叶斯估计">贝叶斯估计</a></li>
+            <li><a href="#对比">对比</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#方差分析">方差分析</a>
+      <ol>
+        <li><a href="#应用示例">应用示例</a></li>
+        <li><a href="#基本思路">基本思路</a>
+          <ol>
+            <li><a href="#定性分析">定性分析</a></li>
+            <li><a href="#定量分析">定量分析</a></li>
+            <li><a href="#单因素方差分析">单因素方差分析</a></li>
+            <li><a href="#双因素方差分析">双因素方差分析</a></li>
+          </ol>
+        </li>
+        <li><a href="#实施细节">实施细节</a>
+          <ol>
+            <li><a href="#前提条件">前提条件</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#回归分析">回归分析</a>
+      <ol>
+        <li><a href="#变量间的关系">变量间的关系</a>
+          <ol>
+            <li><a href="#函数关系">函数关系</a></li>
+            <li><a href="#相关关系">相关关系</a></li>
+            <li><a href="#拟合优度和显著性">拟合优度和显著性</a></li>
+            <li><a href="#残差的检验">残差的检验</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#时间序列分析">时间序列分析</a>
+      <ol>
+        <li><a href="#时间序列">时间序列</a></li>
+        <li><a href="#常见的时间序列模型">常见的时间序列模型</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E7%BB%9F%E8%AE%A1/" >
+                统计
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E7%BB%9F%E8%AE%A1-01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86test/">统计-01-基础知识test</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-09-02</time>
+            </div>
+        
+
+        
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+            <time class="article-pageview">
+                <span class="waline-pageview-count" data-path="/p/%E7%BB%9F%E8%AE%A1-01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86test/">0</span> 次浏览
+            </time>
+        </div>
+
+        <div>
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h10" /><path d="M9 14h5" /><path d="M12.4 3a5.34 5.34 0 0 1 4.906 3.239a5.333 5.333 0 0 1 -1.195 10.6a4.26 4.26 0 0 1 -5.28 1.863l-3.831 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.33 5.33 0 0 1 4.287 -2.16" /></svg>
+            <time class="article-comment">
+                <span class="waline-comment-count" data-path="/p/%E7%BB%9F%E8%AE%A1-01-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86test/">0</span> 条评论
+            </time>
+        </div>
+    </footer>
+
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="前言">前言
+</h2><p><strong>从原始数据中抽取出有价值信息</strong>的这个过程我们就称之为<strong>数据分析</strong>，它是数据科学的重要组成部分</p>
+<p>需要掌握技能：</p>
+<ol>
+<li>数据思维
+<ul>
+<li>统计思维</li>
+<li>分析方法</li>
+<li>分析模型</li>
+<li>业务知识</li>
+<li>挖掘算法</li>
+</ul>
+</li>
+<li>分析工具
+<ul>
+<li>Excel</li>
+<li>SQL</li>
+<li>Python</li>
+<li>BI</li>
+</ul>
+</li>
+</ol>
+<p>工作流程：结合业务完成<strong>监控数据</strong>、<strong>发现异常</strong>、<strong>深挖原因</strong>、<strong>探索趋势</strong>等</p>
+<p>资深的数据分析师还要参与指标体系的建设和维护，需要跨部门参与产品的迭代优化、埋点和算法的设计和落地、各种运营数据的复盘等</p>
+<p>工具只是达成目标的手段，<strong>数据思维才是最硬核的东西</strong>，从实际业务问题出发到最终<strong>发现数据中的商业价值</strong>是终极目标</p>
+<h2 id="关于统计">关于统计
+</h2><h3 id="概述">概述
+</h3><p><strong>从数学角度研究不确定性，寻找随机性背后规律</strong>的人是赌徒而不是数学家</p>
+<p><strong>大数定理</strong></p>
+<ul>
+<li><strong>在一个随机事件中，随着试验次数的增加，事件发生的频率越趋近于一个稳定值</strong></li>
+</ul>
+<p><strong>统计学</strong></p>
+<ul>
+<li><strong>收集、处理、分析、解释数据并从中得出结论的科学</strong></li>
+</ul>
+<p>统计学分类</p>
+<ul>
+<li>描述统计
+<ul>
+<li>描绘和总结观察量基本情况的统计方法</li>
+<li>集中趋势、离散程度、分布规律、相关性</li>
+</ul>
+</li>
+<li>推断统计
+<ul>
+<li>如何根据样本数据特征推断总体数据特征</li>
+<li>在无法获得全量数据的情况下，推断统计就是最为行之有效的方法</li>
+</ul>
+</li>
+<li>贝叶斯统计
+<ul>
+<li>基础是贝叶斯定理</li>
+<li>简单的说就是在获得数据（证据）之后，先前凭借经验和直觉得出的先验概率是可以改变的</li>
+<li>重新计算后的概率我们称之为后验概率</li>
+</ul>
+</li>
+</ul>
+<h3 id="基本概念">基本概念
+</h3><h4 id="总体和样本">总体和样本
+</h4><h5 id="总体population">总体(population)
+</h5><ul>
+<li>无限总体
+<ul>
+<li>每抽取一个单位并不影响下一次的抽样结果</li>
+<li>因此每次抽取可以看做是独立的</li>
+</ul>
+</li>
+<li>有限总体
+<ul>
+<li>每抽取一个样本后，总体的对象数量就会减少一个</li>
+<li>前一次抽样会对本次抽样产生影响，每次抽取并不是独立的</li>
+</ul>
+</li>
+</ul>
+<h5 id="样本sample">样本(sample)
+</h5><ul>
+<li>总体中抽取一部分元素构成的集合</li>
+<li>够成样本的元素的数量称为样本容量</li>
+</ul>
+<h4 id="参数和统计量">参数和统计量
+</h4><h5 id="参数parameter">参数（parameter)
+</h5><ul>
+<li>描述总体特征的概括性数字度量
+<ul>
+<li>例如：总体均值通常用 μ 表示，总体标准差通常用 σ 表示</li>
+</ul>
+</li>
+<li>无法获得全体对象的情况下，总体参数通常是一个<strong>未知的常量</strong>
+<ul>
+<li>如此才需要抽样，通过样本计算出统计量</li>
+<li>来估计总体参数的值</li>
+</ul>
+</li>
+</ul>
+<h5 id="统计量statistic">统计量（statistic）
+</h5><ul>
+<li>描述样本特征的概括性数字度量</li>
+<li>根据样本数据计算得出</li>
+<li>由于抽样是随机的，因此统计量的值并不确定</li>
+<li>它是一个以样本作为其自变量的函数，其本质就是一个<strong>随机变量</strong></li>
+<li>例如：样本均值通常用 $\bar{x}$  表示，样本标准差通常用 s</li>
+</ul>
+<h2 id="解读数据">解读数据
+</h2><p>统计的本质</p>
+<ul>
+<li>从原始的数据中找出重要的有用的信息</li>
+</ul>
+<p>指标</p>
+<ul>
+<li>具备业务意义的统计数据</li>
+</ul>
+<p>描述性统计</p>
+<ul>
+<li>运用分类、制表、绘图、概括性计算等操作来描述数据的各项特征</li>
+<li>通常是针对所有数据而不是部分数据</li>
+<li>主要包括数据的频数分析、集中趋势分析、离散程度分析以及一些基本统计图表的绘制</li>
+</ul>
+<h3 id="数据类型与变量">数据类型与变量
+</h3><h4 id="定性数据">定性数据
+</h4><p>反映属性特征，无数值含义</p>
+<ol>
+<li>分类变量：无序类别，仅用于区分事物，不可数学运算 如 性别</li>
+<li>顺序变量：有序类别，可比较大小但无法计算差异 如教育程度</li>
+</ol>
+<p>图表展示：饼图（比例分别）、条形图（类别频数）、环形图（多变量结构比较）</p>
+<h4 id="定量数据">定量数据
+</h4><p>数值型数据，具有明确的数学含义，可计算绝对差和相对差。（如 身高、收入）</p>
+<ol>
+<li>连续型</li>
+<li>离散型</li>
+</ol>
+<p>通过表格能更清晰区分二者的核心差异：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>对比维度</th>
+          <th>离散型数据</th>
+          <th>连续型数据</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>取值特征</td>
+          <td>有限 / 可列的孤立值，有间隔</td>
+          <td>区间内任意值，无间隔、可无限细分</td>
+      </tr>
+      <tr>
+          <td>数据来源</td>
+          <td>计数（数出来）</td>
+          <td>测量（测出来）</td>
+      </tr>
+      <tr>
+          <td>能否取小数</td>
+          <td>通常不能（除非是比例换算，如 “人均 2.3 个”）</td>
+          <td>能（且可无限细分，如 170.123cm）</td>
+      </tr>
+      <tr>
+          <td>典型例子</td>
+          <td>人数、订单数、错题数</td>
+          <td>身高、体重、温度、分数</td>
+      </tr>
+      <tr>
+          <td>描述统计核心指标</td>
+          <td>频数、频率、中位数、众数</td>
+          <td>均值、标准差、方差、四分位数间距</td>
+      </tr>
+      <tr>
+          <td>对应分布</td>
+          <td>二项分布、泊松分布等</td>
+          <td>正态分布、t 分布、F 分布等</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>图表展示：直方图（分布形态）、折线图（趋势）、散点图（变量关系）</p>
+<h3 id="数据来源与收集方法">数据来源与收集方法
+</h3><h4 id="数据来源">数据来源
+</h4><h5 id="直接来源">直接来源
+</h5><ul>
+<li>原始数据，通过统计调查（观测数据）或实验法(实验数据)获取</li>
+</ul>
+<h5 id="间接来源">间接来源
+</h5><ul>
+<li>次级数据，如公开出版物（年鉴、数据库），要<strong>注意适用性与时效性</strong></li>
+</ul>
+<h4 id="收集方法">收集方法
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>方法</th>
+          <th>特点</th>
+          <th>适用场景</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>普查</td>
+          <td>全面调查，耗时耗力但数据详尽</td>
+          <td>国情国力调查、重大基础数据收集</td>
+      </tr>
+      <tr>
+          <td>抽样调查</td>
+          <td>按随机原则抽取样本，用样本推断总体（抽样误差可控）</td>
+          <td>大规模社会调查</td>
+      </tr>
+      <tr>
+          <td>重点调查</td>
+          <td>选取关键单位</td>
+          <td>快速掌握总体基本情况</td>
+      </tr>
+      <tr>
+          <td>典型调查</td>
+          <td>主管选择代表性单位</td>
+          <td>深入案例分析，需结合其他方法验证</td>
+      </tr>
+      <tr>
+          <td>统计报表</td>
+          <td>按统一格式定期上报</td>
+          <td>常规数据监测</td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="抽样方法">抽样方法
+</h4><h5 id="概率抽样">概率抽样
+</h5><ul>
+<li>简单随机抽样（等概率）</li>
+<li>分层抽样 （按层分组）</li>
+<li>整群抽样（按群组抽取）</li>
+<li>系统抽样（等距抽样）</li>
+<li>多阶段抽样</li>
+</ul>
+<h5 id="非概率抽样">非概率抽样
+</h5><ul>
+<li>
+<p><strong>随意抽样、志愿者抽样、判断抽样、重点调查、典型调查</strong></p>
+</li>
+<li>
+<p>方便抽样（就近选取）</p>
+</li>
+<li>
+<p>配额抽样（预设比例）</p>
+</li>
+<li>
+<p>适用于 探索性 研究</p>
+</li>
+</ul>
+<h5 id="抽样误差-vs-非抽样误差">抽样误差 vs 非抽样误差
+</h5><p>抽样误差</p>
+<ul>
+<li>由随机性引起，可通过增大样本量降低</li>
+</ul>
+<p>非抽样误差</p>
+<ul>
+<li>无回答偏差</li>
+<li>测量错误</li>
+<li>需优化涉及避免</li>
+</ul>
+<h5 id="数据分组原则">数据分组原则
+</h5><ul>
+<li>定量数据分组遵循 &ldquo;上限不在内&rdquo;</li>
+<li>组距 需区分总体性质差异</li>
+</ul>
+<h2 id="数据描述">数据描述
+</h2><h3 id="数据可视化展示">数据可视化展示
+</h3><h4 id="定性数据-1">定性数据
+</h4><h5 id="频数分布表">频数分布表
+</h5><ul>
+<li>列出所有类别并统计频数（次数）</li>
+<li>确保 穷尽性 （所有类别覆盖）和 互斥性 （类别不重叠）</li>
+</ul>
+<h5 id="饼图">饼图
+</h5><ul>
+<li>展示各类别占比</li>
+</ul>
+<h5 id="条形图">条形图
+</h5><ul>
+<li>比较类别频数高低</li>
+<li>纵轴为频数</li>
+<li>横轴为类别</li>
+</ul>
+<h5 id="环形图">环形图
+</h5><ul>
+<li>比较多个变量的结构差异（如不同年费消费支出构成）</li>
+</ul>
+<h4 id="定量数据-1">定量数据
+</h4><h5 id="频数分布表-1">频数分布表
+</h5><ul>
+<li>
+<p>等距分组： 数据均匀分布时</p>
+</li>
+<li>
+<p>不等距分组：数据差异大时</p>
+</li>
+<li>
+<p>组数通常 5~15组 遵循不重不漏的原则</p>
+</li>
+<li>
+<p>相邻两组上下限重叠</p>
+<ul>
+<li>上限不在内</li>
+</ul>
+</li>
+<li>
+<p>组距确定</p>
+<ul>
+<li>组中值计算 （下限+上限）/ 2 ，开口组用相邻组距推算</li>
+</ul>
+</li>
+</ul>
+<h5 id="直方图">直方图
+</h5><ul>
+<li>展示连续数据分布，横轴为组限，纵轴为频数</li>
+</ul>
+<h5 id="折线图">折线图
+</h5><ul>
+<li>描述趋势变化</li>
+</ul>
+<h5 id="箱线图">箱线图
+</h5><ul>
+<li>基于五数概括（最小值、Q1、中位数、Q3、最大值）</li>
+<li>识别异常值（超出Q3 + 1.5 IQR 或 Q1 - 1.5 IQR）</li>
+</ul>
+<h5 id="茎叶图">茎叶图
+</h5><ul>
+<li>保留原始数据的原始展示分布形态</li>
+</ul>
+<h3 id="统计量描述">统计量描述
+</h3><h4 id="集中趋势度量">集中趋势度量
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>指标</th>
+          <th>计算方式</th>
+          <th>适用数据类型</th>
+          <th>特点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>均值</td>
+          <td>所有数值之和 / 样本量</td>
+          <td>数值型数据</td>
+          <td>受极端值影响大，对称分布适用</td>
+      </tr>
+      <tr>
+          <td>中位数</td>
+          <td>数据排序后中间位置的值（n为偶数时取平均）</td>
+          <td>顺序数据、数值型数据</td>
+          <td>不受极端值影响，偏态分布首选</td>
+      </tr>
+      <tr>
+          <td>众数</td>
+          <td>出现频数最高的值</td>
+          <td>所有类型的数据</td>
+          <td>可有多峰，适用于分类数据</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>算术平均值的性质：</p>
+<ol>
+<li>离均差（变量的每个观测值与均值的差异）之和等于0</li>
+<li>离均差平方和最小
+<ul>
+<li>几何平均值
+<ul>
+<li>计算不同渠道的平均转化率、不同客群的平均留存率、不同品类的平均付费率</li>
+<li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508200919567.png" alt="image-20250820091923401" style="zoom:67%;" />
+</li>
+<li>Excel中计算公式 <code>GEOMEAN</code></li>
+</ul>
+</li>
+<li>调和平均值
+<ul>
+<li>处理速率或比率问题，平均速度、平均工作时间、单位成本，机器学习中的 F1 评分，准确率和召回的调和平均数</li>
+<li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508200920010.png" alt="image-20250820092045938" style="zoom:67%;" />
+</li>
+<li>Excel中计算公式 <code>HARMEAN</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="离散程度度量">离散程度度量
+</h4><p>衡量数据的&quot;波动范围&quot;</p>
+<h5 id="极差">极差
+</h5><ul>
+<li>最大值-最小值</li>
+<li>易受异常值影响</li>
+<li>极差越大 离散程度越大</li>
+</ul>
+<h5 id="方差与标准差">方差与标准差
+</h5><ul>
+<li>方差
+<ul>
+<li>各数值与均值离差平方的平均值</li>
+<li>方差越小，数据越稳定、波动越平滑、数据整体比较集中</li>
+</ul>
+</li>
+<li>标准差
+<ul>
+<li>方差的平方根</li>
+</ul>
+</li>
+</ul>
+<h5 id="四分位距-iqr">四分位距 IQR
+</h5><ul>
+<li>Q3~Q1, 反映中间 50% 数据的离散性</li>
+<li>如 IQR = 10 说明主体数据集中</li>
+<li>其大小反映了中位数对一组数据的代表程度</li>
+</ul>
+<h5 id="变异系数-cv">变异系数 CV
+</h5><ul>
+<li>
+<p>又称离散系数、变差系数</p>
+</li>
+<li>
+<p>一组数据离散程度的一种归一化量度</p>
+</li>
+<li>
+<p>变异系数只在平均值不为零时有意义，而且一般适用于平均值大于零的情况</p>
+</li>
+<li>
+<p>变异系数也被称为标准离差率或单位风险</p>
+</li>
+<li>
+<p>变异系数没有量纲，因此在比较两组量纲不同或均值不同的数据时，它比标准差更具参考性</p>
+</li>
+<li>
+<p>标准差 / 均值</p>
+<ul>
+<li>通过 “相对离散程度” 替代标准差（绝对离散程度）</li>
+<li>决了 “不同量纲、不同均值数据无法直接用标准差比较” 的问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="分布形态度量">分布形态度量
+</h3><h4 id="偏度">偏度
+</h4><ul>
+<li>偏度系数（SK）&lt; 0 , 左偏（负偏）：均值&lt;中位数，众数位于右侧</li>
+<li>偏度系数（SK）&gt; 0 , 右偏（正偏）：均值&gt;中位数，众数位于左侧</li>
+</ul>
+<h4 id="峰度">峰度
+</h4><ul>
+<li>
+<p>基于原始峰度</p>
+</li>
+<li>
+<p>峰度 &gt; 3：尖峰分布 极端值多</p>
+</li>
+<li>
+<p>峰度 &lt; 3：平峰分布 数据分散 如均匀分布</p>
+</li>
+<li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508191502037.png" alt="image-20250819150241656" style="zoom:67%;" />
+</li>
+<li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202508191503651.png" alt="image-20250819150309562" style="zoom:67%;" />
+</li>
+<li>
+<p>实际应用中，更多用<strong>超额峰度</strong>（以 0 为基准）</p>
+<ul>
+<li>尖峰（极端值多）：超额峰度 \(> 0\)（或原始峰度 \(> 3\)）</li>
+<li>平峰（极端值少）：超额峰度 \(< 0\)（或原始峰度 \(< 3\)）</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据分布特征与应用">数据分布特征与应用
+</h3><h4 id="分布类型与识别">分布类型与识别
+</h4><h5 id="正态分布">正态分布
+</h5><ul>
+<li>对称钟形曲线</li>
+<li>均值=中位数=众数</li>
+</ul>
+<h5 id="偏态分布">偏态分布
+</h5><ul>
+<li>左偏：数据集中在右侧，左侧拖尾，如 疾病发病年龄</li>
+<li>右偏：数据集中在左侧，右侧拖尾，如 收入分布</li>
+</ul>
+<h5 id="检验方法">检验方法
+</h5><p>Q-Q图</p>
+<ul>
+<li>散点是否沿直线分布</li>
+</ul>
+<p>Shapiro-Wilk检验</p>
+<ul>
+<li>小样本 【n &lt; 50（或 n &lt; 30）】</li>
+<li>p&gt;0.05 视为正态</li>
+</ul>
+<p>Kolmogorov-Smirnov检验</p>
+<ul>
+<li>大样本</li>
+<li>p&gt;0.05 视为正态</li>
+</ul>
+<h4 id="统计表涉及规范">统计表涉及规范
+</h4><h5 id="五要素">五要素
+</h5><ul>
+<li>表头</li>
+<li>行标题</li>
+<li>列标题</li>
+<li>数字资料</li>
+<li>表外附加（数据来源、注释）</li>
+</ul>
+<h5 id="原则">原则
+</h5><ul>
+<li>左右不封口   类似于 “三线表”</li>
+<li>分类清晰</li>
+<li>避免冗余</li>
+</ul>
+<h2 id="随机和概率">随机和概率
+</h2><h3 id="基本概念-1">基本概念
+</h3><ul>
+<li>
+<p>在一定条件下，对某事物或现象进行的观察或实验叫做<strong>试验</strong>（<em>trails</em>），试验的结果叫做<strong>事件</strong>（<em>event</em>）</p>
+</li>
+<li>
+<p>随机事件（<em>random event</em>）：在一定条件下可能发生也可能不发生的事件，即结果具有偶然性的事件，通常用大写字母 A、B 、C 等来表示。</p>
+</li>
+<li>
+<p>必然事件（<em>certain event</em>）和不可能事件（<em>impossible event</em>）</p>
+<ul>
+<li>必然事件是在一定条件下每次试验一定出现的事件；</li>
+<li>不可能事件是在一定条件下每次试验一定不出现的事件。</li>
+</ul>
+</li>
+<li>
+<p>基本事件（<em>elementary event</em>）：如果一个事件不能拆分为两个或更多的事件，则将该事件称为基本事件或简单事件。在一次试验中，只能观察到一个且仅有一个基本事件。</p>
+</li>
+<li>
+<p><strong>样本空间</strong>（<em>sample space</em>）：一个试验中所有的基本事件（一切可能的结果）组成的集合，通常记为Ω 。</p>
+<ul>
+<li>抛一枚硬币的样本空间： Ω = {正，反}；</li>
+<li>抛两枚硬币的样本空间： Ω = {（正，正）, （正，反）, （反，正）, （反,反）}；</li>
+<li>掷一颗色子的样本空间： Ω = {1，2，3，4，5，6}。</li>
+</ul>
+</li>
+<li>
+<p><strong>随机试验</strong>（<em>random trials</em>）：在相同条件下对某种随机事件进行观测的试验。随机试验满足三个特点：</p>
+<ul>
+<li>可以在相同条件下重复的进行。</li>
+<li>每次试验的结果不止一个，事先可以明确指出全部可能的结果。</li>
+<li>重复试验的结果以随机的方式出现（事先不确定会出现哪个结果）</li>
+</ul>
+</li>
+</ul>
+<h3 id="概率">概率
+</h3><ul>
+<li>对事件在试验中出现的可能性大小的一种度量</li>
+<li>事件 出现的可能性通常记为 P(A)</li>
+<li>是一个取值范围在0到1之间的值</li>
+</ul>
+<h4 id="古典概型">古典概型
+</h4><ul>
+<li>
+<p>试验的结果有限</p>
+</li>
+<li>
+<p>各个结果出现的可能性相同</p>
+</li>
+<li>
+<img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202603051333063.png" alt="image-20260305133340794" style="zoom:67%;" />
+</li>
+</ul>
+<p>伯努利大数定理表明：当试验次数无限增加时，事件发生的频率会依概率收敛于其概率，即 <img src="https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202603051332047.png" alt="image-20260305133247787" style="zoom:67%;" /></p>
+<ul>
+<li><strong>只要实验次数足够多，事件的实际概率就会无限接近理论概率</strong></li>
+</ul>
+<h4 id="复合事件">复合事件
+</h4><ul>
+<li>
+<p>讨论两个或两个以上的事件的概率</p>
+</li>
+<li>
+<p>三种最常见的复合事件</p>
+<ul>
+<li>设样本空间 Ω={ω}，事件 A、B 是 Ω 的子集。</li>
+<li>交事件（同时发生）：A∩B 或 AB</li>
+<li>并事件（至少发生一个）：A∪B</li>
+<li>补事件（不发生）：Ā = Ω\A</li>
+</ul>
+</li>
+<li>
+<p>加法公式：P(A∪B)=P(A)+P(B)−P(AB)</p>
+</li>
+<li>
+<p>互斥事件：</p>
+<ul>
+<li>两个事件不能同时发生  A∩B = 0，P(AB) = 0</li>
+<li>P(A∪B)=P(A)+P(B)</li>
+</ul>
+</li>
+<li>
+<p>互补事件</p>
+<ul>
+<li>事件A的对立面称为事件A的互补事件Ā
+<ul>
+<li>P(Ā )  = 1- P(A)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="条件概率">条件概率
+</h4><ul>
+<li>事件A在事件B发生的条件下发生的概率</li>
+<li>记作 P(A|B)</li>
+<li>P(A|B) = $\frac{P(A \cap B)}{P(B)}$（其中 \(P(B) > 0\)，若 B 不可能发生，条件概率无意义）</li>
+</ul>
+<h5 id="乘法公式与独立事件">乘法公式与独立事件
+</h5><ol>
+<li>乘法公式
+<ul>
+<li><em>P</em>(<em>A</em>∩<em>B</em>)=<em>P</em>(<em>A</em>∣<em>B</em>)×<em>P</em>(<em>B</em>)=<em>P</em>(<em>B</em>∣<em>A</em>)×<em>P</em>(<em>A</em>)</li>
+</ul>
+</li>
+<li>独立事件的判定
+<ul>
+<li>A和B满足 <strong>“B 的发生不影响 A 的概率”</strong>，反之亦然 则 A和B为独立事件</li>
+<li>P(A|B) = P(A)</li>
+<li>P(A∩B)=P(A)×P*(*B)  P(AB)=P(A)⋅P(B)</li>
+</ul>
+</li>
+</ol>
+<h4 id="全概率公式">全概率公式
+</h4><p>若事件组 $B_1, B_2, \dots, B_n$ 满足：</p>
+<ol>
+<li><strong>互斥性</strong>：任意两个事件不重叠，即 $B_i \cap B_j = \varnothing (i \neq j$，比如抽奖时 “选 A 箱” 和 “选 B 箱” 不可能同时发生 ）；</li>
+<li><strong>穷尽性</strong>：所有事件覆盖全部可能，即$B_1 \cup B_2 \cup \dots \cup B_n = \Omega$ ( $\Omega$ 是所有可能结果的集合，比如抽奖只有 A、B、C 箱，选完这三个就覆盖所有可能 )；</li>
+</ol>
+<p>则对任意事件 A，<strong>全概率公式</strong>为：$P(A) = \sum_{i=1}^n P(A|B_i) \cdot P(B_i)$</p>
+<h4 id="贝叶斯公式">贝叶斯公式
+</h4><ul>
+<li>P(A∣B)⋅P(B)=P(B∣A)⋅P(A)</li>
+<li><strong>A 和 B 同时发生的概率”，既可以理解成 “先发生 B、再在 B 的条件下发生 A”，也可以理解成 “先发生 A、再在 A 的条件下发生 B”</strong> ，两种路径的结果必然相等</li>
+</ul>
+<h2 id="随机变量及其分布">随机变量及其分布
+</h2><h3 id="随机变量">随机变量
+</h3><ul>
+<li>
+<p>在相同的条件下，如果每次试验可能出现这样或那样的结果</p>
+</li>
+<li>
+<p>对随机事件进行数量化，用X表示所有可能的事件，也就是说X可以有不同的取值</p>
+</li>
+<li>
+<p>P(X)表示 X 取不同的值时对应事件发生的概率</p>
+<ul>
+<li>P(X) 概率函数</li>
+<li>X 称为概率函数 P(X) 的随机变量</li>
+</ul>
+</li>
+<li>
+<p>离散型随机变量</p>
+<ul>
+<li>随机变量 X 的所有取值<strong>可以逐个列出</strong></li>
+</ul>
+</li>
+<li>
+<p>连续型随机变量</p>
+<ul>
+<li>随机变量 X 的所有取值<strong>不可以逐个列出</strong></li>
+</ul>
+</li>
+<li>
+<p>注意 如果离散型随机变量的取值非常庞大时，可近似看作连续型随机变量</p>
+</li>
+</ul>
+<h3 id="随机变量的分布">随机变量的分布
+</h3><ul>
+<li>&ldquo;分布&quot;明确了”每个取值（或取值区间）对应的概率是多少“</li>
+<li>离散型和连续型的分布形式不同</li>
+<li>核心是 概率的累加法则</li>
+</ul>
+<h4 id="离散型随机变量分布">离散型随机变量分布
+</h4><ul>
+<li>
+<p>核心工具 <strong>概率质量函数</strong></p>
+<ul>
+<li>记为 $P(X = x)$，</li>
+<li>直接定义 “随机变量取某个具体值 x 的概率”。</li>
+</ul>
+</li>
+<li>
+<h5 id="2个核心性质">2个核心性质
+</h5><ul>
+<li>非负性：
+<ul>
+<li>概率不能为负</li>
+</ul>
+</li>
+<li>归一性：
+<ul>
+<li>所有可能取值的概率之和为1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h5 id="常用离散分布">常用离散分布
+</h5><ul>
+<li>0-1分布（伯努利分布）
+<ul>
+<li>仅2个结果</li>
+<li>记为$X \sim Bernoulli(p)$</li>
+<li>$P(X=1)=p$，$P(X=0)=1-p$</li>
+</ul>
+</li>
+<li>二项分布
+<ul>
+<li>n 次独立的 0-1 试验中&quot;成功次数&quot;的分布</li>
+<li>记为 $X \sim B(n,p)$</li>
+</ul>
+</li>
+<li>泊松分布
+<ul>
+<li>描述 单位时间/空间内稀有事件的发生次数</li>
+<li>记为 $X \sim Poisson(\lambda)$
+<ul>
+<li>$\lambda$ 是 平均发生次数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="连续型随机变量分布">连续型随机变量分布
+</h4><ul>
+<li>
+<p>概率密度函数</p>
+<ul>
+<li>描述 区间概率</li>
+<li>记作 $f(x)$</li>
+</ul>
+</li>
+<li>
+<h5 id="概率密度函数核心性质">概率密度函数核心性质
+</h5><ul>
+<li>非负性：对于所有$x$, $f(x)≥0$ (密度不能为负)</li>
+<li>归一性：所有区间的概率总和为 1
+<ul>
+<li>$\int_{-\infty}^{+\infty} f(x)dx = 1$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h5 id="区间概率">区间概率
+</h5><ul>
+<li>随机变量 $X$ 落在区间 $[a,b]$内的概率</li>
+<li>$P(a≤X≤b)=\int_{a}^{b}f(x)dx$</li>
+</ul>
+</li>
+<li>
+<h5 id="常用连续分布">常用连续分布
+</h5><ul>
+<li>均匀分布
+<ul>
+<li>取值在$[a,b]$内 等概率分布</li>
+<li>记为 $X \sim U(a,b)$</li>
+<li>概率密度函数为：$f(x) = \frac{1}{b-a}  (a \leq x \leq b)$</li>
+</ul>
+</li>
+<li>正态分布（高斯分布）
+<ul>
+<li>记为 $X \sim N(\mu, \sigma^2)$
+<ul>
+<li>$\mu$（均值）：决定分布的 “中心位置</li>
+<li>$\sigma^2$（方差）：决定分布的 “离散程度”（\(\sigma\) 越小，曲线越尖）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>指数分布
+<ul>
+<li>连续型随机事件的间隔时间</li>
+<li>记为 $X \sim Exp(\lambda)$
+<ul>
+<li>$\lambda$ 是  平均发生率</li>
+</ul>
+</li>
+<li>例如：手机从满电到关机的使用时间</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="假设检验">假设检验
+</h2><h3 id="基本原理">基本原理
+</h3><p><strong>基于样本数据判断总体假设是否成立</strong></p>
+<h4 id="基本思想">基本思想
+</h4><ul>
+<li>
+<p>小概率反正法</p>
+<ul>
+<li>小概率事件再一次随机试验中几乎不可能发生</li>
+<li>小概率事件发生的概率 称之为 <strong>显著性水平</strong>
+<ul>
+<li>显著性水平记作 $\alpha$</li>
+<li>通常取 0.1  0.05  或 0.01</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>反证法</p>
+<ul>
+<li>先提出原假设（也称为 零假设或虚无假设 记作 $H_0$）</li>
+<li>然后用适当的统计方法 确定 原假设的可能性</li>
+<li>如果可能性非常小 则拒绝原假设
+<ul>
+<li>$\alpha$的值越小 拒绝原假设犯错误的概率就越小</li>
+</ul>
+</li>
+<li>转而去接收原假设的对立面  即 备择假设$H_1$</li>
+</ul>
+</li>
+<li>
+<p>适用假设检验产生两种类型的错误</p>
+<ol>
+<li>
+<p>拒真错误</p>
+<ul>
+<li>原假设为真 但是却被拒绝了</li>
+</ul>
+</li>
+<li>
+<p>采伪错误</p>
+<ul>
+<li>原假设为假 但是没有被被拒绝</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="实施步骤">实施步骤
+</h3><ul>
+<li>补充：中心极限定理（Central Limit Theorem, CLT）是统计学中最核心的定理之一，它揭示了 “大量独立随机变量的总和或均值，会趋近于正态分布” 的规律</li>
+</ul>
+<ol>
+<li>
+<p>提出原假设和备择假设</p>
+</li>
+<li>
+<p>选择检验方法与显著性水平（α）</p>
+</li>
+<li>
+<p>计算 检验统计量 与 P值</p>
+<ul>
+<li><strong>检验统计量</strong>：将样本数据转化为标准化数值（如t值、Z值）
+<ul>
+<li>反映“样本与H₀的偏离程度</li>
+</ul>
+</li>
+<li>P值
+<ul>
+<li>在H₀成立的前提下，</li>
+<li>“观测到当前样本（或更极端样本）”的概率</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>对比P值与α，做出决策 这是检验的核心判断规则</p>
+<ul>
+<li>两种结果
+<ul>
+<li><strong>P ≤ α</strong>：“小概率事件（H₀成立时观测到当前样本）发生
+<ul>
+<li><strong>拒绝原假设</strong>，<strong>接受备择假设</strong></li>
+</ul>
+</li>
+<li><strong>P &gt; α</strong>：“样本差异可由随机误差解释”
+<ul>
+<li>则<strong>不拒绝原假设</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>结合实际场景，解读结论</p>
+<ul>
+<li>若上述“差异”在教育场景中（如85分和80分）对学生能力影响极小，即使统计显著，实际意义也有限</li>
+</ul>
+</li>
+<li>
+<p>关键注意点：避免常见误区</p>
+<ol>
+<li><strong>P值≠效应大小</strong>：P值仅反映“差异是否由随机导致”，不代表“差异有多大”。例：两组平均分差0.1分，但样本量极大，也可能得到P&lt;0.05，但实际差异可忽略。</li>
+<li><strong>“不拒绝H₀”≠“接受H₀”</strong>：可能是样本量不足、效应微弱，而非“总体真的无差异”。</li>
+</ol>
+<p>综上，假设检验是“用概率说话”的工具，核心是通过反证法排除随机干扰，但其结论需结合统计逻辑与实际场景，不可盲目依赖P值。</p>
+</li>
+</ol>
+<p><strong>检验方法</strong>：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>场景</th>
+          <th>检验方法</th>
+          <th>统计量分布</th>
+          <th>适用条件</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>单样本均值（σ已知）</td>
+          <td>z检验</td>
+          <td>标准正态</td>
+          <td>大样本或正态总体+σ已知</td>
+      </tr>
+      <tr>
+          <td>单样本均值（σ未知）</td>
+          <td>t检验</td>
+          <td>t分布</td>
+          <td>正态总体或小样本</td>
+      </tr>
+      <tr>
+          <td>两独立样本均值</td>
+          <td>t检验</td>
+          <td>t分布</td>
+          <td>正态总体+方差齐性</td>
+      </tr>
+      <tr>
+          <td>配对样本均值</td>
+          <td>配对t检验</td>
+          <td>t分布</td>
+          <td>差值服从正态分布</td>
+      </tr>
+      <tr>
+          <td>单样本方差</td>
+          <td>χ²检验</td>
+          <td>χ²分布</td>
+          <td>正态总体</td>
+      </tr>
+      <tr>
+          <td>两样本方差</td>
+          <td>F检验</td>
+          <td>F分布</td>
+          <td>两正态总体</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="参数估计">参数估计
+</h2><ul>
+<li>
+<p>是在抽样及抽样分布的基础上</p>
+</li>
+<li>
+<p>用样本统计量去估计总体的参数</p>
+</li>
+<li>
+<p>应用</p>
+<ul>
+<li>产品方面
+<ul>
+<li>评估 关键用户行为指标 （留存率、转化率）</li>
+<li>评估 A/B测试的效果</li>
+</ul>
+</li>
+<li>运营方面
+<ul>
+<li>参数估计  优化活动配置和推荐策略</li>
+<li>评估 用户生命周期价值</li>
+</ul>
+</li>
+<li>市场方面
+<ul>
+<li>制定广告投放策略</li>
+<li>建立模型时，对参数进行评估 上述参数估计的应用请举出具体的实例</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="参数估计的方法">参数估计的方法
+</h3><h4 id="点估计">点估计
+</h4><p>单个样本统计量的值直接作为总体参数的估计值</p>
+<p>衡量一个样本统计量是不是总体参数的良好估计，有以下三个标准：</p>
+<ol>
+<li>无偏性: 估计的“无系统偏差”
+<ul>
+<li>判断估计量是否 “平均准确” 的基础标准</li>
+<li>核心是<strong>估计量的数学期望等于总体参数的真实值</strong>
+<ul>
+<li>估计量不会系统性地高估或低估总体参数</li>
+</ul>
+</li>
+<li>设总体参数为$\theta$（如总体均值$\mu$、总体方差$\sigma^2$用于估计$\theta$的样本统计量（估计量）为 $\hat{\theta}$
+（如样本均值$\bar{X}$、样本方差$S^2$）。
+若满足：$E(\hat{\theta}) = \theta
+$ 则称 $\hat{\theta}$ 是 $\theta$ 的<strong>无偏估计量</strong>；
+若$E(\hat{\theta}) \neq \theta$，则称$\hat{\theta}$存在<strong>偏差</strong>（偏差值为$B(\hat{\theta}) = E(\hat{\theta}) - \theta$）</li>
+</ul>
+</li>
+<li>有效性：估计的 ”最小波动“
+<ul>
+<li>一个参数存在多个无偏估计时
+<ul>
+<li>“有效性” 用于判断哪个估计量更优</li>
+</ul>
+</li>
+<li><strong>在所有无偏估计中，方差最小的估计量最有效</strong></li>
+<li><strong>克拉默 - 拉奥下界</strong>（Cramér-Rao Lower Bound, <strong>CRLB</strong>）
+<ul>
+<li>给出了无偏估计量方差的 “理论最小值”
+<ul>
+<li>某个无偏估计的方差等于 CRLB，则该估计量必为 MVUE(<strong>最小方差无偏估计</strong>)，是最优的无偏估计</li>
+</ul>
+</li>
+<li>对于正态总体$N(\mu, \sigma^2)$，总体均值$\mu$的 CRLB 为$\frac{\sigma^2}{n}$，而样本均值的方差恰好等于该下界，因此样本均值是$\mu$的 MVUE</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>一致性：估计的&quot;大样本收敛性&rdquo;
+<ul>
+<li><strong>随着样本量n增大，估计量 $\hat{\theta}$ 会越来越接近总体参数 $\theta$ 的真实值</strong></li>
+<li>即大样本下估计量的 “渐进准确性”</li>
+</ul>
+</li>
+</ol>
+<h5 id="实现方法">实现方法
+</h5><ul>
+<li>
+<p>矩估计</p>
+<ul>
+<li>利用 “样本矩” 与 “总体矩” 相等的原则推断总体参数
+<ul>
+<li>矩（Moment）是描述数据分布的 “数字特征”
+<ul>
+<li>一阶矩：均值（描述数据的集中趋势）；</li>
+<li>二阶矩：方差（描述数据的离散程度）；</li>
+<li>高阶矩：偏度（描述分布对称性）、峰度（描述分布陡峭程度）等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>步骤（以总体均值和方差为例）
+<ol>
+<li>定义总体矩：
+<ul>
+<li>总体一阶原点矩（均值）：$E(X) = μ$</li>
+<li>总体二阶中心矩（方差）：$E[(X - μ)^2] = σ²$</li>
+</ul>
+</li>
+<li>计算样本矩：
+<ul>
+<li>样本一阶原点矩（样本均值）：$(\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$（n 为样本量）</li>
+<li>样本二阶中心矩（样本方差）：$S_n^2 = \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2$
+<ul>
+<li>注：实际应用中常用修正样本方差$s^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2$，因S$_n^2$是 σ² 的有偏估计</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>令 “样本矩 = 总体矩”，解出参数估计值
+<ul>
+<li>$\hat{μ} = \bar{X}$（用样本均值估计总体均值）；</li>
+<li>$\hat{σ}^2 = S_n^2$（用样本二阶中心矩估计总体方差）</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>最大似然估计(MLE，maximum likelihood estimation) 也叫 极大似然估计</p>
+<ul>
+<li>
+<p>概率最大的事件最可能发生</p>
+<ul>
+<li><strong>选择使 “当前样本出现概率最大” 的参数值作为总体参数的估计值</strong></li>
+<li>似然函数
+<ul>
+<li>给定样本观测值$x_1,x_2,&hellip;,x_n$</li>
+<li>似然函数$L(θ|x_1,&hellip;,x_n)$表示 “参数为 θ 时，观测到该样本的概率
+<ul>
+<li>若总体是离散分布，似然函数 = 联合概率</li>
+<li>若为连续分布，似然函数 = 联合概率密度</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>抽样需要满足的重要前提条件</p>
+<ul>
+<li>所有的抽样都是独立同分布的</li>
+</ul>
+</li>
+<li>
+<p>利用已知的样本结果信息，反推最有可能（最大概率）导致这些样本结果出现的模型参数</p>
+</li>
+<li>
+<p>步骤（以正态总体 $X∼N(μ,σ^2) $为例）</p>
+<ol>
+<li>
+<p>写出总体的概率密度函数</p>
+<ul>
+<li>$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x - \mu)^2}{2\sigma^2}}$</li>
+</ul>
+</li>
+<li>
+<p>构造似然函数</p>
+<ul>
+<li>因样本独立同分布，联合密度 = 各样本密度乘积</li>
+<li>$L(\mu, \sigma^2 | x_1, \dots, x_n) = \prod_{i=1}^n f(x_i | \mu, \sigma^2) = (2\pi\sigma^2)^{-n/2} e^{-\frac{1}{2\sigma^2} \sum_{i=1}^n (x_i - \mu)^2}$</li>
+</ul>
+</li>
+<li>
+<p>简化计算</p>
+<ul>
+<li>对似然函数取自然对数
+<ul>
+<li>因对数是单调递增函数，最大化$\ln L$等价于最大化$L$</li>
+<li>取对数的作用：把“极小乘积”变成“可加的、可导的、数值稳定的”对数似然</li>
+</ul>
+</li>
+<li>得到<strong>对数似然函数</strong>
+<ul>
+<li>$ln L(\mu,\sigma^2) = -\frac{n}{2}\ln(2\pi) - \frac{n}{2}\ln\sigma^2 - \frac{1}{2\sigma^2}\sum_{i=1}^{n}(x_i - \mu)^2$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>求 对数似然函数 的最大值</p>
+<ul>
+<li>
+<p>对参数 μ 和 σ² 求偏导，令偏导数为 0，解方程组</p>
+<ul>
+<li>
+<p>对 μ 求偏导并令其为 0：$\frac{\partial \ln L}{\partial μ} = \frac{1}{σ²}\sum_{i=1}^n (x_i - μ) = 0 \implies \hat{μ} = \frac{1}{n}\sum_{i=1}^n x_i = \bar{x}$</p>
+</li>
+<li>
+<p>对 σ² 求偏导并令其为 0:</p>
+<p>$\frac{\partial \ln L}{\partial \sigma^2}
+= -\frac{n}{2\sigma^2} + \frac{1}{2\sigma^4}\sum_{i=1}^{n}(x_i-\mu)^2
+= 0\implies\quad\hat\sigma^2=\frac{1}{n}\sum_{i=1}^{n}(x_i-\mu)^2 = S^2$</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="区间估计">区间估计
+</h4><h5 id="定义">定义
+</h5><ul>
+<li>是通过样本数据构造一个区间$[L, U]$  (置信区间)
+<ul>
+<li>由样本计算的区间$[L, U]$，</li>
+<li>其中$L$为置信下限，$U$为置信上限</li>
+</ul>
+</li>
+<li>给出出该区间 “包含总体参数的概率（置信水平/置信度）
+<ul>
+<li>区间包含总体参数的概率</li>
+<li>置信度 = 1 -  显著性水平</li>
+</ul>
+</li>
+</ul>
+<h5 id="核心思想及步骤">核心思想及步骤
+</h5><ul>
+<li>利用估计量的抽样分布，结合置信水平，构造出包含总体参数的区间</li>
+<li>具体步骤：
+<ol>
+<li>选择合适的 点估计量
+<ul>
+<li>选 无偏、有效的点估计量</li>
+</ul>
+</li>
+<li>构造抽样分布
+<ul>
+<li>确定 点估计量的抽样分布</li>
+</ul>
+</li>
+<li>确定分位数
+<ul>
+<li>根据 置信水平 查抽样分布 的 分位数表</li>
+</ul>
+</li>
+<li>推导置信区间
+<ul>
+<li>不等式变形</li>
+<li>将 估计量的区间 转化为 总体参数 的区间</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="贝叶斯估计">贝叶斯估计
+</h4><ul>
+<li>思想：将参数视为随机变量，结合先验分布与数据得到后验分布，再取后验均值/中位数等作为估计</li>
+<li>步骤：
+<ol>
+<li>选择先验分布</li>
+<li>计算后验分布</li>
+<li>后验均值</li>
+<li>最小二乘法
+<ul>
+<li>最小化残差平方和，常用于回归模型</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="对比">对比
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>维度</th>
+          <th>点估计</th>
+          <th>区间估计</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>结果形式</td>
+          <td>单个数值（如\(\hat{μ}=175cm\)）</td>
+          <td>区间 + 置信水平（如 [173,177] cm, 95%）</td>
+      </tr>
+      <tr>
+          <td>核心优势</td>
+          <td>简洁、直观，便于后续计算</td>
+          <td>反映估计的不确定性，更具统计意义</td>
+      </tr>
+      <tr>
+          <td>核心劣势</td>
+          <td>无法量化不确定性</td>
+          <td>结果较复杂，需指定置信水平</td>
+      </tr>
+      <tr>
+          <td>适用场景</td>
+          <td>快速粗略估计、后续统计分析（如假设检验）的中间步骤</td>
+          <td>正式报告、决策制定（如产品质量控制、政策评估）</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="方差分析">方差分析
+</h2><h3 id="应用示例">应用示例
+</h3><ol>
+<li>同一个客群在实施某个策略前后的指标对比</li>
+<li>两个或多个客群对比同一指标，评估同一指标在不同客群上的差异</li>
+</ol>
+<h3 id="基本思路">基本思路
+</h3><ul>
+<li>判断数据的变化是不是某一因素导致</li>
+<li>用于两个及两个以上分组样本差异显著性检验的方法</li>
+<li>要检验的对象称为<strong>因素</strong>或<strong>因子</strong>（factor）</li>
+<li>因素的不同表现称为水平或处理（treatment）</li>
+<li>在每个因素水平下得到的样本数据称为观测值</li>
+<li>关心的是均值，但是判断均值之间是否存在差异时需要借助<strong>方差</strong></li>
+</ul>
+<h4 id="定性分析">定性分析
+</h4><ul>
+<li>组内误差
+<ul>
+<li>数据的差异是由个体差异导致的或者说是由抽样的随机性导致的</li>
+</ul>
+</li>
+<li>组间误差
+<ul>
+<li>组与组之间的差异有可能是随机因素导致的，也有可能是因素导致的</li>
+</ul>
+</li>
+<li>组间误差足够大，而组内误差又足够小时
+<ul>
+<li>可以认为因素和自变量之间存在显著差异</li>
+<li>也就是说因素和自变量之间存在某种关系</li>
+</ul>
+</li>
+</ul>
+<h4 id="定量分析">定量分析
+</h4><h5 id="组间误差-ssa">组间误差 (SSA)
+</h5><ul>
+<li>$SSA = \sum_{i \in G} n_i (\bar{Y}_i - \bar{Y})^2$</li>
+</ul>
+<h5 id="组内误差-sse">组内误差 (SSE)
+</h5><ul>
+<li>$SSE = \sum_{i \in G} \sum_{j \in O} (Y_{ij} - \bar{Y}_i)^2$</li>
+</ul>
+<h5 id="组间方差">组间方差
+</h5><ul>
+<li>$MSA = \frac{SSA}{k - 1} = \frac{\sum_{i \in G} n_i (\bar{Y}_i - \bar{Y})^2}{k - 1}$</li>
+</ul>
+<h5 id="组内方差">组内方差
+</h5><ul>
+<li>$MSE = \frac{SSE}{n - k} = \frac{\sum_{i \in G} \sum_{j \in O} (Y_{ij} - \bar{Y}_i)^2}{n - k}$</li>
+</ul>
+<p>将 MSA 和 MASE 进行对比，可以构造出 F 统计量，它服从自由度为 k-1和 n-k 的 F 分布</p>
+<ul>
+<li>$F = \frac{\text{MSA}}{\text{MSE}} \sim F(k - 1, n - k)$</li>
+</ul>
+<h4 id="单因素方差分析">单因素方差分析
+</h4><ul>
+<li>包含 1 个自变量(也称&quot;因素&quot;)</li>
+<li>且该自变量至少分为 2 个组别</li>
+<li>用于检验这 1 个因素的不同组别，对因变量的均值是否有显著影响</li>
+</ul>
+<h4 id="双因素方差分析">双因素方差分析
+</h4><ul>
+<li>包含 2 个自变量(因素A和因素B)</li>
+<li>用于同时检验
+<ul>
+<li>因素 A 的不同组别对因变量的影响（主效应 A）</li>
+<li>因素 B 的不同组别对因变量的影响（主效应 B）</li>
+<li>因素 A 和因素 B 的 “交互作用” 对因变量的影响（交互效应 A×B）</li>
+</ul>
+</li>
+<li>复杂多因素对因变量的共同影响</li>
+</ul>
+<h3 id="实施细节">实施细节
+</h3><h4 id="前提条件">前提条件
+</h4><ul>
+<li>
+<p>差分析需要先判断样本是否满足：</p>
+<ul>
+<li>每个分组中的每个值都必须来自同一个总体样本</li>
+<li>方差分析只能分析满足正态分布的指标
+<ul>
+<li>事实上，在产品运营中大部分指标都基本满足
+<ul>
+<li>几乎所有的转化率都近似正态分布：购买率、点击率、转化率、活跃率、留存率、复购率等；</li>
+<li>几乎所有的业务量都近似正态分布：客单价、每日新增用户数、渠道引流的流量等；</li>
+<li>几乎所有的用户画像指标都近似正态分布：年龄、城市、登录次数、使用时长等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>分析的样本必须是随机抽样得到</li>
+</ul>
+</li>
+<li>
+<p>如果方差分析得到的结论是组与组之间存在显著差异</p>
+<ul>
+<li>
+<p>需要进一步评估差异的大小</p>
+</li>
+<li>
+<p>用到指标 $R^2$</p>
+<ul>
+<li>
+<p>$R^2=\frac{SSA}{SST}$</p>
+<ul>
+<li>
+<p>$SST=SSA+SSE$</p>
+<ul>
+<li>$SST$为总误差 ：组间误差与组内误差之和</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="回归分析">回归分析
+</h2><p>假定因变量和自变量存在某种关系并且可以用适当的数学模型表达出来，然后可以借助模型根据给定的自变量来预测或解释因变量</p>
+<h3 id="变量间的关系">变量间的关系
+</h3><h4 id="函数关系">函数关系
+</h4><p>变量间的内在驱动逻辑</p>
+<p>变量y随着变量x 一起变化并且完全依赖于 x,$y=f(x)$</p>
+<h4 id="相关关系">相关关系
+</h4><p>变量间的伴随关系</p>
+<p>变量之间不是完全确定的关系，影响关系复杂</p>
+<ul>
+<li>
+<p>描述相关关系的常用工具是散点图</p>
+<ul>
+<li>通过散点图可以看出变量之间是否存在相关性以及相关性的强弱</li>
+</ul>
+</li>
+<li>
+<p>量化变量之间关系的强度，需要计算相关系数</p>
+<ul>
+<li>
+<p>总体相关系数</p>
+<ul>
+<li>$$
+\rho = \frac{\mathrm{Cov}(X,Y)}{\sqrt{\mathrm{Var}(X)\cdot\mathrm{Var}(Y)}}
+$$</li>
+</ul>
+</li>
+<li>
+<p>样本 Pearson 相关系数</p>
+<ul>
+<li>
+<p>$$
+r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}
+{\sqrt{\sum_{i=1}^{n}(x_i - \bar{x})^2 \cdot \sum_{i=1}^{n}(y_i - \bar{y})^2}}</p>
+<p>$$</p>
+</li>
+</ul>
+</li>
+<li>
+<p>当$r$的绝对值在 之间，$[0.6,1]$认为指标间是<strong>强相关</strong>，指标间的业务联系非常紧密。</p>
+</li>
+<li>
+<p>当$r$的绝对值在$[0.1,6]$ 之间，认为指标间是<strong>弱相关</strong>，指标间的业务联系不太紧密。</p>
+</li>
+<li>
+<p>当$r$的绝对值在$[0,0.1]$ 之间，认为指标间是<strong>无相关</strong>，指标间没有什么业务联系，也就是说当我们去运营指标 A 时，指标 B 不会产生相应的变化</p>
+<ul>
+<li>不相关并不代表是独立的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>注意 离群点会对相关系数产生较大的影响，计算时要进行剔除</p>
+</li>
+<li>
+<p>实际工作中，还需要关注相关关系的稳定性</p>
+</li>
+<li>
+<p>相关系数的显著性检验 通常使用 $t$检验</p>
+<ul>
+<li>
+<p>既适用小样本也适用于大样本</p>
+</li>
+<li>
+<p>$$
+t = \frac{r\sqrt{n-2}}{\sqrt{1-r^{2}}} \sim t(n-2)
+$$</p>
+</li>
+</ul>
+</li>
+<li>
+<p>注意</p>
+<ol>
+<li>相关关系不等同于因果关系，相关关系是伴随关系而不是因果关系</li>
+<li>强相关关系才具有业务价值，相关系数的绝对值在0.6以上</li>
+<li>相关关系的本质是 Y 的变化有多少能被 X 解释</li>
+<li>相关关系是不稳定的</li>
+</ol>
+</li>
+<li>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<h4 id="拟合优度和显著性">拟合优度和显著性
+</h4><ul>
+<li>
+<p>回归模型需要评价模型的拟合度和显著性，关系到能否通过回归模型做出可靠预测</p>
+<ul>
+<li>
+<p>决定系数 $R^2$</p>
+<ul>
+<li>于度量因变量的变化中可由自变量解释部分所占的比例</li>
+<li>回归模型的解释力是否良好，值越接近1越好</li>
+</ul>
+</li>
+<li>
+<p>$$
+R^{2} = \frac{\mathrm{SSR}}{\mathrm{SST}} = \frac{\sum_{i=1}^{n}(\hat{y}_i - \bar{y})^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+$$</p>
+</li>
+<li>
+<p>$$
+R^{2} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}} = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+$$</p>
+<ul>
+<li>n 次观测值的总误差记为 SST,通常称之为总平方和（<em>total sum of squares</em>）
+<ul>
+<li>由两个部分构成</li>
+<li>SSE（残差平方和）</li>
+<li>回归平方和（<em>regression sum of squares</em>），记为 SSR</li>
+</ul>
+</li>
+<li>越接近<strong>1</strong>越好</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>回归方程的显著性进行检验</p>
+<ul>
+<li>$t$  检验（回归系数的检验）</li>
+<li>$F$ 检验（回归方程的检验）
+<ul>
+<li>告诉我们因变量的变化到底能不能通过自变量的变化进行解释</li>
+</ul>
+</li>
+<li>要关注$P$值，
+<ul>
+<li>如果$P$值小于0.05，说明模型以及模型的系数具备统计上的显著性</li>
+<li>如果$P$值小于0.01，说明模型是极其显著的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="残差的检验">残差的检验
+</h4><p>残差是因变量的观测值 $y_i$ 与  由回归方程求出的估计值 $\hat{y}_i$ 的差，它反映了通过回归方程预测 $y_i$ 时引起的误差。第 i 个观测值的残差可以表示为 $e_i = y_i-\hat{y}_i$</p>
+<ul>
+<li>
+<p>对残差进行标准化，得到标准化残差</p>
+<ul>
+<li>
+<p>$Z_{e_i} = \frac{e_i}{S_e}=\frac{y_i-\hat{y}_i}{S_e}$</p>
+<ul>
+<li>其中 $S_e$是残差的标准差</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="时间序列分析">时间序列分析
+</h2><h3 id="时间序列">时间序列
+</h3><ul>
+<li>
+<p>定义</p>
+<ul>
+<li>
+<p>同一现象在不同时间的相继观察值排列而成的序列</p>
+</li>
+<li>
+<p>一组按照时间顺序排列的数据点，常见于金融、运营、销售等领域</p>
+</li>
+</ul>
+</li>
+<li>
+<p>分类</p>
+<ul>
+<li>平稳序列
+<ul>
+<li>基本上不存在趋势的序列，即各个观察值在某个固定的水平上波动，不同的时间段波动程度不同，但并不存在某种规律</li>
+<li>特点就是均值、方差恒定，协方差不随时间变化（协方差只依赖于时间间隔，与具体的时间点无关）</li>
+</ul>
+</li>
+<li>非平稳序列
+<ul>
+<li>特点就是均值、方差恒定，协方差不随时间变化（协方差只依赖于时间间隔，与具体的时间点无关）</li>
+<li><strong>趋势</strong>（trend）：时间序列长期呈现出来的某种上升或下降的变动，可以是线性的也可以是非线性的</li>
+<li><strong>季节性</strong>（seasonality）：时间序列在一年内出现的周期性波动。商业活动中经常说的“销售旺季”、“旅游淡季”这类术语就是对季节性的描述</li>
+<li><strong>周期性</strong>（cyclicity）：时间序列中呈现出来的围绕长期趋势的波浪式或振荡式变动
+<ul>
+<li>周期性是无固定规律的，变动周期通常在一年以上且周期长度不一</li>
+<li>序列较短时不太容易发现周期性</li>
+</ul>
+</li>
+<li><strong>随机性</strong>或<strong>不规则波动</strong>（irregular variations）：时间序列中的偶然性因素，是时间序列中去除趋势、周期性和季节性之后剩下的部分</li>
+<li>按照四种成分对时间序列的影响方式不同，时间序列可以分解为
+<ul>
+<li>加法模型（additive model）</li>
+<li>乘法模型（multiplicative model）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="常见的时间序列模型">常见的时间序列模型
+</h3><ol>
+<li>移动平均（<strong>MA</strong>）模型：通过设置大小为 的移动窗口对窗口内的时间序列求平均作为预测值</li>
+<li>指数平滑模型：通过对过去的观察值加权平均进行预测的一种方法，指数平滑是加权平均的一种特殊形式，观察值的时间越久远，其权重就呈现指数下降。指数平滑模型有一次指数平滑、二次指数平滑、三次指数平滑等不同的方法</li>
+<li>自回归（<strong>AR</strong>）模型：预测值由该时间序列的过去值经过线性模型计算获得，一般记为 AR(p)，其中 p 表示阶数</li>
+<li><strong>ARMA</strong>：顾名思义，该模型是自回归（AR）和移动平均（MA）模型的结合，适用于平稳序列，一般记为 ARMA(p, q)，其中 p 表示 AR 的阶数，q 表示 MA 的阶数</li>
+<li><strong>ARIMA</strong>：通过差分操作将非平稳序列转化为平稳序列后建模，通过记为 ARIMA(p, d, q)，其中 p 表示 AR 阶数、d 表示差分次数、q 表示 MA 阶数</li>
+<li><strong>SARIMA</strong> / <strong>SARIMAX</strong> 模型：对于没有其它外部因素影响且无明显季节性的数据（例如股票的每日收盘价），ARIMA 是一种可行的解决方案，但是对于存在明显季节性规律或者需要引入额外解释变量（如促销、节假日、天气等）的时间序列，SARIMA 和 SARIMAX 是更好的选择。SARIMA 模型在 ARIMA 的基础上引入了季节性项和外部变量，其中季节性项有四个参数<code>(P, D, Q, s)</code>，分别代表季节性自回归阶数、季节性差分次数、季节性移动平均阶数和季节周期长度（例如：12 表示月度数据的一年周期）；而 SARIMAX 模型在 SARIMA 的基础上又引入了其他相关的解释变量来帮助预测</li>
+</ol>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["https://unpkg.com/@waline/emojis@1.0.1/bilibili"],"lang":"zh-CN","locale":{"admin":"Penna","placeholder":"欢迎交流，在这儿可以留下评论~"},"pageview":true,"requiredMeta":["name"],"serverURL":"https://comments.penna.homes"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2025 - 
+        
+        2026 Penna_a
+    </section>
+    <script type="module">
+        import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
+
+        pageviewCount({
+            serverURL: "https:\/\/comments.penna.homes"
+        });
+    </script>
+
+    
+    <section class="powerby">
+         
+        共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.04ba859201db879e8eb511c95eea272f1fcac0db5a5f79bd34d5c28119817bdd.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

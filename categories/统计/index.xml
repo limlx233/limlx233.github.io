@@ -574,11 +574,10 @@
 &lt;p&gt;各个结果出现的可能性相同&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$
-    P(A)= \frac{事件A所包含的基本事件的个数} {样本空间所包含的基本事件的个数}
-    $$&lt;/li&gt;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202603051333063.png&#34; alt=&#34;image-20260305133340794&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;伯努利大数定理表明：当试验次数无限增加时，事件发生的频率会依概率收敛于其概率，即 $ \lim_{n \to \infty} P\left{ \left| \frac{n_A}{n} - p \right| &amp;lt; \varepsilon \right} = 1 $。&lt;/p&gt;
+&lt;p&gt;伯努利大数定理表明：当试验次数无限增加时，事件发生的频率会依概率收敛于其概率，即 &lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202603051332047.png&#34; alt=&#34;image-20260305133247787&#34; style=&#34;zoom:67%;&#34; /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;只要实验次数足够多，事件的实际概率就会无限接近理论概率&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -1403,18 +1402,15 @@ $ 则称 $\hat{\theta}$ 是 $\theta$ 的&lt;strong&gt;无偏估计量&lt;/strong
 &lt;p&gt;总体相关系数&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;$$
-            \rho = \frac{\mathrm{Cov}(X,Y)}{\sqrt{\mathrm{Var}(X)\cdot\mathrm{Var}(Y)}}
-            $$&lt;/li&gt;
+\rho = \frac{\mathrm{Cov}(X,Y)}{\sqrt{\mathrm{Var}(X)\cdot\mathrm{Var}(Y)}}
+$$&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;样本 Pearson 相关系数&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;$$
-r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}
-{\sqrt{\sum_{i=1}^{n}(x_i - \bar{x})^2 \cdot \sum_{i=1}^{n}(y_i - \bar{y})^2}}&lt;/p&gt;
-&lt;p&gt;$$&lt;/p&gt;
+&lt;img src=&#34;https://picgo001-1322786652.cos.ap-chengdu.myqcloud.com/202603051344036.png&#34; alt=&#34;image-20260305134440770&#34; style=&#34;zoom:50%;&#34; /&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
@@ -1445,9 +1441,10 @@ r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}
 &lt;p&gt;既适用小样本也适用于大样本&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$
-        t = \frac{r\sqrt{n-2}}{\sqrt{1-r^{2}}} \sim t(n-2)
-        $$&lt;/li&gt;
+&lt;p&gt;$$
+t = \frac{r\sqrt{n-2}}{\sqrt{1-r^{2}}} \sim t(n-2)
+$$&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -1478,13 +1475,15 @@ $$
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$
-        R^{2} = \frac{\mathrm{SSR}}{\mathrm{SST}} = \frac{\sum_{i=1}^{n}(\hat{y}_i - \bar{y})^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
-        $$&lt;/li&gt;
+&lt;p&gt;$$
+R^{2} = \frac{\mathrm{SSR}}{\mathrm{SST}} = \frac{\sum_{i=1}^{n}(\hat{y}_i - \bar{y})^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+$$&lt;/p&gt;
+&lt;/li&gt;
 &lt;li&gt;
-$$
-        R^{2} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}} = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
-        $$&lt;ul&gt;
+&lt;p&gt;$$
+R^{2} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}} = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^{2}}{\sum_{i=1}^{n}(y_i - \bar{y})^{2}}
+$$&lt;/p&gt;
+&lt;ul&gt;
 &lt;li&gt;n 次观测值的总误差记为 SST,通常称之为总平方和（&lt;em&gt;total sum of squares&lt;/em&gt;）
 &lt;ul&gt;
 &lt;li&gt;由两个部分构成&lt;/li&gt;

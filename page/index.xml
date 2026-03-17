@@ -22,7 +22,22 @@
         
         <guid>http://localhost:1313/%E5%85%B3%E4%BA%8E/</guid>
         <description>&lt;h2 id=&#34;这个网站&#34;&gt;这个网站
-&lt;/h2&gt;&lt;p&gt;一份数字存档，用来记录所学所想所见，好记性不如烂笔头。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;一份存档，用来记录所学所想所见，好记性不如烂笔头。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://myresume.penna.homes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;个人简历&lt;/a&gt; (需知道博主本人的姓名可访问)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;更新计划&#34;&gt;更新计划
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;25年：整理下之前东零西落的笔记，主要内容包括 Excel、&lt;del&gt;Python&lt;/del&gt;、SQL、&lt;del&gt;其他&lt;/del&gt;。&lt;/li&gt;
+&lt;li&gt;26年：周更408学习笔记，其他的随缘&lt;/li&gt;
+&lt;li&gt;未来想更新的：
+&lt;ol&gt;
+&lt;li&gt;Streamlit 官方手册翻译&lt;/li&gt;
+&lt;li&gt;已完成的 Streamlit 项目案例分享&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;个人简介&#34;&gt;个人简介
 &lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;
@@ -37,15 +52,16 @@
 &lt;li&gt;
 &lt;p&gt;工作经历：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;2023年3月至2024年8月：某光伏制造业企业 数据专员&lt;/li&gt;
-&lt;li&gt;2024年8月至今：制造业某日化用品企业 效率管理专员(&lt;del&gt;感觉公司设立这个岗位全凭想象&lt;/del&gt;)&lt;/li&gt;
+&lt;li&gt;2023年3月至2024年8月：某光伏制造企业 数据专员&lt;/li&gt;
+&lt;li&gt;2024年8月至今：某日化用品制造企业 效率管理专员(&lt;del&gt;感觉公司设立这个岗位全凭想象&lt;/del&gt;)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;相关技能：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Excel函数、透视表、可视化看板、VBA编程(&lt;del&gt;上古技能&lt;/del&gt;)&lt;/li&gt;
-&lt;li&gt;Python 数据处理、数据可视化&lt;/li&gt;
+&lt;li&gt;Python 数据处理、数据可视化、网页爬虫&lt;/li&gt;
+&lt;li&gt;Python Flask Web应用开发&lt;/li&gt;
 &lt;li&gt;关系型数据库 (MySQL 、SQLserver) 复杂查询设计、存储过程编写
 &lt;del&gt;取数工具人&lt;/del&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -60,8 +76,6 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;更新计划&#34;&gt;更新计划
-&lt;/h2&gt;&lt;p&gt;25年：整理下之前东零西落的笔记顺便复习，主要内容包括 Excel、Python、SQL，及其他。&lt;/p&gt;
 </description>
         </item>
         <item>

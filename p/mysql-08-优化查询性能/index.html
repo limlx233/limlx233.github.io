@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='http://localhost:1313/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/'>
 
-<link rel="stylesheet" href="/scss/style.min.35803993fc1ff7eb8034ff48dc15d25d9ba0b9cb0a36fdf5626848ec00643635.css"><meta property='og:title' content="MySQL-08-优化查询性能">
+<link rel="stylesheet" href="/scss/style.min.6f17aad25265206adafe07264d486a5e426c545d8d1c34b9fb782a3bd97ab43c.css"><meta property='og:title' content="MySQL-08-优化查询性能">
 <meta property='og:description' content="优化查询性能\r目标：\n识别适用于优化的查询 检验查询索引耗用 创建查询以提高服务性能 维护索引统计信息 使用MySQL查询分析器 识别慢查询\r识别服务端执行的查询 通过通用查询日志和慢查询日志 识别耗时长的查询 使用慢查询日志 优先处理非异常查询或不常执行的查询之外的 查找执行频率高的查询 定期执行SHOW PROCESSLIST命令，或查询 Performance Schema 的threads表，查看当前正在执行的语句及其持续时间，并识别新出现的模式。 使用sys.statement_analysis查看标准化语句及其聚合统计信息。 将慢查询日志的阈值设置得较低，以记录大多数语句。 选择待优化的查询\r不要假定只需要优化最慢的查询语句 尽管这样的查询执行已经相对较快，通过优化频率最高的查询语句来提升系统的整体性能 优化频繁执行的查询（即使只是小幅优化）也能释放资源、减少锁定，并提高服务器的响应时间和吞吐量。 而优化不常执行的查询，整体收益会小得多 考虑以下示例 单次优化幅度看似微小：查询耗时从 20 毫秒减少到 15 毫秒，单次仅节省 5 毫秒。 但累计收益巨大：假设每分钟执行 5000 次，那么每分钟累计节省的时间为 5000×5 毫秒 = 25000 毫秒（25 秒），每小时累计节省 1500 秒（25 分钟），每天累计节省 600 分钟（10 小时）。这意味着服务器每天可额外释放 10 小时的资源用于处理其他任务，对整体吞吐量和响应速度的提升非常明显。 如果服务器在一个每分钟执行数千次的查询上多花费 5 毫秒，那么这可能会转化为该服务器上累计 15 到 20 秒的语句执行延迟。对频繁执行的查询进行微小优化，可能会带来更显著的整体性能提升。\n">
 <meta property='og:url' content='http://localhost:1313/p/mysql-08-%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/'>
 <meta property='og:site_name' content='Penna_a'>
@@ -1318,7 +1318,9 @@
     <section class="copyright">
         &copy; 
         
-        2025 Penna_a
+            2025 - 
+        
+        2026 Penna_a
     </section>
     <script type="module">
         import { pageviewCount } from 'https://unpkg.com/@waline/client@v3/dist/pageview.js';
@@ -1333,6 +1335,87 @@
          
         共 <span class="waline-pageview-count" data-path="/">0</span> 次浏览<br/>
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        <p>发布了 24 篇文章 | 共 113643 字</p>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
     </section>
 </footer>
 
